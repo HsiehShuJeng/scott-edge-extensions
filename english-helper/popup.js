@@ -67,10 +67,11 @@ function showTemporaryNotification(message, duration = 1500) {
 
 
 document.getElementById('generate').addEventListener('click', () => {
-    const word = document.getElementById('word').value;
+    const input = document.getElementById('words').value;
+    const words = input.split(/[ ,]+/); // Split the input value by spaces or commas
     const sentence = document.getElementById('sentence').value || null;
 
-    const result = generate_output(word, sentence);
+    const result = generate_output(words, sentence);
 
     // Copy the result to the clipboard
     navigator.clipboard.writeText(result).then(() => {
