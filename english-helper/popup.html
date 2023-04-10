@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scott's Assistant for English Learning</title>
+    <style>
+        body {
+          width: auto;
+          white-space: nowrap;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Add this rule to display the inputs and button vertically */
+        label, input, button, a {
+          display: block;
+          margin-bottom: 10px;
+        }
+
+        /* Set the width and box-sizing for both the word input and sentence textarea */
+        .input-control {
+          width: 100%;
+          box-sizing: border-box;
+        }
+
+        /* Set the width of the word input */
+        #word {
+          width: 100%;
+        }
+
+        /* Set the width of the textarea to match the input width */
+        #sentence {
+          width: 100%; /* Set the textarea width to 100% of the container */
+          box-sizing: border-box; /* Make sure the width includes padding and border */
+          resize: none; /* Disable resizing of the textarea */
+        }
+
+        #generate {
+          width: 50%; /* Set the button width to 50% of the container */
+          box-sizing: border-box; /* Make sure the width includes padding and border */
+        }
+
+        #button {
+          width: 100%;
+          max-width: 20px;
+        }
+
+        .tooltip {
+          position: relative;
+          display: inline-block;
+        }
+
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 300px;
+          background-color: #f9f9f9;
+          color: #333;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px;
+          position: absolute;
+          z-index: 1;
+          top: 100%;
+          left: 50%;
+          margin-left: -150px;
+          box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+          opacity: 0;
+          transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+          opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Scott's Assistant for English Learning</h2>
+    <input type="text" id="word" placeholder="Word" class="input-control">
+    <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
+    <button id="generate">Generate Output</button>
+    <script src="popup.js"></script>
+    <div class="tooltip">
+        <span id="credits">Credits</span>
+        <div class="tooltiptext">
+            <a href="https://www.flaticon.com/free-icons/dictionary" target="_blank">
+                Dictionary icons created by Freepik - Flaticon
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

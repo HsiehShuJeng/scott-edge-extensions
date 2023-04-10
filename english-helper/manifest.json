@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "Asking Expert",
+    "version": "1.0.15",
+    "description": "An asking helper to generate a question for ChatGPT 4 for Vocabulary.com",
+    "icons": {
+        "48": "icon48.png"
+    },
+    "permissions":
+    [
+        "clipboardWrite"
+    ],
+    "browser_action":
+    {
+        "default_popup": "popup.html",
+        "default_icon":
+        {
+            "16": "icon16.png",
+            "48": "icon48.png",
+            "128": "icon128.png"
+        }
+    }
+}
