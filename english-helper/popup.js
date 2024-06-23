@@ -48,9 +48,9 @@ function generate_output(words, sentence = null) {
  */
 function generate_translation_prompt(content, language) {
     if (language === "zh") {
-        return `Please translate the above statement(s) into Traditional Chinese considering cultural and contextual connotations. No need to explain further. Make sure the translation is Taiwan-friendly.\n\n${content}`;
+        return `${content}\n\nPlease translate the above statement(s) into Traditional Chinese considering cultural and contextual connotations. No need to explain further. Make sure the translation is Taiwan-friendly.`;
     } else if (language === "en") {
-        return `Please translate the above statement(s) into English considering cultural and contextual connotations.\n\n${content}`;
+        return `${content}\n\nPlease translate the above statement(s) into English considering cultural and contextual connotations.`;
     }
     return "";
 }
