@@ -14,7 +14,6 @@
             flex-direction: column;
         }
 
-        /* Add this rule to display the inputs and button vertically */
         label,
         input,
         button,
@@ -23,37 +22,23 @@
             margin-bottom: 10px;
         }
 
-        /* Set the width and box-sizing for both the word input and sentence textarea */
         .input-control {
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* Set the width of the word input */
-        #word {
-            width: 100%;
-        }
-
-        /* Set the width of the textarea to match the input width */
+        #words,
         #sentence {
             width: 100%;
-            /* Set the textarea width to 100% of the container */
             box-sizing: border-box;
-            /* Make sure the width includes padding and border */
             resize: none;
-            /* Disable resizing of the textarea */
         }
 
-        #generate {
+        #generate,
+        #translate_zh,
+        #translate_en {
             width: 100%;
-            /* Ensure the button width is 100% of the container */
             box-sizing: border-box;
-            /* Make sure the width includes padding and border */
-        }
-
-        #button {
-            width: 100%;
-            max-width: 20px;
         }
 
         .tooltip {
@@ -91,7 +76,8 @@
     <input type="text" id="words" placeholder="Word" class="input-control">
     <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
     <button id="generate">Generate Output</button>
-    <script src="popup.js"></script>
+    <button id="translate_zh">Translate to Traditional Chinese</button>
+    <button id="translate_en">Translate to English</button>
     <div class="tooltip">
         <span id="credits">Icon Credits</span>
         <div class="tooltiptext">
@@ -100,6 +86,7 @@
             </a>
         </div>
     </div>
+    <script src="popup.js"></script>
 </body>
 
 </html>

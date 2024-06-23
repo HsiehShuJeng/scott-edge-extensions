@@ -40,12 +40,27 @@ function generate_output(words, sentence = null) {
 }
 
 /**
+ * Generate the prompt for translation.
+ *
+ * @param {string} content - The content to be translated.
+ * @param {string} language - The language for translation ("zh" for Chinese, "en" for English).
+ * @returns {string} The generated prompt for translation.
+ */
+function generate_translation_prompt(content, language) {
+    if (language === "zh") {
+        return `Please translate the above statement(s) into Traditional Chinese considering cultural and contextual connotations. No need to explain further. Make sure the translation is Taiwan-friendly.\n\n${content}`;
+    } else if (language === "en") {
+        return `Please translate the above statement(s) into English considering cultural and contextual connotations.\n\n${content}`;
+    }
+    return "";
+}
+
+/**
  * Display a temporary notification with a specified message and duration.
  *
  * @param {string} message - The message to display in the notification.
  * @param {number} [duration=1500] - The duration in milliseconds for which the notification should be visible (default is 1500ms).
  */
-
 function showTemporaryNotification(message, duration = 1500) {
     const notification = document.createElement('div');
     notification.innerText = message;
@@ -65,7 +80,6 @@ function showTemporaryNotification(message, duration = 1500) {
     }, duration);
 }
 
-
 document.getElementById('generate').addEventListener('click', () => {
     const input = document.getElementById('words').value;
     const words = input.split(/[ ,]+/); // Split the input value by spaces or commas
@@ -78,5 +92,29 @@ document.getElementById('generate').addEventListener('click', () => {
         showTemporaryNotification('The question for ChatGPT 4 has been copied to clipboard!');
     }).catch(err => {
         console.error('Failed to copy output: ', err);
+    });
+});
+
+document.getElementById('translate_zh').addEventListener('click', () => {
+    const content = document.getElementById('sentence').value.trim();
+    const prompt = generate_translation_prompt(content, "zh");
+
+    // Copy the prompt to the clipboard
+    navigator.clipboard.writeText(prompt).then(() => {
+        showTemporaryNotification('Translation prompt for Traditional Chinese has been copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy prompt: ', err);
+    });
+});
+
+document.getElementById('translate_en').addEventListener('click', () => {
+    const content = document.getElementById('sentence').value.trim();
+    const prompt = generate_translation_prompt(content, "en");
+
+    // Copy the prompt to the clipboard
+    navigator.clipboard.writeText(prompt).then(() => {
+        showTemporaryNotification('Translation prompt for English has been copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy prompt: ', err);
     });
 });
