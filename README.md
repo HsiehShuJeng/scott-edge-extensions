@@ -13,6 +13,6 @@ This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt
 1. Type `edge://extensions`
 2. Click the 'Reload' button
 
-## Devlopment
+## Development
 1. Make sure [Microsoft Edge DevTools extension](https://learn.microsoft.com/en-us/microsoft-edge/visual-studio-code/microsoft-edge-devtools-extension) is installed on VS code.
 2. When devloping in VS Code, move to an HTML file, right click the file, and then choose 'Open with Edge' > 'Open Browser with DevTools'.
