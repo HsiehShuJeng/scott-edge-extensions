@@ -56,6 +56,16 @@ function generate_translation_prompt(content, language) {
 }
 
 /**
+ * Generate the commit message prompt.
+ *
+ * @returns {string} The generated commit message prompt.
+ */
+function generate_commit_message_prompt() {
+    return `echo "Give me a commit suggestion on title and description with the \\"50/72\\" rule within a backtick format based for the following information: $(git diff --word-diff)
+The title should be prefixed with proper category, e.g., [journal][todoist], if you can find it from the committed content. And I don't need backtick symbols to wrap the content of the title and description yet I do need you to generate the content generated in a way that I can copy and past onto a bash session for a git commit. And no need to show 'Title' and 'Description' again. Commit message should be in the imperative. A hyphen is used for bullet list, preceded by a single space, with blank lines in between. Use a hanging indent" | pbcopy`;
+}
+
+/**
  * Display a temporary notification with a specified message and duration.
  *
  * @param {string} message - The message to display in the notification.
@@ -114,6 +124,17 @@ document.getElementById('translate_en').addEventListener('click', () => {
     // Copy the prompt to the clipboard
     navigator.clipboard.writeText(prompt).then(() => {
         showTemporaryNotification('Translation prompt for English has been copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy prompt: ', err);
+    });
+});
+
+document.getElementById('generate_commit_message').addEventListener('click', () => {
+    const prompt = generate_commit_message_prompt();
+
+    // Copy the prompt to the clipboard
+    navigator.clipboard.writeText(prompt).then(() => {
+        showTemporaryNotification('Commit message prompt has been copied to clipboard!');
     }).catch(err => {
         console.error('Failed to copy prompt: ', err);
     });
