@@ -95,6 +95,20 @@
             border-radius: 50%;
         }
 
+        #english-section button {
+            flex: 1; /* Makes each button expand equally across the container's width */
+        }
+
+        #english-section {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch; /* Keeps the buttons and other elements stretched to full container width */
+        }
+
+        #english-section > div { /* Assuming you may want to wrap your buttons for better structure */
+            display: flex;
+        }
+
         /* Ensure the sections have the same width and height */
         #english-section, #korean-section {
             width: 100%;
@@ -106,6 +120,9 @@
             visibility: hidden;
             height: 0;
         }
+        #english-section button {
+            flex: 1; /* Makes each button expand equally across the container's width */
+        }
     </style>
 </head>
 
@@ -114,9 +131,11 @@
         <h2>Scott's Assistant for English Learning</h2>
         <input type="text" id="words" placeholder="Word" class="input-control">
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
-        <button id="generate">Generate Output</button>
-        <button id="translate_zh">Translate to Traditional Chinese</button>
-        <button id="translate_en">Translate to English</button>
+        <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
+            <button id="generate">Generate Prompt</button>
+            <button id="translate_zh">Translate to Traditional Chinese</button>
+            <button id="translate_en">Translate to English</button>
+        </div>
     </div>
     <div id="korean-section">
         <h2>Scott's Assistant for Korean Learning</h2>

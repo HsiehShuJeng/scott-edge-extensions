@@ -145,7 +145,7 @@ document.getElementById('generate-korean').addEventListener('click', function() 
     const textToCopy = koreanInput.value + " Break down the pronunciation and explain what it means in detail regarding grammar.";
 
     navigator.clipboard.writeText(textToCopy).then(() => {
-        alert('Text copied to clipboard successfully!');
+        showTemporaryNotification('A prompt for Korean learning has been copied to clipboard!');
     }).catch(err => {
         console.error('Failed to copy text: ', err);
     });
