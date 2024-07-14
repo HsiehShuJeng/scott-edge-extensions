@@ -58,6 +58,7 @@ function generateCommitMessagePrompt() {
         showTemporaryNotification('Error copying commit message prompt to clipboard!', true);
     });
 }
+
 // Show a temporary notification on the screen
 function showTemporaryNotification(message, isError = false) {
     const notification = document.createElement('div');
@@ -85,7 +86,7 @@ document.getElementById('translate_zh').addEventListener('click', () => generate
 document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
 document.getElementById('generate_commit_message').addEventListener('click', generateCommitMessagePrompt);
 
-// Toggle visibility for language sections
+// Toggle visibility for language sections on hover
 function toggleSectionVisibility(targetId) {
     const sections = ['english-section', 'korean-section'];
     sections.forEach(sectionId => {
@@ -93,14 +94,19 @@ function toggleSectionVisibility(targetId) {
         if (sectionId === targetId) {
             section.style.opacity = '1';
             section.style.visibility = 'visible';
-            section.style.height = 'auto';
+            section.style.height = 'auto';  // Adjust this as needed for your layout
         } else {
             section.style.opacity = '0';
             section.style.visibility = 'hidden';
-            section.style.height = '0';
+            section.style.height = '0';  // Adjust this as needed for your layout
         }
     });
 }
 
-document.getElementById('english-btn').addEventListener('click', () => toggleSectionVisibility('english-section'));
-document.getElementById('korean-btn').addEventListener('click', () => toggleSectionVisibility('korean-section'));
+// Attach mouseenter event handlers to the flag buttons
+document.getElementById('english-btn').addEventListener('mouseenter', () => {
+    toggleSectionVisibility('english-section');
+});
+document.getElementById('korean-btn').addEventListener('mouseenter', () => {
+    toggleSectionVisibility('korean-section');
+});
