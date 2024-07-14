@@ -86,22 +86,58 @@ document.getElementById('translate_zh').addEventListener('click', () => generate
 document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
 document.getElementById('generate_commit_message').addEventListener('click', generateCommitMessagePrompt);
 
-// Toggle visibility for language sections on hover
+let maxHeight = 0; // This will store the maximum height
+
+function calculateMaxHeight() {
+    // Select the sections
+    const sections = document.querySelectorAll('#english-section, #korean-section');
+    
+    // Iterate through each section to determine the maximum height
+    sections.forEach(section => {
+        let originalVisibility = section.style.visibility; // Store the original visibility
+        let originalHeight = section.style.height;
+        section.style.visibility = 'visible'; // Make section visible to measure it accurately
+        section.style.height = 'auto'; // Reset height to calculate the natural height
+
+        const currentHeight = section.offsetHeight;
+        maxHeight = Math.max(maxHeight, currentHeight);
+
+        section.style.visibility = originalVisibility; // Restore the original visibility
+        section.style.height = originalHeight;
+    });
+
+    // Apply the calculated max height to all sections while preserving visibility
+    applyMaxHeight();
+}
+
+function applyMaxHeight() {
+    const sections = document.querySelectorAll('#english-section, #korean-section');
+    sections.forEach(section => {
+        section.style.height = `${maxHeight}px`; // Set all sections to the same max height
+    });
+}
+
+// This function is called initially and whenever visibility needs to be toggled
 function toggleSectionVisibility(targetId) {
-    const sections = ['english-section', 'korean-section'];
-    sections.forEach(sectionId => {
-        const section = document.getElementById(sectionId);
-        if (sectionId === targetId) {
-            section.style.opacity = '1';
+    const sections = document.querySelectorAll('#english-section, #korean-section');
+    sections.forEach(section => {
+        if (section.id === targetId) {
             section.style.visibility = 'visible';
-            section.style.height = 'auto';  // Adjust this as needed for your layout
+            section.style.height = `${maxHeight}px`;
+            section.style.opacity = 1;
         } else {
-            section.style.opacity = '0';
             section.style.visibility = 'hidden';
-            section.style.height = '0';  // Adjust this as needed for your layout
+            section.style.height = 0;
+            section.style.opacity = 0;
         }
     });
 }
+
+// Call this function to initiate the measurement and setup
+document.addEventListener('DOMContentLoaded', () => {
+    calculateMaxHeight(); // Calculate once and apply initially
+    toggleSectionVisibility('english-section'); // Ensure English section is visible by default
+});
 
 // Attach mouseenter event handlers to the flag buttons
 document.getElementById('english-btn').addEventListener('mouseenter', () => {
