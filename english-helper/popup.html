@@ -75,16 +75,62 @@
             visibility: visible;
             opacity: 1;
         }
+
+        .flag-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .flag-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .flag-button img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        /* Ensure the sections have the same width and height */
+        #english-section, #korean-section {
+            width: 100%;
+            transition: opacity 0.5s, visibility 0.5s, height 0.5s;
+        }
+
+        #korean-section {
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+        }
     </style>
 </head>
 
 <body>
-    <h2>Scott's Assistant for English Learning</h2>
-    <input type="text" id="words" placeholder="Word" class="input-control">
-    <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
-    <button id="generate">Generate Output</button>
-    <button id="translate_zh">Translate to Traditional Chinese</button>
-    <button id="translate_en">Translate to English</button>
+    <div id="english-section">
+        <h2>Scott's Assistant for English Learning</h2>
+        <input type="text" id="words" placeholder="Word" class="input-control">
+        <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
+        <button id="generate">Generate Output</button>
+        <button id="translate_zh">Translate to Traditional Chinese</button>
+        <button id="translate_en">Translate to English</button>
+    </div>
+    <div id="korean-section">
+        <h2>Scott's Assistant for Korean Learning</h2>
+        <input type="text" id="korean-word" placeholder="Korean Word" class="input-control">
+        <button id="generate-korean">Generate Output</button>
+    </div>
+    <div class="flag-buttons">
+        <button class="flag-button" id="english-btn">
+            <img src="images/usa-flag.png" alt="USA Flag">
+        </button>
+        <button class="flag-button" id="korean-btn">
+            <img src="images/korean-flag.png" alt="Korean Flag">
+        </button>
+    </div>
 
     <h2>Scott's Assistant for Programming</h2>
     <button id="generate_commit_message">Generate Commit Message</button>

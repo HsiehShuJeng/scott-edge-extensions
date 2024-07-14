@@ -139,3 +139,36 @@ document.getElementById('generate_commit_message').addEventListener('click', () 
         console.error('Failed to copy prompt: ', err);
     });
 });
+
+
+function setEqualHeight() {
+    const englishSection = document.getElementById('english-section');
+    const koreanSection = document.getElementById('korean-section');
+
+    const maxHeight = Math.max(englishSection.scrollHeight, koreanSection.scrollHeight);
+
+    englishSection.style.height = maxHeight + 'px';
+    koreanSection.style.height = maxHeight + 'px';
+}
+
+document.getElementById('english-btn').addEventListener('mouseenter', () => {
+    setEqualHeight();
+    document.getElementById('english-section').style.opacity = '1';
+    document.getElementById('english-section').style.visibility = 'visible';
+    document.getElementById('english-section').style.height = 'auto';
+
+    document.getElementById('korean-section').style.opacity = '0';
+    document.getElementById('korean-section').style.visibility = 'hidden';
+    document.getElementById('korean-section').style.height = '0';
+});
+
+document.getElementById('korean-btn').addEventListener('mouseenter', () => {
+    setEqualHeight();
+    document.getElementById('korean-section').style.opacity = '1';
+    document.getElementById('korean-section').style.visibility = 'visible';
+    document.getElementById('korean-section').style.height = 'auto';
+
+    document.getElementById('english-section').style.opacity = '0';
+    document.getElementById('english-section').style.visibility = 'hidden';
+    document.getElementById('english-section').style.height = '0';
+});
