@@ -140,6 +140,17 @@ document.getElementById('generate_commit_message').addEventListener('click', () 
     });
 });
 
+document.getElementById('generate-korean').addEventListener('click', function() {
+    const koreanInput = document.getElementById('korean-word');
+    const textToCopy = koreanInput.value + " Break down the pronunciation and explain what it means in detail regarding grammar.";
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert('Text copied to clipboard successfully!');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+});
+
 
 function setEqualHeight() {
     const englishSection = document.getElementById('english-section');
