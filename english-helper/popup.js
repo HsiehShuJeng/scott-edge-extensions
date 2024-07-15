@@ -8,6 +8,8 @@ function copyToClipboard(text, notificationMessage) {
     });
 }
 
+
+
 // Function to handle input element click, copying its value to clipboard
 function handleResultClick(inputElementId) {
     const element = document.getElementById(inputElementId);
