@@ -6,14 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scott's Assistant for English Learning and Programming</title>
     <style>
+        /* Variables */
+        :root {
+            --main-padding: 10px;
+            --main-color: #333;
+            --background-color: #f9f9f9;
+            --highlight-color: #4CAF50;
+            --error-color: #FF0000;
+            --button-radius: 5px;
+            --tooltip-width: 300px;
+            --tooltip-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Global Styles */
         body {
             max-width: 100%;
             min-width: 300px;
             margin: 0 auto;
-            padding: 10px;
+            padding: var(--main-padding);
             display: flex;
             flex-direction: column;
             align-items: stretch;
+            color: var(--main-color);
         }
 
         h2 {
@@ -33,6 +47,7 @@
             box-sizing: border-box;
         }
 
+        /* Specific Element Styles */
         #words {
             height: auto; /* Adjust as needed */
         }
@@ -52,6 +67,7 @@
             box-sizing: border-box;
         }
 
+        /* Tooltip Styles */
         .tooltip {
             position: relative;
             display: inline-block;
@@ -59,18 +75,18 @@
 
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 300px;
-            background-color: #f9f9f9;
-            color: #333;
+            width: var(--tooltip-width);
+            background-color: var(--background-color);
+            color: var(--main-color);
             text-align: center;
-            border-radius: 6px;
-            padding: 5px;
+            border-radius: var(--button-radius);
+            padding: var(--main-padding);
             position: absolute;
             z-index: 1;
             top: 100%;
             left: 50%;
-            margin-left: -150px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-left: calc(-1 * var(--tooltip-width) / 2);
+            box-shadow: var(--tooltip-shadow);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -80,6 +96,7 @@
             opacity: 1;
         }
 
+        /* Button Styles */
         .flag-buttons {
             display: flex;
             justify-content: space-around;
@@ -103,18 +120,8 @@
             flex: 1; /* Makes each button expand equally across the container's width */
         }
 
-        #english-section {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch; /* Keeps the buttons and other elements stretched to full container width */
-        }
-
-        #english-section > div { /* Assuming you may want to wrap your buttons for better structure */
-            display: flex;
-        }
-
-        /* Ensure the sections have the same width and height */
-        #english-section, #korean-section {
+        #english-section,
+        #korean-section {
             width: 100%;
             transition: opacity 0.5s, visibility 0.5s, height 0.5s;
         }
@@ -124,16 +131,17 @@
             visibility: hidden;
             height: 0;
         }
-        #english-section button {
-            flex: 1; /* Makes each button expand equally across the container's width */
-        }
+
         .button-container-vertical {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        #start-english, #end-english {
+        #start-english,
+        #end-english,
+        #start-korean,
+        #end-korean {
             flex: 1;  /* Each button takes equal space */
             margin: 2px 0;  /* Optional: adjust spacing between buttons */
         }
@@ -141,7 +149,7 @@
         .activity-controls {
             display: flex;
             align-items: stretch;  /* Align items vertically */
-            min-height: 50 px; /* Ensure the height of activity-controls is the same in all sections */
+            min-height: 50px; /* Ensure the height of activity-controls is the same in all sections */
         }
 
         .activity-controls > * {
@@ -151,9 +159,12 @@
             justify-content: space-around;
         }
 
-        .input-control, select, .button-container-vertical {
+        .input-control,
+        select,
+        .button-container-vertical {
             flex: 1;  /* Make controls expand to fill their containers */
         }
+
         .form-dropdown {
             text-indent: 40%;
         }
