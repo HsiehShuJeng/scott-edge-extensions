@@ -168,6 +168,26 @@
         .form-dropdown {
             text-indent: 40%;
         }
+        /* Tooltip for dropdown information */
+        .dropdown-info {
+            position: absolute;
+            visibility: hidden;
+            text-align: left;
+            width: 100px;
+            background-color: var(--background-color);
+            color: var(--main-color);
+            border-radius: var(--button-radius);
+            padding: var(--main-padding);
+            box-shadow: var(--tooltip-shadow);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .dropdown:hover + .dropdown-info {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -183,12 +203,17 @@
     
             <!-- Label for dropdown -->
             <label for="locality-dropdown"></label>
-            <select id="locality-dropdown" aria-label="Select locality code">
+            <select id="locality-dropdown" aria-label="Select locality code" class="dropdown">
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <!-- Add more options as needed -->
             </select>
+            <div class="dropdown-info">
+                1: Taipei Work<br>
+                2: Taipei Home<br>
+                3: Hualien Home
+            </div>
     
             <!-- Label for result input -->
             <label for="result-english"></label>
@@ -213,12 +238,17 @@
     
             <!-- Label for dropdown -->
             <label for="locality-dropdown-korean"></label>
-            <select id="locality-dropdown-korean" aria-label="Select locality code">
+            <select id="locality-dropdown-korean" aria-label="Select locality code" class="dropdown">
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <!-- Add more options as needed -->
             </select>
+            <div class="dropdown-info">
+                1: Taipei Work<br>
+                2: Taipei Home<br>
+                3: Hualien Home
+            </div>
     
             <!-- Label for result input -->
             <label for="result-korean"></label>
