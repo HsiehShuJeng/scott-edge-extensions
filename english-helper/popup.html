@@ -33,8 +33,12 @@
             box-sizing: border-box;
         }
 
-        #words,
-        #sentence {
+        #words {
+            height: auto; /* Adjust as needed */
+        }
+
+        #sentence,
+        #korean-word {
             width: 100%;
             box-sizing: border-box;
             resize: none;
@@ -123,12 +127,61 @@
         #english-section button {
             flex: 1; /* Makes each button expand equally across the container's width */
         }
+        .button-container-vertical {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #start-english, #end-english {
+            flex: 1;  /* Each button takes equal space */
+            margin: 2px 0;  /* Optional: adjust spacing between buttons */
+        }
+
+        .activity-controls {
+            display: flex;
+            align-items: stretch;  /* Align items vertically */
+        }
+
+        .activity-controls > * {
+            margin-right: 10px;  /* Space between control groups */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .input-control, select, .button-container-vertical {
+            flex: 1;  /* Make controls expand to fill their containers */
+        }
+        .form-dropdown {
+            text-indent: 40%;
+        }
     </style>
 </head>
 
 <body>
     <div id="english-section">
         <h2>Scott's Assistant for English Learning</h2>
+        <div class="activity-controls">
+            <!-- Accessible button labels -->
+            <div class="button-container-vertical">
+                <button id="start-english" aria-label="Start English Session">Start</button>
+                <button id="end-english" aria-label="End English Session">Finish</button>
+            </div>
+    
+            <!-- Label for dropdown -->
+            <label for="locality-dropdown"></label>
+            <select id="locality-dropdown" aria-label="Select locality code">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <!-- Add more options as needed -->
+            </select>
+    
+            <!-- Label for result input -->
+            <label for="result-english"></label>
+            <input type="text" id="result-english" readonly onclick="handleResultClick('result-english')" aria-label="Session command result">
+        </div>
         <input type="text" id="words" placeholder="Word" class="input-control">
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
         <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
