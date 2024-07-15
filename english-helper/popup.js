@@ -138,7 +138,7 @@ function handleStartEnglishSession() {
     const localityCode = localityDropdown.value;
 
     // Create the command string
-    const command = `python record_english_learning.py '${currentTime}' -L English -D ?? -LO ${localityCode}`;
+    const command = `python record_english_learning.py '${currentTime}' -L 'English' -D ?? -LO ${localityCode}`;
 
     // Display the command in the result input field
     document.getElementById('result-english').value = command;
@@ -156,9 +156,43 @@ function handleEndEnglishSession() {
     const localityCode = localityDropdown.value;
 
     // Update the command string with the actual duration
-    const command = `python record_english_learning.py '${startTimeFormatted}' -L English -D ${duration} -LO ${localityCode}`;
+    const command = `python record_english_learning.py '${startTimeFormatted}' -L 'English' -D ${duration} -LO ${localityCode}`;
     document.getElementById('result-english').value = command;
     copyToClipboard(command, 'Start command copied to clipboard!');
+}
+
+// Function to handle the start of the Korean session
+function handleStartKoreanSession() {
+    startTime = new Date(); // Get the current time
+    const hours = startTime.getHours().toString().padStart(2, '0');
+    const minutes = startTime.getMinutes().toString().padStart(2, '0');
+    const currentTime = `${hours}:${minutes}`; // Format time in HH:mm format
+    const localityDropdown = document.getElementById('locality-dropdown-korean');
+    const localityCode = localityDropdown.value;
+
+    // Create the command string
+    const command = `python record_english_learning.py '${currentTime}' -L 'Korean' -D ?? -LO ${localityCode}`;
+
+    // Display the command in the result input field
+    document.getElementById('result-korean').value = command;
+    copyToClipboard(command, 'Start command copied to clipboard!');
+}
+
+// Function to handle the end of the Korean session
+function handleEndKoreanSession() {
+    const endTime = new Date(); // Get the current time as end time
+    const duration = Math.round((endTime - startTime) / 60000); // Calculate duration in minutes
+
+    const hours = startTime.getHours().toString().padStart(2, '0');
+    const minutes = startTime.getMinutes().toString().padStart(2, '0');
+    const startTimeFormatted = `${hours}:${minutes}`; // Format start time in HH:mm format
+    const localityDropdown = document.getElementById('locality-dropdown-korean');
+    const localityCode = localityDropdown.value;
+
+    // Update the command string with the actual duration
+    const command = `python record_english_learning.py '${startTimeFormatted}' -L 'Korean' -D ${duration} -LO ${localityCode}`;
+    document.getElementById('result-korean').value = command;
+    copyToClipboard(command, 'End command copied to clipboard!');
 }
 
 let startTime;  // Variable to store the start time
@@ -182,3 +216,6 @@ document.getElementById('korean-btn').addEventListener('mouseenter', () => {
 // Attach the event listener to the Start button
 document.getElementById('start-english').addEventListener('click', handleStartEnglishSession);
 document.getElementById('end-english').addEventListener('click', handleEndEnglishSession);
+// Attach the event listeners to the Korean buttons
+document.getElementById('start-korean').addEventListener('click', handleStartKoreanSession);
+document.getElementById('end-korean').addEventListener('click', handleEndKoreanSession);

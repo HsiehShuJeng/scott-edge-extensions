@@ -192,6 +192,26 @@
     </div>
     <div id="korean-section">
         <h2>Scott's Assistant for Korean Learning</h2>
+        <div class="activity-controls">
+            <!-- Accessible button labels -->
+            <div class="button-container-vertical">
+                <button id="start-korean" aria-label="Start Korean Session">Start</button>
+                <button id="end-korean" aria-label="End Korean Session">Finish</button>
+            </div>
+    
+            <!-- Label for dropdown -->
+            <label for="locality-dropdown-korean"></label>
+            <select id="locality-dropdown-korean" aria-label="Select locality code">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <!-- Add more options as needed -->
+            </select>
+    
+            <!-- Label for result input -->
+            <label for="result-korean"></label>
+            <input type="text" id="result-korean" readonly onclick="handleResultClick('result-korean')" aria-label="Session command result">
+        </div>
         <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
         <button id="generate-korean">Generate Prompt</button>
     </div>
