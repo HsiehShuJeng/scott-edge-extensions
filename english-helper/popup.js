@@ -1,3 +1,34 @@
+async function getSentenceContent() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, async function (tabs) {
+            try {
+                // Inject the content script
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    files: ['content.js']
+                });
+                console.log("Content script injected");
+
+                // Send message to content script
+                chrome.tabs.sendMessage(tabs[0].id, { action: "getSentenceContent" }, function (response) {
+                    console.log("Response from content script:", response);
+                    if (chrome.runtime.lastError) {
+                        console.error("Error:", chrome.runtime.lastError);
+                        resolve(null);
+                    } else if (response && response.content) {
+                        resolve(response.content);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            } catch (error) {
+                console.error("Error injecting content script:", error);
+                resolve(null);
+            }
+        });
+    });
+}
+
 // Utility to handle clipboard actions with notifications
 function copyToClipboard(text, notificationMessage) {
     navigator.clipboard.writeText(text).then(() => {
@@ -7,8 +38,6 @@ function copyToClipboard(text, notificationMessage) {
         showNotification('Error copying to clipboard!', true);
     });
 }
-
-
 
 // Function to handle input element click, copying its value to clipboard
 function handleResultClick(inputElementId) {
@@ -26,38 +55,72 @@ function handleResultClick(inputElementId) {
     }
 }
 
-
 // Generate detailed output for learning prompts
-function generateOutput() {
-    const words = document.getElementById('words').value.split(/[ ,]+/);
-    const sentence = document.getElementById('sentence').value || null;
-    let output = sentence ? `${sentence}\n\n` : "";
-    const lastWord = words.pop();
-    const combinedWords = words.length > 0 ? words.join("', '") + "', and '" + lastWord : lastWord;
+function generateOutput(language) {
+    let wordsElementId, sentenceElementId, notificationMessage;
+    if (language === 'korean') {
+        wordsElementId = 'korean-word';
+        notificationMessage = 'Korean prompt has been generated and copied to clipboard!';
+    } else {
+        wordsElementId = 'words';
+        sentenceElementId = 'sentence';
+        notificationMessage = 'Output has been generated and copied to clipboard!';
+    }
+    
+    const words = document.getElementById(wordsElementId).value.trim().split(/[ ,]+/);
+    
+    let output = '';
+    if (language === 'korean') {
+        output = `${words.join(' ')}\nBreak down the pronunciation and explain what it means in detail.`;
+    } else {
+        const sentence = document.getElementById(sentenceElementId).value || null;
+        output = sentence ? `${sentence}\n\n` : "";
+        const lastWord = words.pop();
+        const combinedWords = words.length > 0 ? words.join("', '") + "', and '" + lastWord : lastWord;
 
-    output += `What does '${combinedWords}' mean here? Give me the detailed explanation in English, its etymology stories in English, ` +
-        `all the corresponding traditional Chinese translations, and sentences using the word ` +
-        `in the real world either in conversations or books. Lastly, list the most 3 related ` +
-        `synonyms and antonyms respectively with each term followed by its traditional Chinese ` +
-        `translation.\n\n`;
+        output += `What does '${combinedWords}' mean here? Give me the detailed explanation in English, its etymology stories in English, ` +
+            `all the corresponding traditional Chinese translations, and sentences using the word ` +
+            `in the real world either in conversations or books. Lastly, list the most 3 related ` +
+            `synonyms and antonyms respectively with each term followed by its traditional Chinese ` +
+            `translation.\n\n`;
 
-    output += "The paragraph for the detailed explanation\n\n";
-    output += "The paragraph for the etymology stories\n\n";
-    output += "The paragraph for example sentences\n";
-    output += "1. sentence 1\n";
-    output += "2. sentence 2\n\n";
-    output += "```html\n<b>翻譯</b>\n${translation1}；${translation2}\n\n<b>同義詞</b>\n1. synonym1，the translation of synonym1\n\n<b>反義詞</b>\n1. antonym1，the translation of antonym1\n```";
+        output += "The paragraph for the detailed explanation\n\n";
+        output += "The paragraph for the etymology stories\n\n";
+        output += "The paragraph for example sentences\n";
+        output += "1. sentence 1\n";
+        output += "2. sentence 2\n\n";
+        output += "```html\n<b>翻譯</b>\n${translation1}；${translation2}\n\n<b>同義詞</b>\n1. synonym1，the translation of synonym1\n\n<b>反義詞</b>\n1. antonym1，the translation of antonym1\n```";
+    }
 
-    copyToClipboard(output, 'Output has been generated and copied to clipboard!');
+    copyToClipboard(output, notificationMessage);
 }
 
 // Translation prompts for different languages
-function generateTranslationPrompt(language) {
-    const content = document.getElementById('sentence').value.trim();
+async function generateTranslationPrompt(language) {
+    let content = document.getElementById('sentence').value.trim();
+    console.log("Initial content:", content);
+
+    // Try to get content from the webpage if the textarea is empty
+    if (!content) {
+        console.log("Attempting to get content from webpage");
+        const sentenceContent = await getSentenceContent();
+        console.log("Content from webpage:", sentenceContent);
+        if (sentenceContent) {
+            content = sentenceContent;
+            document.getElementById('sentence').value = content;
+        }
+    }
+
+    if (!content) {
+        console.log("No content found");
+        showNotification('No content to translate!', true);
+        return;
+    }
+
+    console.log("Final content to translate:", content);
     const prompt = `${content}\n\nPlease translate the above statement(s) into ${language === 'zh' ? 'Traditional Chinese' : 'English'} considering cultural and contextual connotations.`;
     copyToClipboard(prompt, `Translation prompt for ${language === 'zh' ? 'Traditional Chinese' : 'English'} has been copied to clipboard!`);
 }
-
 /**
  * Generate a detailed commit message prompt based on the Git diff,
  * and copy it to the clipboard to allow direct pasting into a bash session.
@@ -204,16 +267,17 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSectionVisibility('english-section'); // Ensure English section is visible by default
 });
 
-document.getElementById('generate').addEventListener('click', generateOutput);
+document.getElementById('generate').addEventListener('click', () => generateOutput('english'));
 document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
 document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
+document.getElementById('generate-korean').addEventListener('click', () => generateOutput('korean'));
 document.getElementById('generate_commit_message').addEventListener('click', generateCommitMessagePrompt);
 // Attach mouseenter event handlers to the flag buttons
 document.getElementById('english-btn').addEventListener('mouseenter', () => {
-    toggleSectionVisibility('english-section');
+toggleSectionVisibility('english-section');
 });
 document.getElementById('korean-btn').addEventListener('mouseenter', () => {
-    toggleSectionVisibility('korean-section');
+toggleSectionVisibility('korean-section');
 });
 // Attach the event listener to the Start button
 document.getElementById('start-english').addEventListener('click', handleStartEnglishSession);
