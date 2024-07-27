@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (sentenceElement) {
                 content += sentenceElement.innerText;
             }
-            if (instructionsElement) {
+            if (instructionsElement && sentenceElement.innerText == '') {
                 if (content) content += '\n\n'; // Add a new line if both elements are present
                 let instructionsContent = instructionsElement.innerText.replace(/:/g, ''); // Remove colons
                 if (correctAnswerElement) {
