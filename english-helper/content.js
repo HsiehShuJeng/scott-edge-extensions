@@ -3,7 +3,7 @@ console.log("Content script loaded");
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getActiveSentenceContent") {
         const activeSlide = Array.from(document.querySelectorAll('.challenge-slide.wide.audio-enabled'))
-            .find(slide => slide.matches('.active.selected, .selected.saved.complete.incorrect'));
+            .find(slide => slide.matches('.active.selected, .selected.saved.complete.incorrect, .selected.saved.complete.correct'));
 
         if (activeSlide) {
             const sentenceElement = activeSlide.querySelector('.sentence');

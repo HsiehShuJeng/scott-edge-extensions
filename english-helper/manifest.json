@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Asking Expert",
-    "version": "2.0.4",
+    "version": "2.0.6",
     "description": "An asking helper to generate a question for ChatGPT 4 for Vocabulary.com",
     "icons": {
         "48": "images/icon48.png"
