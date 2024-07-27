@@ -1,16 +1,38 @@
 console.log("Content script loaded");
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("Message received in content script:", request);
-    if (request.action === "getSentenceContent") {
-        const sentenceDiv = document.querySelector('.sentence');
-        if (sentenceDiv) {
-            console.log("Sentence found:", sentenceDiv.textContent.trim());
-            sendResponse({ content: sentenceDiv.textContent.trim() });
+    if (request.action === "getActiveSentenceContent") {
+        const activeSlide = Array.from(document.querySelectorAll('.challenge-slide.wide.audio-enabled'))
+            .find(slide => slide.matches('.active.selected, .selected.saved.complete.incorrect'));
+
+        if (activeSlide) {
+            const sentenceElement = activeSlide.querySelector('.sentence');
+            const instructionsElement = activeSlide.querySelector('.instructions');
+            const correctAnswerElement = activeSlide.querySelector('.choices .correct');
+            let content = '';
+
+            if (sentenceElement) {
+                content += sentenceElement.innerText;
+            }
+            if (instructionsElement) {
+                if (content) content += '\n\n'; // Add a new line if both elements are present
+                let instructionsContent = instructionsElement.innerText.replace(/:/g, ''); // Remove colons
+                if (correctAnswerElement) {
+                    let correctAnswer = correctAnswerElement.innerText;
+                    instructionsContent = `why ${instructionsContent} '${correctAnswer}'?`; // Format instructions with the correct answer
+                } else {
+                    instructionsContent = `why ${instructionsContent}?`; // Format instructions without the correct answer
+                }
+                content += instructionsContent;
+            }
+
+            if (content) {
+                sendResponse({ content });
+            } else {
+                sendResponse({ content: null });
+            }
         } else {
-            console.log("No sentence div found");
             sendResponse({ content: null });
         }
     }
-    return true;  // Keeps the message channel open for asynchronous response
 });

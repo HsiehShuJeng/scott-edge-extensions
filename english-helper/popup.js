@@ -2,18 +2,13 @@ async function getSentenceContent() {
     return new Promise((resolve) => {
         chrome.tabs.query({ active: true, currentWindow: true }, async function (tabs) {
             try {
-                // Inject the content script
                 await chrome.scripting.executeScript({
                     target: { tabId: tabs[0].id },
                     files: ['content.js']
                 });
-                console.log("Content script injected");
 
-                // Send message to content script
-                chrome.tabs.sendMessage(tabs[0].id, { action: "getSentenceContent" }, function (response) {
-                    console.log("Response from content script:", response);
+                chrome.tabs.sendMessage(tabs[0].id, { action: "getActiveSentenceContent" }, function (response) {
                     if (chrome.runtime.lastError) {
-                        console.error("Error:", chrome.runtime.lastError);
                         resolve(null);
                     } else if (response && response.content) {
                         resolve(response.content);
@@ -22,12 +17,41 @@ async function getSentenceContent() {
                     }
                 });
             } catch (error) {
-                console.error("Error injecting content script:", error);
                 resolve(null);
             }
         });
     });
 }
+
+// Translation prompts for different languages
+async function generateTranslationPrompt(language) {
+    let content = document.getElementById('sentence').value.trim();
+    console.log("Initial content:", content);
+
+    // Try to get content from the webpage if the textarea is empty
+    if (!content) {
+        console.log("Attempting to get content from webpage");
+        const sentenceContent = await getSentenceContent();
+        console.log("Content from webpage:", sentenceContent);
+        if (sentenceContent) {
+            content = sentenceContent;
+            document.getElementById('sentence').value = content;
+        }
+    }
+
+    if (!content) {
+        console.log("No content found");
+        showNotification('No content to translate!', true);
+        return;
+    }
+
+    console.log("Final content to translate:", content);
+    const prompt = `${content}\n\nPlease translate the above statement(s) into ${language === 'zh' ? 'Traditional Chinese' : 'English'} considering cultural and contextual connotations.`;
+    copyToClipboard(prompt, `Translation prompt for ${language === 'zh' ? 'Traditional Chinese' : 'English'} has been copied to clipboard!`);
+}
+
+document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
+document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
 
 // Utility to handle clipboard actions with notifications
 function copyToClipboard(text, notificationMessage) {
