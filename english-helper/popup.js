@@ -75,9 +75,6 @@ async function generateTranslationPrompt(language) {
     copyToClipboard(prompt, `Translation prompt for ${language === 'zh' ? 'Traditional Chinese' : 'English'} has been copied to clipboard!`);
 }
 
-document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
-document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
-
 // Utility to handle clipboard actions with notifications
 function copyToClipboard(text, notificationMessage) {
     navigator.clipboard.writeText(text).then(() => {
@@ -116,21 +113,41 @@ async function fetchEtymologyExplanation(word) {
     const searchDiv = doc.querySelector('div.ant-col-xs-24.ant-col-sm-24.ant-col-md-24.ant-col-lg-17');
 
     if (searchDiv) {
-        // Find the <a> tag with the title 'Origin and meaning of ${word}'
-        const anchor = searchDiv.querySelector(`a[title="Origin and meaning of ${word}"]`);
+        // Find all <a> tags with the title 'Origin and meaning of ${word}'
+        const anchors = searchDiv.querySelectorAll(`a[title^="Origin and meaning of"]`);
+        console.log('Number of anchors found:', anchors.length);
 
-        if (anchor) {
-            // Get the p element in the same div section as the <a> tag
-            const parentDiv = anchor.closest('div');
+        for (const anchor of anchors) {
+            // Get the parent div that contains the anchor and the explanation
+            const parentDiv = anchor.closest('div[class*="word"]');
+            if (!parentDiv) {
+                console.log('Parent div not found for anchor:', anchor);
+                continue;
+            }
+
             const explanationElement = parentDiv.querySelector('p');
+            console.log('Explanation element:', explanationElement);
 
-            console.log('explanationElement: ', explanationElement);
-            return explanationElement ? explanationElement.innerText : 'No etymology explanation found.';
+            if (explanationElement && explanationElement.innerText.trim()) {
+                const explanationText = explanationElement.innerText.trim();
+                console.log('Explanation text:', explanationText);
+
+                // Skip if the content prefixes with 'see ' or contains an <a> tag with class 'crossreference notranslate'
+                if (!explanationText.startsWith('see ') && !explanationElement.querySelector('a.crossreference.notranslate')) {
+                    console.log('Valid explanation element found:', explanationElement);
+                    return explanationText;
+                } else {
+                    console.log('Explanation element skipped due to crossreference or prefix:', explanationElement);
+                }
+            } else {
+                console.log('Explanation element is empty or not found');
+            }
         }
+    } else {
+        console.log('Search div not found');
     }
     return 'No etymology explanation found.';
 }
-
 // Generate detailed output for learning prompts
 async function generateOutput(language) {
     let wordsElementId, sentenceElementId, notificationMessage;
@@ -340,6 +357,8 @@ function handleEndKoreanSession() {
     copyToClipboard(command, 'End command copied to clipboard!');
 }
 
+document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
+document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
 let startTime;  // Variable to store the start time
 // Call this function to initiate the measurement and setup
 document.addEventListener('DOMContentLoaded', () => {
