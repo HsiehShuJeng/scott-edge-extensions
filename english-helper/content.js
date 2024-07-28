@@ -36,7 +36,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
     } else if (request.action === "getKoreanContent") {
         const koreanElements = Array.from(document.querySelectorAll('span[data-test="challenge-tap-token-text"]'));
-        const koreanContent = koreanElements.map(el => el.innerText).join(' ');
+        const koreanContent = koreanElements
+            .map(el => el.innerText.match(/[\u3131-\uD79D]+/g)) // Capture only Korean characters
+            .flat() // Flatten the array
+            .filter(Boolean) // Remove any null values
+            .join('\n'); // Join with newline
         sendResponse({ content: koreanContent });
     }
 });
