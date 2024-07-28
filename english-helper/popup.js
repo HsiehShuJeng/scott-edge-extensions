@@ -1,3 +1,28 @@
+async function getKoreanContent() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({ active: true, currentWindow: true }, async function (tabs) {
+            try {
+                await chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    files: ['content.js']
+                });
+
+                chrome.tabs.sendMessage(tabs[0].id, { action: "getKoreanContent" }, function (response) {
+                    if (chrome.runtime.lastError) {
+                        resolve(null);
+                    } else if (response && response.content) {
+                        resolve(response.content);
+                    } else {
+                        resolve(null);
+                    }
+                });
+            } catch (error) {
+                resolve(null);
+            }
+        });
+    });
+}
+
 async function getSentenceContent() {
     return new Promise((resolve) => {
         chrome.tabs.query({ active: true, currentWindow: true }, async function (tabs) {
@@ -294,7 +319,24 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('generate').addEventListener('click', () => generateOutput('english'));
 document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
 document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
-document.getElementById('generate-korean').addEventListener('click', () => generateOutput('korean'));
+document.getElementById('generate-korean').addEventListener('click', async () => {
+    let content = document.getElementById('korean-word').value.trim();
+
+    if (!content) {
+        const koreanContent = await getKoreanContent();
+        if (koreanContent) {
+            content = koreanContent;
+            document.getElementById('korean-word').value = content;
+        }
+    }
+
+    if (!content) {
+        showNotification('No content to generate!', true);
+        return;
+    }
+
+    generateOutput('korean');
+});
 document.getElementById('generate_commit_message').addEventListener('click', generateCommitMessagePrompt);
 // Attach mouseenter event handlers to the flag buttons
 document.getElementById('english-btn').addEventListener('mouseenter', () => {

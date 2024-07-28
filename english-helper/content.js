@@ -34,5 +34,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         } else {
             sendResponse({ content: null });
         }
+    } else if (request.action === "getKoreanContent") {
+        const koreanElements = Array.from(document.querySelectorAll('span[data-test="challenge-tap-token-text"]'));
+        const koreanContent = koreanElements.map(el => el.innerText).join(' ');
+        sendResponse({ content: koreanContent });
     }
 });
