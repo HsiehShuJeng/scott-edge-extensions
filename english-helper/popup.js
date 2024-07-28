@@ -104,8 +104,35 @@ function handleResultClick(inputElementId) {
     }
 }
 
+// Function to fetch the etymology explanation from Etymology Online
+async function fetchEtymologyExplanation(word) {
+    const response = await fetch(`https://www.etymonline.com/search?q=${word}`);
+    const text = await response.text();
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(text, 'text/html');
+
+    // Search for the div block with the specified class names
+    const searchDiv = doc.querySelector('div.ant-col-xs-24.ant-col-sm-24.ant-col-md-24.ant-col-lg-17');
+
+    if (searchDiv) {
+        // Find the <a> tag with the title 'Origin and meaning of ${word}'
+        const anchor = searchDiv.querySelector(`a[title="Origin and meaning of ${word}"]`);
+
+        if (anchor) {
+            // Get the p element in the same div section as the <a> tag
+            const parentDiv = anchor.closest('div');
+            const explanationElement = parentDiv.querySelector('p');
+
+            console.log('explanationElement: ', explanationElement);
+            return explanationElement ? explanationElement.innerText : 'No etymology explanation found.';
+        }
+    }
+    return 'No etymology explanation found.';
+}
+
 // Generate detailed output for learning prompts
-function generateOutput(language) {
+async function generateOutput(language) {
     let wordsElementId, sentenceElementId, notificationMessage;
     if (language === 'korean') {
         wordsElementId = 'korean-word';
@@ -126,12 +153,16 @@ function generateOutput(language) {
         output = sentence ? `${sentence}\n\n` : "";
         const lastWord = words.pop();
         const combinedWords = words.length > 0 ? words.join("', '") + "', and '" + lastWord : lastWord;
-
+        const etymologyExplanation = await fetchEtymologyExplanation(lastWord);
+     
         output += `What does '${combinedWords}' mean here? Give me the detailed explanation in English, its etymology stories in English, ` +
             `all the corresponding traditional Chinese translations, and sentences using the word ` +
             `in the real world either in conversations or books. Lastly, list the most 3 related ` +
             `synonyms and antonyms respectively with each term followed by its traditional Chinese ` +
             `translation.\n\n`;
+        if (!etymologyExplanation.includes('No etymology explanation found.')) {
+            output += `And the explanation from Etymology Online is as this: ${etymologyExplanation}`
+        }
 
         output += "The paragraph for the detailed explanation\n\n";
         output += "The paragraph for the etymology stories\n\n";
