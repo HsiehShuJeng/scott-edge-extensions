@@ -35,12 +35,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ content: null });
         }
     } else if (request.action === "getKoreanContent") {
+        let koreanContentSet = new Set();
+
+        // First logic: Search for span elements with data-test="challenge-tap-token-text"
         const koreanElements = Array.from(document.querySelectorAll('span[data-test="challenge-tap-token-text"]'));
-        const koreanContent = koreanElements
-            .map(el => el.innerText.match(/[\u3131-\uD79D]+/g)) // Capture only Korean characters
-            .flat() // Flatten the array
-            .filter(Boolean) // Remove any null values
-            .join('\n'); // Join with newline
+        koreanElements.forEach(el => {
+            const matches = el.innerText.match(/[\u3131-\uD79D]+/g); // Capture only Korean characters
+            if (matches) {
+                matches.forEach(match => koreanContentSet.add(match));
+            }
+        });
+
+        // Second logic: If no span elements found, search for div with data-test="challenge challenge-characterIntro"
+        if (koreanContentSet.size === 0) {
+            const introElement = document.querySelector('div[data-test="challenge challenge-characterIntro"]');
+            if (introElement) {
+                const spanElements = Array.from(introElement.querySelectorAll('span'));
+                spanElements.forEach(el => {
+                    const matches = el.innerText.match(/[\u3131-\uD79D]+/g); // Capture only Korean characters
+                    if (matches) {
+                        matches.forEach(match => koreanContentSet.add(match));
+                    }
+                });
+            }
+        }
+
+        const koreanContent = Array.from(koreanContentSet).join('\n'); // Convert set to array and join with newline
         sendResponse({ content: koreanContent });
     }
 });
