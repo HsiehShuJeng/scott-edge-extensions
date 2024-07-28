@@ -60,6 +60,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         }
 
+        // Third logic: If no span elements found in intro, search for span elements within div role="radiogroup"
+        if (koreanContentSet.size === 0) {
+            const radiogroupElements = Array.from(document.querySelectorAll('div[role="radiogroup"] span'));
+            radiogroupElements.forEach(el => {
+                const matches = el.innerText.match(/[\u3131-\uD79D]+/g); // Capture only Korean characters
+                if (matches) {
+                    matches.forEach(match => koreanContentSet.add(match));
+                }
+            });
+        }
+
         const koreanContent = Array.from(koreanContentSet).join('\n'); // Convert set to array and join with newline
         sendResponse({ content: koreanContent });
     }
