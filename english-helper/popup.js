@@ -178,7 +178,7 @@ async function generateOutput(language) {
             `synonyms and antonyms respectively with each term followed by its traditional Chinese ` +
             `translation.\n\n`;
         if (!etymologyExplanation.includes('No etymology explanation found.')) {
-            output += `And the explanation from Etymology Online is as this: ${etymologyExplanation}`
+            output += `And the explanation from Etymology Online is as this: ${etymologyExplanation}\n\n`
         }
 
         output += "The paragraph for the detailed explanation\n\n";
