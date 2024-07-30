@@ -71,6 +71,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
         }
 
+        // Fourth logic: Search for div with data-test="challenge challenge-translate" and then for span elements within it
+        if (koreanContentSet.size === 0) {
+            const translateElement = document.querySelector('div[data-test="challenge challenge-translate"]');
+            if (translateElement) {
+                const spanElements = Array.from(translateElement.querySelectorAll('span'));
+                spanElements.forEach(el => {
+                    const matches = el.innerText.match(/[\u3131-\uD79D]+/g); // Capture only Korean characters
+                    if (matches) {
+                        matches.forEach(match => koreanContentSet.add(match));
+                    }
+                });
+            }
+        }
+
         const koreanContent = Array.from(koreanContentSet).join('\n'); // Convert set to array and join with newline
         sendResponse({ content: koreanContent });
     }
