@@ -71,7 +71,10 @@ async function generateTranslationPrompt(language) {
     }
 
     console.log("Final content to translate:", content);
-    const prompt = `${content}\n\nPlease translate the above statement(s) into ${language === 'zh' ? 'Traditional Chinese' : 'English'} considering cultural and contextual connotations.`;
+    const prompt_end = language === 'zh'
+    ? 'natural to Taiwanese.'
+    : 'natural to native speakers in the USA.';
+    const prompt = `${content}\n\nPlease translate the above statement(s) into ${language === 'zh' ? 'Traditional Chinese' : 'English'} considering cultural and contextual connotations ${prompt_end}.`;
     copyToClipboard(prompt, `Translation prompt for ${language === 'zh' ? 'Traditional Chinese' : 'English'} has been copied to clipboard!`);
 }
 
