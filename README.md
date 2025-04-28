@@ -16,3 +16,93 @@ This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt
 ## Development
 1. Make sure [Microsoft Edge DevTools extension](https://learn.microsoft.com/en-us/microsoft-edge/visual-studio-code/microsoft-edge-devtools-extension) is installed on VS code.
 2. When devloping in VS Code, move to an HTML file, right click the file, and then choose 'Open with Edge' > 'Open Browser with DevTools'.
+
+## Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph "Popup UI (popup.html)"
+        A1["English Section"]
+        A2["Korean Section"]
+        A3["Programming Section"]
+        A4["Flag Switch Buttons"]
+    end
+    
+    subgraph "popup.js"
+        B1["initializeUI()"]
+    end
+    
+    subgraph "ui.js"
+        C1["registerEventListeners"]
+        C2["toggleSectionVisibility"]
+        C3["calculateMaxHeight"]
+    end
+    
+    subgraph "session.js"
+        D1["handleStartEnglishSession"]
+        D2["handleEndEnglishSession"]
+        D3["handleStartKoreanSession"]
+        D4["handleEndKoreanSession"]
+    end
+    
+    subgraph "translation.js"
+        E1["generateTranslationPrompt"]
+        E2["generateOutput"]
+        E3["getSentenceContent"]
+    end
+    
+    subgraph "etymology.js"
+        F1["fetchEtymologyExplanation"]
+    end
+    
+    subgraph "utils.js"
+        G1["$ (DOM helper)"]
+        G2["showNotification"]
+        G3["copyToClipboard"]
+        G4["handleResultClick"]
+        G5["generateCommitMessagePrompt"]
+    end
+    
+    subgraph "content.js"
+        H1["Content Script: getActiveSentenceContent, getKoreanContent"]
+    end
+    
+    %% UI triggers
+    A1-->|"Events"|B1
+    A2-->|"Events"|B1
+    A3-->|"Events"|B1
+    A4-->|"Events"|B1
+    B1-->|"Calls"|C1
+    B1-->|"Calls"|C2
+    B1-->|"Calls"|C3
+    
+    %% Event listeners
+    C1-->|"Session"|D1
+    C1-->|"Session"|D2
+    C1-->|"Session"|D3
+    C1-->|"Session"|D4
+    C1-->|"Translation"|E1
+    C1-->|"Output"|E2
+    C1-->|"Commit"|G5
+    C1-->|"Result Click"|G4
+    
+    %% Data flow
+    E1-->|"Clipboard"|G3
+    E2-->|"Clipboard"|G3
+    D1-->|"Clipboard"|G3
+    D2-->|"Clipboard"|G3
+    D3-->|"Clipboard"|G3
+    D4-->|"Clipboard"|G3
+    G5-->|"Clipboard"|G3
+    
+    E1-->|"Notification"|G2
+    E2-->|"Notification"|G2
+    G5-->|"Notification"|G2
+    
+    E2-->|"Etymology"|F1
+    E1-->|"Get Content"|E3
+    E3-->|"Content Script"|H1
+    
+    %% Content script
+    H1-->|"Returns"|E3
+```
