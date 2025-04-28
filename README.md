@@ -106,3 +106,47 @@ graph TD
     %% Content script
     H1-->|"Returns"|E3
 ```
+
+## Component Diagram
+
+```mermaid
+flowchart TD
+    UI["Popup UI (popup.html)"]
+    ContentScript["Content Script (content.js)"]
+    Session["Session Logic (session.js)"]
+    Translation["Translation Logic (translation.js)"]
+    Etymology["Etymology Fetcher (etymology.js)"]
+    Utils["Utilities (utils.js)"]
+    PopupJS["Popup Bootstrap (popup.js)"]
+
+    UI -- interacts with --> PopupJS
+    PopupJS -- initializes --> UI
+    UI -- uses --> Session
+    UI -- uses --> Translation
+    UI -- uses --> Utils
+    Translation -- uses --> Etymology
+    Translation -- fetches from --> ContentScript
+    Session -- uses --> Utils
+    ContentScript -- provides data to --> Translation
+    UI -- user actions --> UI
+```
+
+## Sequence Diagram (User Generates English Prompt)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant PopupUI as Popup UI
+    participant UIJS as ui.js
+    participant Translation as translation.js
+    participant Utils as utils.js
+    participant Clipboard as Clipboard
+
+    User->>PopupUI: Clicks "Generate Prompt"
+    PopupUI->>UIJS: Event handler
+    UIJS->>Translation: generateOutput('english')
+    Translation->>Utils: copyToClipboard(prompt)
+    Utils->>Clipboard: Write prompt
+    Utils->>UIJS: showNotification
+    UIJS->>User: Notification shown
+```
