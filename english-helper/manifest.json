@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Asking Expert",
-    "version": "2.4.6",
+    "version": "2.4.7",
     "description": "An asking helper to generate a question as prompt for Vocabulary.com, Duolingo, and programming efforts.",
     "icons": {
         "48": "images/icon48.png"
