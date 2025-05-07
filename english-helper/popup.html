@@ -122,14 +122,12 @@
 
         #english-section,
         #korean-section {
+            display: none;
             width: 100%;
-            transition: opacity 0.5s, visibility 0.5s, height 0.5s;
         }
 
-        #korean-section {
-            opacity: 0;
-            visibility: hidden;
-            height: 0;
+        #english-section {
+            display: block;
         }
 
         .button-container-vertical {
@@ -217,7 +215,7 @@
     
             <!-- Label for result input -->
             <label for="result-english"></label>
-            <input type="text" id="result-english" readonly onclick="handleResultClick('result-english')" aria-label="Session command result">
+            <input type="text" id="result-english" readonly aria-label="Session command result">
         </div>
         <input type="text" id="words" placeholder="Word" class="input-control">
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
@@ -252,7 +250,7 @@
     
             <!-- Label for result input -->
             <label for="result-korean"></label>
-            <input type="text" id="result-korean" readonly onclick="handleResultClick('result-korean')" aria-label="Session command result">
+            <input type="text" id="result-korean" readonly aria-label="Session command result">
         </div>
         <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
         <button id="generate-korean">Generate Prompt</button>
@@ -277,7 +275,7 @@
             </a>
         </div>
     </div>
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
 </body>
 
 </html>
