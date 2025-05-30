@@ -1,0 +1,22 @@
+{
+  "extends": ["stylelint-config-recommended"],
+  "plugins": [
+    "stylelint-declaration-block-no-ignored-properties",
+    "stylelint-no-unsupported-browser-features"
+  ],
+  "customSyntax": "postcss-html",
+  "rules": {
+    "plugin/declaration-block-no-ignored-properties": true,
+    "plugin/no-unsupported-browser-features": [true, {
+      "severity": "warning",
+      "browsers": [
+        "last 2 Chrome versions",
+        "last 2 Firefox versions",
+        "last 2 Edge versions",
+        "last 2 Safari versions",
+        "not op_mini all"
+      ],
+      "ignore": ["css-variables", "css-gradients", "css-appearance", "css-filters", "flexbox-gap", "css-math-functions", "viewport-units", "css-backdrop-filter", "css-text-indent"]
+    }]
+  }
+}

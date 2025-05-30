@@ -20,11 +20,19 @@
             --tooltip-width: 300px;
             --tooltip-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             --commit-tools-bg: linear-gradient(90deg, #4361ee, #4cc9f0, #7209b7);
-            --button-bg: #4CAF50;
-            --button-hover: #3e8e41;
             --input-bg: #fff;
             --tooltip-bg: #f9f9f9;
             --tooltip-text: #333;
+
+            /* Gradient button variables */
+            --btn-gradient-start: #4CAF50;
+            --btn-gradient-end: #3e8e41;
+            --btn-red-gradient-start: #dc3545;
+            --btn-red-gradient-end: #c82333;
+            --btn-blue-gradient-start: #17a2b8;
+            --btn-blue-gradient-end: #138496;
+            --btn-gray-gradient-start: #6c757d;
+            --btn-gray-gradient-end: #5a6268;
         }
 
         .dark-theme {
@@ -37,12 +45,20 @@
             --error-color: #ff6b6b;
             --tooltip-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
             --commit-tools-bg: linear-gradient(90deg, #2a3a9c, #3a9ca6, #4a0a7d);
-            --button-bg: #2e7d32;
-            --button-hover: #1b5e20;
             --input-bg: #292929;
             --tooltip-bg: #444;
             --tooltip-text: #f0f0f0;
             --tooltip-link: #4cc9f0;
+
+            /* Gradient button variables (dark theme) */
+            --btn-gradient-start: #2e7d32;
+            --btn-gradient-end: #1b5e20;
+            --btn-red-gradient-start: #b02a37;
+            --btn-red-gradient-end: #8a222c;
+            --btn-blue-gradient-start: #117a8b;
+            --btn-blue-gradient-end: #0d5460;
+            --btn-gray-gradient-start: #495057;
+            --btn-gray-gradient-end: #343a40;
         }
 
         /* Global Styles */
@@ -88,7 +104,8 @@
 
         /* Specific Element Styles */
         #words {
-            height: auto; /* Adjust as needed */
+            height: auto;
+            /* Adjust as needed */
         }
 
         #sentence,
@@ -129,6 +146,7 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+
         .tooltip .tooltiptext a {
             color: var(--tooltip-link, #1976d2);
         }
@@ -139,14 +157,231 @@
             opacity: 1;
         }
 
-        /* Button Styles */
+        /* Modern Button Styles */
+        .modern-btn {
+            background: linear-gradient(145deg, var(--btn-blue-gradient-start), var(--btn-blue-gradient-end));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 8px 12px;
+            /* Adjusted padding */
+            font-weight: 500;
+            font-size: 15px;
+            /* Slightly reduced font size */
+            min-height: 40px;
+            /* Adjusted min-height */
+            width: 100%;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.10);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            /* Keep flex for centering */
+            align-items: center;
+            /* Keep for vertical centering */
+            justify-content: center;
+            /* Keep for horizontal centering */
+            text-align: center;
+            /* Ensure text is centered */
+            white-space: normal;
+            /* Allow text wrapping */
+            line-height: 1.3;
+            /* Adjusted line height for better wrapping */
+        }
+
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            opacity: 0.92;
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Type Specifics */
+        #start-english,
+        #start-korean {
+            background: linear-gradient(145deg, var(--btn-gradient-start), var(--btn-gradient-end));
+        }
+
+        #end-english,
+        #end-korean {
+            background: linear-gradient(145deg, var(--btn-red-gradient-start), var(--btn-red-gradient-end));
+        }
+
+        /* All English action buttons use blue gradient */
+        #generate,
+        #translate_zh,
+        #translate_en {
+            background: linear-gradient(145deg, var(--btn-blue-gradient-start), var(--btn-blue-gradient-end));
+        }
+
+        /* Korean Generate Prompt button uses same style */
+        #generate-korean {
+            background: linear-gradient(145deg, var(--btn-blue-gradient-start), var(--btn-blue-gradient-end));
+        }
+
+        /* Container adjustments */
+        .button-container .modern-btn {
+            flex: 1;
+            margin: 0 4px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* Compact and aligned activity-controls */
+        .activity-controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            /* Vertically center all items in the row */
+            gap: 1px;
+            margin-bottom: 6px;
+            /* Increased margin for better spacing */
+            min-height: 88px;
+            /* Ensure enough height for two stacked buttons */
+        }
+
+        /* Specific styles for button containers within activity-controls */
+        .activity-controls>.button-container-vertical {
+            flex: 0 0 auto;
+            /* Allow width to be based on content */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Distribute space for two buttons */
+            gap: 4px;
+        }
+
+
+
+
+        .activity-controls>input[type="text"]#result-english,
+        .activity-controls>input[type="text"]#result-korean {
+            flex: 1;
+            height: 80px;
+            min-height: 80px;
+            border-radius: 12px;
+            font-size: 15px;
+            padding: 0 10px;
+            /* Keep horizontal padding */
+            box-sizing: border-box;
+            min-width: 0;
+            line-height: 80px;
+            /* For vertical centering of single-line text */
+        }
+
+        /* Additional styles for button containers within activity-controls */
+        .activity-controls>.button-container-vertical {
+            /* flex: 0 0 120px; */
+            /* Already defined */
+            /* display: flex; */
+            /* Already defined */
+            /* flex-direction: column; */
+            /* Already defined */
+            /* justify-content: space-between; */
+            /* Already defined */
+            /* gap: 4px; */
+            /* Already defined */
+            margin: 0;
+            /* Remove margin if it's inside activity-controls */
+        }
+
+        /* General modern-btn height and font for consistency */
+        /* General dropdown styles */
+        select.dropdown,
+        input[type="text"],
+        .modern-btn {
+            min-height: 32px;
+            /* Standard min-height */
+            font-size: 15px;
+            /* Standard font-size */
+            border-radius: 12px;
+            /* Standard border-radius */
+        }
+
+        /* Specific dropdown styles for activity controls */
+        .activity-controls>select.dropdown {
+            /* kill the awkward padding */
+            padding: 0;
+            /* make it square based on width */
+            width: 40px;
+            aspect-ratio: 1 / 1;
+            /* ensure text is vertically centered */
+            line-height: 40px;
+
+            /* the rest stays the same */
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            text-align: center;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20…%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 7px) center;
+            background-size: 10px 10px;
+        }
+
+        .dark-theme .activity-controls>select.dropdown {
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23ccc%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5H7z%22%2F%3E%3C%2Fsvg%3E");
+            /* Lighter arrow for dark theme */
+        }
+
+        /* Override for specific inputs in activity-controls if needed */
+        .activity-controls input[type="text"] {
+            padding: 0 10px;
+            /* Ensure padding is consistent */
+            line-height: 40px;
+            /* Vertically center text */
+        }
+
+
+        /* Button containers */
+        .button-container,
+        .korean-buttons,
+        .button-container-vertical {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-direction: column;
+            flex: 1;
+            /* Make controls expand to fill their containers */
+            justify-content: space-between;
+        }
+
+        /* General button styles */
+        .button-container-vertical .modern-btn {
+            margin: 2px 0;
+            width: 100%;
+            min-width: 0;
+        }
+
+        /* Specific button styles within activity controls */
+        .activity-controls>.button-container-vertical .modern-btn {
+            flex: 1;
+            /* Allow buttons to take available space in the column */
+            min-height: 40px;
+            /* Ensure buttons have a minimum height */
+            font-size: 15px;
+            padding: 5px 10px;
+            /* Reduced horizontal padding */
+            width: auto;
+            /* Override general .modern-btn width: 100% */
+        }
+
+        /* Flag Switcher */
         .flag-switcher {
             display: flex;
             justify-content: center;
             align-items: center;
             /* 8 vw means 8% of the viewport width*/
             gap: min(15vw, 200px);
-            margin: 4px 0 4px 0; /* Reduced vertical spacing */
+            margin: 4px 0 4px 0;
+            /* Reduced vertical spacing */
             padding: 0;
             background: transparent;
         }
@@ -162,38 +397,41 @@
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
             border: 2px solid #fff;
-            background: linear-gradient(
-                145deg,
-                rgba(255,255,255,0.45) 0%,
-                rgba(255,255,255,0.15) 60%,
-                rgba(0,0,0,0.04) 100%
-            );
+            background: linear-gradient(145deg,
+                    rgba(255, 255, 255, 0.45) 0%,
+                    rgba(255, 255, 255, 0.15) 60%,
+                    rgba(0, 0, 0, 0.04) 100%);
             object-fit: cover;
             transition: box-shadow 0.2s;
         }
+
         .flag-button img.active-flag {
-    box-shadow: 0 0 16px 4px var(--flag-active-glow), 0 2px 8px rgba(0,0,0,0.18);
-    border: 3px solid var(--flag-active-glow);
-    transform: scale(1.08);
-    filter: brightness(1.15);
-    transition: box-shadow 0.3s, border-color 0.3s, transform 0.2s, filter 0.2s;
-}
+            box-shadow: 0 0 16px 4px var(--flag-active-glow), 0 2px 8px rgba(0, 0, 0, 0.18);
+            border: 3px solid var(--flag-active-glow);
+            transform: scale(1.08);
+            filter: brightness(1.15);
+            transition: box-shadow 0.3s, border-color 0.3s, transform 0.2s, filter 0.2s;
+        }
+
         .flag-button img:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
         }
 
         .button-container {
-            margin-bottom: 8px; /* Reduced space below the button group above the flags */
+            margin-bottom: 8px;
+            /* Reduced space below the button group above the flags */
         }
 
-        .flag-switcher + h2 {
-            margin-top: 8px; /* Reduced space above the programming section heading */
+        .flag-switcher+h2 {
+            margin-top: 8px;
+            /* Reduced space above the programming section heading */
         }
 
         #english-section button {
-            flex: 1; /* Makes each button expand equally across the container's width */
+            flex: 1;
+            /* Makes each button expand equally across the container's width */
         }
 
         #english-section,
@@ -206,28 +444,29 @@
             display: block;
         }
 
-        .button-container-vertical {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+        /* Button container vertical styles are defined above */
 
         #start-english,
         #end-english,
         #start-korean,
         #end-korean {
-            flex: 1;  /* Each button takes equal space */
-            margin: 2px 0;  /* Optional: adjust spacing between buttons */
+            flex: 1;
+            /* Each button takes equal space */
+            margin: 1px 0;
+            /* Optional: adjust spacing between buttons */
         }
 
+        /* activity-controls overrides for specific context */
         .activity-controls {
-            display: flex;
-            align-items: stretch;  /* Align items vertically */
-            min-height: 50px; /* Ensure the height of activity-controls is the same in all sections */
+            align-items: stretch;
+            /* Align items vertically */
+            min-height: 88px;
+            /* Keep the larger min-height for consistency */
         }
 
-        .activity-controls > * {
-            margin-right: 10px;  /* Space between control groups */
+        .activity-controls>* {
+            margin-right: 10px;
+            /* Space between control groups */
             display: flex;
             flex-direction: column;
             justify-content: space-around;
@@ -236,12 +475,14 @@
         .input-control,
         select,
         .button-container-vertical {
-            flex: 1;  /* Make controls expand to fill their containers */
+            flex: 1;
+            /* Make controls expand to fill their containers */
         }
 
         .form-dropdown {
             text-indent: 40%;
         }
+
         /* Tooltip for dropdown information */
         select.dropdown {
             padding: 6px 10px;
@@ -269,7 +510,7 @@
             transition: opacity 0.3s;
         }
 
-        .dropdown:hover + .dropdown-info {
+        .dropdown:hover+.dropdown-info {
             visibility: visible;
             opacity: 1;
         }
@@ -291,7 +532,7 @@
             position: relative;
             cursor: pointer;
             transition: background 0.3s;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .toggle-switch:before {
@@ -306,23 +547,30 @@
             transition: transform 0.3s;
         }
 
-        #theme-toggle:checked + .toggle-switch {
+        #theme-toggle:checked+.toggle-switch {
             background: #4a0a7d;
         }
 
-        #theme-toggle:checked + .toggle-switch:before {
+        #theme-toggle:checked+.toggle-switch:before {
             transform: translateX(30px);
         }
 
-        .sun, .moon {
+        .sun,
+        .moon {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
             font-size: 16px;
         }
 
-        .sun { left: 6px; }
-        .moon { right: 6px; }
+        .sun {
+            left: 6px;
+        }
+
+        .moon {
+            right: 6px;
+        }
+
         #theme-toggle {
             display: none;
         }
@@ -342,10 +590,10 @@
         <div class="activity-controls">
             <!-- Accessible button labels -->
             <div class="button-container-vertical">
-                <button id="start-english" aria-label="Start English Session">Start</button>
-                <button id="end-english" aria-label="End English Session">Finish</button>
+                <button id="start-english" class="modern-btn" aria-label="Start English Session">Start</button>
+                <button id="end-english" class="modern-btn" aria-label="End English Session">Finish</button>
             </div>
-    
+
             <!-- Label for dropdown -->
             <label for="locality-dropdown"></label>
             <select id="locality-dropdown" aria-label="Select locality code" class="dropdown">
@@ -359,7 +607,7 @@
                 2: Taipei Home<br>
                 3: Hualien Home
             </div>
-    
+
             <!-- Label for result input -->
             <label for="result-english"></label>
             <input type="text" id="result-english" readonly aria-label="Session command result">
@@ -367,9 +615,9 @@
         <input type="text" id="words" placeholder="Word" class="input-control">
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
         <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
-            <button id="generate">Generate Prompt</button>
-            <button id="translate_zh">Translate to Traditional Chinese</button>
-            <button id="translate_en">Translate to English</button>
+            <button id="generate" class="modern-btn">Generate Prompt</button>
+            <button id="translate_zh" class="modern-btn">Translate to Traditional Chinese</button>
+            <button id="translate_en" class="modern-btn">Translate to English</button>
         </div>
     </div>
     <div id="korean-section" style="background-color: inherit;">
@@ -377,10 +625,10 @@
         <div class="activity-controls">
             <!-- Accessible button labels -->
             <div class="button-container-vertical">
-                <button id="start-korean" aria-label="Start Korean Session">Start</button>
-                <button id="end-korean" aria-label="End Korean Session">Finish</button>
+                <button id="start-korean" class="modern-btn" aria-label="Start Korean Session">Start</button>
+                <button id="end-korean" class="modern-btn" aria-label="End Korean Session">Finish</button>
             </div>
-    
+
             <!-- Label for dropdown -->
             <label for="locality-dropdown-korean"></label>
             <select id="locality-dropdown-korean" aria-label="Select locality code" class="dropdown">
@@ -394,13 +642,13 @@
                 2: Taipei Home<br>
                 3: Hualien Home
             </div>
-    
+
             <!-- Label for result input -->
             <label for="result-korean"></label>
             <input type="text" id="result-korean" readonly aria-label="Session command result">
         </div>
         <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
-        <button id="generate-korean">Generate Prompt</button>
+        <button id="generate-korean" class="modern-btn">Generate Prompt</button>
     </div>
     <div class="flag-switcher">
         <button class="flag-button" id="english-btn">
@@ -430,19 +678,17 @@
     <style>
         .commit-btn {
             flex: 1;
-            background: transparent;
             color: var(--main-color);
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
             font-weight: 600;
             font-size: 14px;
-            border: none;
             padding: 12px;
             cursor: pointer;
             position: relative;
             transition: all 0.3s ease;
             border-radius: 8px;
             margin: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -456,7 +702,7 @@
 
         .commit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             background: rgba(255, 255, 255, 0.2);
         }
 
@@ -466,7 +712,7 @@
 
         .commit-btn:active {
             transform: translateY(0);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         #commit-tools {
@@ -474,12 +720,12 @@
             border-radius: 12px;
             padding: 8px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
         }
 
         .dark-theme #commit-tools {
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
     </style>
 
