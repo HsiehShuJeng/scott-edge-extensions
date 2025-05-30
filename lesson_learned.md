@@ -1,7 +1,7 @@
 # Lessons Learned: Implementing Commit Message Generation
 
 ## Functional Overview
-This extension assists English learners by generating optimized LLM prompts for vocabulary:
+This extension assists language learners (English and Korean) by generating optimized LLM prompts for vocabulary, and programmers by generating commit messages:
 - Single word analysis
 - Word with context sentence
 - Multiple words with context

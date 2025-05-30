@@ -8,16 +8,16 @@ function setupThemeToggle() {
     // Load saved theme or default to light
     chrome.storage.local.get('theme', (data) => {
         const theme = data.theme || 'light';
-        document.body.classList.toggle('dark-theme', theme === 'dark');
-        themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-theme', isDark);
+        themeToggle.checked = isDark;
     });
 
-    // Toggle theme on button click
-    themeToggle.addEventListener('click', () => {
-        const isDark = document.body.classList.toggle('dark-theme');
-        const theme = isDark ? 'dark' : 'light';
-        chrome.storage.local.set({ theme });
-        themeToggle.textContent = isDark ? '☀️' : '🌙';
+    // Toggle theme on switch change
+    themeToggle.addEventListener('change', () => {
+        const isDark = themeToggle.checked;
+        document.body.classList.toggle('dark-theme', isDark);
+        chrome.storage.local.set({ theme: isDark ? 'dark' : 'light' });
     });
 }
 

@@ -44,6 +44,8 @@
             flex-direction: column;
             align-items: stretch;
             color: var(--main-color);
+            background-color: var(--background-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         h2 {
@@ -202,12 +204,71 @@
             visibility: visible;
             opacity: 1;
         }
+
+        /* Theme Toggle Switch */
+        #theme-toggle-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .toggle-switch {
+            display: block;
+            width: 60px;
+            height: 30px;
+            background: #ddd;
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .toggle-switch:before {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: white;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        #theme-toggle:checked + .toggle-switch {
+            background: #4a0a7d;
+        }
+
+        #theme-toggle:checked + .toggle-switch:before {
+            transform: translateX(30px);
+        }
+
+        .sun, .moon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+
+        .sun { left: 6px; }
+        .moon { right: 6px; }
+        #theme-toggle {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <button id="theme-toggle">🌙</button>
-    <div id="english-section">
+    <div id="theme-toggle-container">
+        <input type="checkbox" id="theme-toggle" hidden>
+        <label for="theme-toggle" class="toggle-switch">
+            <span class="sun">☀️</span>
+            <span class="moon">🌙</span>
+        </label>
+    </div>
+    <div id="english-section" style="background-color: inherit;">
         <h2>Scott's Assistant for English Learning</h2>
         <div class="activity-controls">
             <!-- Accessible button labels -->
@@ -242,7 +303,7 @@
             <button id="translate_en">Translate to English</button>
         </div>
     </div>
-    <div id="korean-section">
+    <div id="korean-section" style="background-color: inherit;">
         <h2>Scott's Assistant for Korean Learning</h2>
         <div class="activity-controls">
             <!-- Accessible button labels -->

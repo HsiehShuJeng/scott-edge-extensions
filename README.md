@@ -8,7 +8,7 @@
 - [Sequence Diagrams](#sequence-diagrams)
 - [Contributor Onboarding](#contributor-onboarding)
 
-A Chrome extension for English learners that generates optimized LLM prompts based on vocabulary words and their context sentences.
+A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
 
 ## Scenarios
 1. A single word
