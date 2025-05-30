@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Asking Expert",
   "version": "2.5.2",
-  "description": "An asking helper to generate a question as prompt for Vocabulary.com, Duolingo, and programming efforts.",
+  "description": "An English learning assistant that generates LLM prompts for vocabulary in context.",
   "icons": {
     "48": "images/icon48.png"
   },

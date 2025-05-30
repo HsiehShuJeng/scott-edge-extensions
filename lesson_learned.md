@@ -1,5 +1,11 @@
 # Lessons Learned: Implementing Commit Message Generation
 
+## Functional Overview
+This extension assists English learners by generating optimized LLM prompts for vocabulary:
+- Single word analysis
+- Word with context sentence
+- Multiple words with context
+
 ## Technical Implementation
 1. **DOM Manipulation**: Added event listeners to new UI elements using `querySelectorAll` and `addEventListener`
 2. **Clipboard API**: Used `navigator.clipboard.writeText` for reliable text copying

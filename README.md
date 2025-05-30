@@ -8,7 +8,7 @@
 - [Sequence Diagrams](#sequence-diagrams)
 - [Contributor Onboarding](#contributor-onboarding)
 
-This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt) for learning English. There are 3 scenarios supported so far.
+A Chrome extension for English learners that generates optimized LLM prompts based on vocabulary words and their context sentences.
 
 ## Scenarios
 1. A single word
