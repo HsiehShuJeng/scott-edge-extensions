@@ -282,23 +282,36 @@
             border: 1px solid #aaa;
         }
 
-        .activity-controls>select.dropdown {
+        .activity-controls > select.dropdown {
             display: block; /* Override display:flex from parent's >* rule */
             flex: 0 0 40px; /* Don't grow, don't shrink, basis is 40px */
             width: 40px;    /* Explicit width */
             height: 40px;   /* Explicit height */
-            padding: 0;
+            padding: 0; /* Ensure no padding interferes with centering */
             line-height: 40px; /* For vertical text centering */
             border-radius: 8px;
             font-size: 15px;
             box-sizing: border-box;
-            text-align: center;
+            text-align: center; /* Horizontal centering */
+            text-align-last: center; /* Ensures the last line is centered, useful for single-line select */
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20…%3E"); /* Keep custom arrow */
+            -webkit-appearance: none; /* For Safari/Chrome */
+            -moz-appearance: none;    /* For Firefox */
+            /* A complete SVG for a simple down arrow */
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: calc(100% - 7px) center;
-            background-size: 10px 10px;
-            /* Other inherited styles like color, background-color, border will still apply */
+            background-position: calc(100% - 7px) center; /* Position arrow to the right */
+            background-size: 10px 10px; /* Adjust size of the arrow */
+            /* Inherited styles like color, background-color, border will still apply */
+            color: var(--main-color); /* Ensure text color is applied */
+            background-color: var(--background-color); /* Ensure background color is applied */
+            border: 1px solid #aaa; /* Ensure border is visible */
+        }
+
+        /* Ensure options are also centered if possible, though browser support varies */
+        select.dropdown option {
+            text-align: center;
+            /* For some browsers, you might need to style options more directly if they don't inherit */
         }
 
         /* Button containers */
