@@ -1,6 +1,7 @@
 import { generateTranslationPrompt, generateOutput } from './translation.js';
 import { handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from './session.js';
 import { $, showNotification, ID_KOREAN_WORD, handleResultClick } from './utils.js';
+import { autoResize } from './popup.js'; // Import autoResize
 
 export function calculateMaxHeight() {
     const sections = document.querySelectorAll('#english-section, #korean-section');
@@ -31,11 +32,41 @@ export function toggleSectionVisibility(targetId) {
         if (section.id === targetId) {
             section.style.display = 'block';
             section.style.opacity = 1;
+
+            // Call autoResize after the section is made visible
+            if (section.id === 'english-section') {
+                const sentenceTextarea = document.getElementById('sentence');
+                if (sentenceTextarea) {
+                    autoResize(sentenceTextarea);
+                }
+            } else if (section.id === 'korean-section') {
+                const koreanTextarea = document.getElementById('korean-word');
+                if (koreanTextarea) {
+                    autoResize(koreanTextarea);
+                }
+            }
         } else {
             section.style.display = 'none';
             section.style.opacity = 0;
         }
     });
+    updateActiveFlag();
+}
+
+export function updateActiveFlag() {
+    const englishSection = document.getElementById('english-section');
+    const koreanSection = document.getElementById('korean-section');
+    const englishFlag = document.querySelector('#english-btn img');
+    const koreanFlag = document.querySelector('#korean-btn img');
+    if (englishSection && koreanSection && englishFlag && koreanFlag) {
+        if (englishSection.style.display !== 'none') {
+            englishFlag.classList.add('active-flag');
+            koreanFlag.classList.remove('active-flag');
+        } else if (koreanSection.style.display !== 'none') {
+            koreanFlag.classList.add('active-flag');
+            englishFlag.classList.remove('active-flag');
+        }
+    }
 }
 
 export function registerEventListeners() {
@@ -63,20 +94,11 @@ export function registerEventListeners() {
     document.getElementById('end-english').addEventListener('click', handleEndEnglishSession);
     document.getElementById('start-korean').addEventListener('click', handleStartKoreanSession);
     document.getElementById('end-korean').addEventListener('click', handleEndKoreanSession);
-    // Remove old commit message button listener
-    // Add new listeners for commit tools buttons
-    document.querySelectorAll('.commit-btn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const commandType = event.target.dataset.command;
-            handleCommitButtonClick(commandType);
-        });
-    });
 }
 
 export function initializeUI() {
-    document.addEventListener('DOMContentLoaded', () => {
-        calculateMaxHeight();
-        toggleSectionVisibility('english-section');
-        registerEventListeners();
-    });
+    calculateMaxHeight();
+    toggleSectionVisibility('english-section');
+    updateActiveFlag();
+    registerEventListeners();
 }

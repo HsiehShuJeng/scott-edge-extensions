@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.6.0...v2.7.0) (2025-05-30)
+
+
+### Features
+
+* **ui:** add active-flag glow for language toggle ([5873463](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/587346380669c83248d1677bb9199324cf8db555))
+* **ui:** add input background theming ([8746d3e](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/8746d3e48f6eac1f524ef22d9f350dda542a199f))
+* **ui:** add native dropdown styling ([75917f5](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/75917f54872ae2258f73099b6d03b8c8cb63fe0c))
+* **ui:** add textarea auto-resize and refine layout ([0ee1719](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/0ee1719d07c95eb07aba54506f3cb85808d46e3e))
+* **ui:** revamp popup button styles ([bf0d0cf](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/bf0d0cf9cf10eb744e21921debcbae3d9528b11d))
+
 ## [2.6.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.5.3...v2.6.0) (2025-05-30)
 
 

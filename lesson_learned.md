@@ -19,6 +19,7 @@ This extension assists language learners (English and Korean) by generating opti
    - Consistent styling with existing UI elements
    - Intuitive button labeling
    - Added theme toggle for improved readability in different lighting conditions
+   - For usability, native dropdown styling is used for locality selection. Centering of numbers is not forced, as browser/OS limitations may prevent perfect alignment, but this ensures the most intuitive and accessible user experience.
 2. **Maintainability**:
    - Centralized command generation logic
    - Separation of concerns between UI setup and business logic

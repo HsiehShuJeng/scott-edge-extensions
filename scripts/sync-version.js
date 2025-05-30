@@ -7,7 +7,7 @@ const packageData = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 const version = packageData.version;
 
 // Update manifest.json version
-const manifestPath = path.join(__dirname, '../english-helper/manifest.json');
+const manifestPath = path.join(__dirname, '../asking-expert/manifest.json');
 const manifestData = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 manifestData.version = version;
 
