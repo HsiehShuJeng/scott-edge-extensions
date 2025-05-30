@@ -39,7 +39,7 @@ function setupCommitButtons() {
 - Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
 - Wrap body at 72 characters
 - Use hyphen for bullet points with blank lines between
-- Include change details from: $(git diff main..HEAD ':!yarn.lock')
+- Include change details from: $(git diff main..HEAD -- . ':(exclude)**/yarn.lock')
 - Valid types: feat, fix, docs, style, refactor, perf, test, chore
 - Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
                     break;
