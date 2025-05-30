@@ -21,6 +21,7 @@ A browser extension for language learners (English and Korean) and programmers, 
 ## UI Features
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
+- **Locality Dropdown Usability**: Locality dropdowns use native browser/OS styling for best usability. Centering of numbers is not forced, as some browsers/OSes do not permit it, but this ensures the most intuitive and accessible experience.
 
 ## Loading into Edge
 1. Type `edge://extensions`
