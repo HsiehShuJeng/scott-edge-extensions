@@ -128,6 +128,12 @@ async function executeCommand(command) {
     }
 }
 
-initializeUI();
-setupCommitButtons();
-setupThemeToggle();
+// initializeUI();
+// setupCommitButtons();
+// setupThemeToggle();
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeUI();
+    setupCommitButtons();
+    setupThemeToggle();
+});

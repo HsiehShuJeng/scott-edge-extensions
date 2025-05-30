@@ -80,21 +80,11 @@ export function registerEventListeners() {
     document.getElementById('end-english').addEventListener('click', handleEndEnglishSession);
     document.getElementById('start-korean').addEventListener('click', handleStartKoreanSession);
     document.getElementById('end-korean').addEventListener('click', handleEndKoreanSession);
-    // Remove old commit message button listener
-    // Add new listeners for commit tools buttons
-    document.querySelectorAll('.commit-btn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const commandType = event.target.dataset.command;
-            handleCommitButtonClick(commandType);
-        });
-    });
 }
 
 export function initializeUI() {
-    document.addEventListener('DOMContentLoaded', () => {
-        calculateMaxHeight();
-        toggleSectionVisibility('english-section');
-        updateActiveFlag();
-        registerEventListeners();
-    });
+    calculateMaxHeight();
+    toggleSectionVisibility('english-section');
+    updateActiveFlag();
+    registerEventListeners();
 }
