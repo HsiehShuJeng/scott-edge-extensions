@@ -265,7 +265,45 @@
     </div>
 
     <h2>Scott's Assistant for Programming</h2>
-    <button id="generate_commit_message">Generate Commit Message</button>
+    <div id="commit-tools" style="
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        background: linear-gradient(90deg, #4361ee, #4cc9f0, #7209b7);
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    ">
+        <button class="commit-btn" data-command="1">Current Changes</button>
+        <button class="commit-btn" data-command="2">Staged Changes</button>
+        <button class="commit-btn" data-command="3">Range Changes</button>
+    </div>
+
+    <style>
+        .commit-btn {
+            flex: 1;
+            background: transparent;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .commit-btn:hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
 
     <div class="tooltip">
         <span id="credits">Icon Credits</span>
