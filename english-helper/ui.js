@@ -36,6 +36,23 @@ export function toggleSectionVisibility(targetId) {
             section.style.opacity = 0;
         }
     });
+    updateActiveFlag();
+}
+
+export function updateActiveFlag() {
+    const englishSection = document.getElementById('english-section');
+    const koreanSection = document.getElementById('korean-section');
+    const englishFlag = document.querySelector('#english-btn img');
+    const koreanFlag = document.querySelector('#korean-btn img');
+    if (englishSection && koreanSection && englishFlag && koreanFlag) {
+        if (englishSection.style.display !== 'none') {
+            englishFlag.classList.add('active-flag');
+            koreanFlag.classList.remove('active-flag');
+        } else if (koreanSection.style.display !== 'none') {
+            koreanFlag.classList.add('active-flag');
+            englishFlag.classList.remove('active-flag');
+        }
+    }
 }
 
 export function registerEventListeners() {
@@ -77,6 +94,7 @@ export function initializeUI() {
     document.addEventListener('DOMContentLoaded', () => {
         calculateMaxHeight();
         toggleSectionVisibility('english-section');
+        updateActiveFlag();
         registerEventListeners();
     });
 }

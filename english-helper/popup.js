@@ -1,6 +1,9 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
 
+import { updateActiveFlag } from './ui.js';
+
+
 // Theme toggle functionality
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');

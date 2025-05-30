@@ -9,6 +9,8 @@
         /* Variables */
         :root {
             /* Light theme (default) */
+            --flag-active-glow: #4cc9f0;
+
             --main-padding: 10px;
             --main-color: #333;
             --background-color: #f9f9f9;
@@ -26,6 +28,8 @@
         }
 
         .dark-theme {
+            --flag-active-glow: #90caf9;
+
             /* Dark theme */
             --main-color: #f0f0f0;
             --background-color: #1e1e1e;
@@ -150,9 +154,29 @@
         }
 
         .flag-button img {
-            width: 40px;
-            height: 40px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            border: 2px solid #fff;
+            background: linear-gradient(
+                145deg,
+                rgba(255,255,255,0.45) 0%,
+                rgba(255,255,255,0.15) 60%,
+                rgba(0,0,0,0.04) 100%
+            );
+            object-fit: cover;
+            transition: box-shadow 0.2s;
+        }
+        .flag-button img.active-flag {
+    box-shadow: 0 0 16px 4px var(--flag-active-glow), 0 2px 8px rgba(0,0,0,0.18);
+    border: 3px solid var(--flag-active-glow);
+    transform: scale(1.08);
+    filter: brightness(1.15);
+    transition: box-shadow 0.3s, border-color 0.3s, transform 0.2s, filter 0.2s;
+}
+.flag-button img:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
         }
 
         #english-section button {
