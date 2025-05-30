@@ -18,6 +18,10 @@ A Chrome extension for English learners that generates optimized LLM prompts bas
    His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party.
 3. Multiple words with its context sentence
 
+## UI Features
+- **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
+- **Persistent Preferences**: Your theme preference is saved between sessions
+
 ## Loading into Edge
 1. Type `edge://extensions`
 2. Click the 'Reload' button

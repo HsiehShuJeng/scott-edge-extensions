@@ -8,6 +8,7 @@
     <style>
         /* Variables */
         :root {
+            /* Light theme (default) */
             --main-padding: 10px;
             --main-color: #333;
             --background-color: #f9f9f9;
@@ -16,6 +17,21 @@
             --button-radius: 5px;
             --tooltip-width: 300px;
             --tooltip-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            --commit-tools-bg: linear-gradient(90deg, #4361ee, #4cc9f0, #7209b7);
+            --button-bg: #4CAF50;
+            --button-hover: #3e8e41;
+        }
+
+        .dark-theme {
+            /* Dark theme */
+            --main-color: #f0f0f0;
+            --background-color: #1e1e1e;
+            --highlight-color: #2e7d32;
+            --error-color: #ff6b6b;
+            --tooltip-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+            --commit-tools-bg: linear-gradient(90deg, #2a3a9c, #3a9ca6, #4a0a7d);
+            --button-bg: #2e7d32;
+            --button-hover: #1b5e20;
         }
 
         /* Global Styles */
@@ -190,6 +206,7 @@
 </head>
 
 <body>
+    <button id="theme-toggle">🌙</button>
     <div id="english-section">
         <h2>Scott's Assistant for English Learning</h2>
         <div class="activity-controls">
@@ -270,7 +287,7 @@
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        background: linear-gradient(90deg, #4361ee, #4cc9f0, #7209b7);
+        background: var(--commit-tools-bg);
         border-radius: 12px;
         overflow: hidden;
         margin-bottom: 10px;
