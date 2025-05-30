@@ -1,6 +1,6 @@
 import { generateTranslationPrompt, generateOutput } from './translation.js';
 import { handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from './session.js';
-import { $, showNotification, ID_KOREAN_WORD, handleResultClick, generateCommitMessagePrompt } from './utils.js';
+import { $, showNotification, ID_KOREAN_WORD, handleResultClick } from './utils.js';
 
 export function calculateMaxHeight() {
     const sections = document.querySelectorAll('#english-section, #korean-section');
@@ -63,7 +63,14 @@ export function registerEventListeners() {
     document.getElementById('end-english').addEventListener('click', handleEndEnglishSession);
     document.getElementById('start-korean').addEventListener('click', handleStartKoreanSession);
     document.getElementById('end-korean').addEventListener('click', handleEndKoreanSession);
-    document.getElementById('generate_commit_message').addEventListener('click', generateCommitMessagePrompt);
+    // Remove old commit message button listener
+    // Add new listeners for commit tools buttons
+    document.querySelectorAll('.commit-btn').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const commandType = event.target.dataset.command;
+            handleCommitButtonClick(commandType);
+        });
+    });
 }
 
 export function initializeUI() {
