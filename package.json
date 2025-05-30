@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "preversion": "node scripts/sync-version.js",
-    "commit": "cz",
+    "commit": "npx cz",
     "release": "standard-version"
   },
   "keywords": [],
