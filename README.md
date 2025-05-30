@@ -1,4 +1,13 @@
 # scott-edge-extensions
+
+## Table of Contents
+- [Scenarios](#scenarios)
+- [Loading into Edge](#loading-into-edge)
+- [Development](#development)
+- [Component Diagram](#component-diagram)
+- [Sequence Diagrams](#sequence-diagrams)
+- [Contributor Onboarding](#contributor-onboarding)
+
 This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt) for learning English. There are 3 scenarios supported so far.
 
 ## Scenarios
@@ -99,3 +108,35 @@ sequenceDiagram
     Utils->>UIJS: showNotification
     UIJS->>User: Notification shown
 ```
+
+## Contributor Onboarding
+
+### Version Management
+This project uses a dual versioning system:
+- **Development Tools**: Versioned in `package.json` and managed by `standard-version`
+- **Extension**: Versioned in `english-helper/manifest.json` and updated manually
+
+### Development Workflow
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Make code changes
+3. Commit changes using conventional commit format:
+   ```bash
+   npm run commit
+   ```
+4. Update versions:
+   - For development tools (package.json):
+     ```bash
+     npm run release
+     ```
+   - For the extension: Manually update `english-helper/manifest.json`
+
+### Release Process
+1. Update the extension version in `english-helper/manifest.json`
+2. Run the release command to update changelog and package version:
+   ```bash
+   npm run release
+   ```
+3. Submit updated files to the repository
