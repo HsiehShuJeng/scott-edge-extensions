@@ -21,6 +21,8 @@
             --button-bg: #4CAF50;
             --button-hover: #3e8e41;
             --input-bg: #fff;
+            --tooltip-bg: #f9f9f9;
+            --tooltip-text: #333;
         }
 
         .dark-theme {
@@ -34,6 +36,9 @@
             --button-bg: #2e7d32;
             --button-hover: #1b5e20;
             --input-bg: #292929;
+            --tooltip-bg: #444;
+            --tooltip-text: #f0f0f0;
+            --tooltip-link: #4cc9f0;
         }
 
         /* Global Styles */
@@ -106,8 +111,8 @@
         .tooltip .tooltiptext {
             visibility: hidden;
             width: var(--tooltip-width);
-            background-color: var(--background-color);
-            color: var(--main-color);
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
             text-align: center;
             border-radius: var(--button-radius);
             padding: var(--main-padding);
@@ -120,6 +125,10 @@
             opacity: 0;
             transition: opacity 0.3s;
         }
+        .tooltip .tooltiptext a {
+            color: var(--tooltip-link, #1976d2);
+        }
+
 
         .tooltip:hover .tooltiptext {
             visibility: visible;
