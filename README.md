@@ -152,7 +152,7 @@ graph TD
 ### Version Management
 This project uses a unified versioning system where:
 - `package.json` is the source of truth for the version
-- The extension version in `english-helper/manifest.json` is automatically synchronized
+- The extension version in `asking-expert/manifest.json` is automatically synchronized
 - Version updates are managed through `standard-version`
 
 ### Development Workflow
