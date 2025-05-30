@@ -10,7 +10,6 @@
         :root {
             /* Light theme (default) */
             --flag-active-glow: #4cc9f0;
-
             --main-padding: 10px;
             --main-color: #333;
             --background-color: #f9f9f9;
@@ -33,6 +32,9 @@
             --btn-blue-gradient-end: #138496;
             --btn-gray-gradient-start: #6c757d;
             --btn-gray-gradient-end: #5a6268;
+
+            --dropdown-arrow-svg-light: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            --dropdown-arrow-svg-dark: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23f0f0f0' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
         }
 
         .dark-theme {
@@ -294,11 +296,10 @@
             box-sizing: border-box;
             text-align: center; /* Horizontal centering */
             text-align-last: center; /* Ensures the last line is centered, useful for single-line select */
-            appearance: none;
             -webkit-appearance: none; /* For Safari/Chrome */
             -moz-appearance: none;    /* For Firefox */
-            /* A complete SVG for a simple down arrow */
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23333' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            appearance: none;
+            background-image: var(--dropdown-arrow-svg-light); /* Default to light arrow */
             background-repeat: no-repeat;
             background-position: calc(100% - 7px) center; /* Position arrow to the right */
             background-size: 10px 10px; /* Adjust size of the arrow */
@@ -312,6 +313,11 @@
         select.dropdown option {
             text-align: center;
             /* For some browsers, you might need to style options more directly if they don't inherit */
+        }
+
+        .dark-theme .activity-controls > select.dropdown {
+            background-image: var(--dropdown-arrow-svg-dark);
+            border-color: #555; /* Adjusted border color for dark theme */
         }
 
         /* Button containers */
