@@ -239,8 +239,8 @@
             gap: 1px;
             margin-bottom: 6px;
             /* Increased margin for better spacing */
-            min-height: 88px;
-            /* Ensure enough height for two stacked buttons */
+            min-height: 60px;
+            /* Reduced height to save space */
         }
 
         .button-container-vertical {
@@ -352,7 +352,10 @@
             gap: min(15vw, 200px);
             margin: 4px 0;
             padding: 0;
-            background: transparent;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+            background: var(--background-color);
         }
 
         /* Flag button styles */
@@ -390,13 +393,13 @@
         }
 
         .button-container {
-            margin-bottom: 8px;
-            /* Reduced space below the button group above the flags */
+            margin-bottom: 4px;
+            /* Further reduced space below button group */
         }
 
         .flag-switcher+h2 {
-            margin-top: 8px;
-            /* Reduced space above the programming section heading */
+            margin-top: 4px;
+            /* Reduced space above programming section */
         }
 
         #english-section button {

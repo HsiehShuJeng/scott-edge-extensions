@@ -132,8 +132,26 @@ async function executeCommand(command) {
 // setupCommitButtons();
 // setupThemeToggle();
 
+// Textarea auto-resize function
+export function autoResize(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializeUI();
     setupCommitButtons();
     setupThemeToggle();
+    
+    // Setup auto-resize for textareas
+    const textareas = document.querySelectorAll('#sentence, #korean-word');
+    textareas.forEach(ta => {
+        autoResize(ta); // Initial resize
+        ta.addEventListener('input', () => autoResize(ta));
+    });
+    
+    // Also resize on window changes
+    window.addEventListener('resize', () => {
+        textareas.forEach(autoResize);
+    });
 });

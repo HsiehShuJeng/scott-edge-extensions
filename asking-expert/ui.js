@@ -1,6 +1,7 @@
 import { generateTranslationPrompt, generateOutput } from './translation.js';
 import { handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from './session.js';
 import { $, showNotification, ID_KOREAN_WORD, handleResultClick } from './utils.js';
+import { autoResize } from './popup.js'; // Import autoResize
 
 export function calculateMaxHeight() {
     const sections = document.querySelectorAll('#english-section, #korean-section');
@@ -31,6 +32,19 @@ export function toggleSectionVisibility(targetId) {
         if (section.id === targetId) {
             section.style.display = 'block';
             section.style.opacity = 1;
+
+            // Call autoResize after the section is made visible
+            if (section.id === 'english-section') {
+                const sentenceTextarea = document.getElementById('sentence');
+                if (sentenceTextarea) {
+                    autoResize(sentenceTextarea);
+                }
+            } else if (section.id === 'korean-section') {
+                const koreanTextarea = document.getElementById('korean-word');
+                if (koreanTextarea) {
+                    autoResize(koreanTextarea);
+                }
+            }
         } else {
             section.style.display = 'none';
             section.style.opacity = 0;
