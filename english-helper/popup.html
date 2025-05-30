@@ -275,19 +275,22 @@
         }
 
         .activity-controls>select.dropdown {
+            display: block; /* Override display:flex from parent's >* rule */
+            flex: 0 0 40px; /* Don't grow, don't shrink, basis is 40px */
+            width: 40px;    /* Explicit width */
+            height: 40px;   /* Explicit height */
             padding: 0;
-            width: 40px;
-            aspect-ratio: 1 / 1;
-            line-height: 40px;
+            line-height: 40px; /* For vertical text centering */
             border-radius: 8px;
             font-size: 15px;
             box-sizing: border-box;
             text-align: center;
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20…%3E");
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20…%3E"); /* Keep custom arrow */
             background-repeat: no-repeat;
             background-position: calc(100% - 7px) center;
             background-size: 10px 10px;
+            /* Other inherited styles like color, background-color, border will still apply */
         }
 
         /* Button containers */
