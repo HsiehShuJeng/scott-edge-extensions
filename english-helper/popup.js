@@ -1,6 +1,26 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
 
+// Theme toggle functionality
+function setupThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    // Load saved theme or default to light
+    chrome.storage.local.get('theme', (data) => {
+        const theme = data.theme || 'light';
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-theme', isDark);
+        themeToggle.checked = isDark;
+    });
+
+    // Toggle theme on switch change
+    themeToggle.addEventListener('change', () => {
+        const isDark = themeToggle.checked;
+        document.body.classList.toggle('dark-theme', isDark);
+        chrome.storage.local.set({ theme: isDark ? 'dark' : 'light' });
+    });
+}
+
 // Add event listeners for commit buttons
 function setupCommitButtons() {
     const commitButtons = document.querySelectorAll('.commit-btn');
@@ -107,3 +127,4 @@ async function executeCommand(command) {
 
 initializeUI();
 setupCommitButtons();
+setupThemeToggle();

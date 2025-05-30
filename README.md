@@ -8,7 +8,7 @@
 - [Sequence Diagrams](#sequence-diagrams)
 - [Contributor Onboarding](#contributor-onboarding)
 
-This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt) for learning English. There are 3 scenarios supported so far.
+A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
 
 ## Scenarios
 1. A single word
@@ -17,6 +17,10 @@ This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt
    > aloof  
    His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party.
 3. Multiple words with its context sentence
+
+## UI Features
+- **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
+- **Persistent Preferences**: Your theme preference is saved between sessions
 
 ## Loading into Edge
 1. Type `edge://extensions`

@@ -1,5 +1,11 @@
 # Lessons Learned: Implementing Commit Message Generation
 
+## Functional Overview
+This extension assists language learners (English and Korean) by generating optimized LLM prompts for vocabulary, and programmers by generating commit messages:
+- Single word analysis
+- Word with context sentence
+- Multiple words with context
+
 ## Technical Implementation
 1. **DOM Manipulation**: Added event listeners to new UI elements using `querySelectorAll` and `addEventListener`
 2. **Clipboard API**: Used `navigator.clipboard.writeText` for reliable text copying
@@ -12,10 +18,12 @@
    - Clear visual feedback through notifications
    - Consistent styling with existing UI elements
    - Intuitive button labeling
+   - Added theme toggle for improved readability in different lighting conditions
 2. **Maintainability**:
    - Centralized command generation logic
    - Separation of concerns between UI setup and business logic
    - Reuse of existing utility functions
+   - Persisted user preferences using chrome.storage API
 
 ## Best Practices
 1. **Extension Architecture**:
