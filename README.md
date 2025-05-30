@@ -135,8 +135,32 @@ This project uses a dual versioning system:
 
 ### Release Process
 1. Update the extension version in `english-helper/manifest.json`
-2. Run the release command to update changelog and package version:
+2. Run the release command to automatically:
+   - Update `package.json` version
+   - Generate/update `CHANGELOG.md`
+   - Commit version changes
+   - Create git tag
    ```bash
    npm run release
    ```
-3. Submit updated files to the repository
+3. Push changes and tags to repository:
+   ```bash
+   git push --follow-tags
+   ```
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Git as Git
+    participant NPM as npm
+    participant GH as GitHub
+
+    Dev->>Git: Update manifest.json version
+    Dev->>NPM: Run npm run release
+    NPM->>Git: Update package.json
+    NPM->>Git: Update CHANGELOG.md
+    NPM->>Git: Commit changes
+    NPM->>Git: Create version tag
+    Dev->>Git: Run git push --follow-tags
+    Git->>GH: Push code and tags
+```
