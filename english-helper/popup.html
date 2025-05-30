@@ -164,12 +164,9 @@
             border-radius: 12px;
             color: white;
             padding: 8px 12px;
-            /* Adjusted padding */
             font-weight: 500;
             font-size: 15px;
-            /* Slightly reduced font size */
             min-height: 40px;
-            /* Adjusted min-height */
             width: 100%;
             box-sizing: border-box;
             cursor: pointer;
@@ -178,28 +175,22 @@
             position: relative;
             overflow: hidden;
             display: flex;
-            /* Keep flex for centering */
             align-items: center;
-            /* Keep for vertical centering */
             justify-content: center;
-            /* Keep for horizontal centering */
             text-align: center;
-            /* Ensure text is centered */
             white-space: normal;
-            /* Allow text wrapping */
             line-height: 1.3;
-            /* Adjusted line height for better wrapping */
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .modern-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             opacity: 0.92;
-        }
-
-        .modern-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Button Type Specifics */
@@ -246,19 +237,20 @@
             /* Ensure enough height for two stacked buttons */
         }
 
-        /* Specific styles for button containers within activity-controls */
+        .button-container-vertical {
+            flex: 1;
+            /* Make controls expand to fill their containers */
+        }
+
+        /* Styles for button containers within activity-controls */
         .activity-controls>.button-container-vertical {
             flex: 0 0 auto;
-            /* Allow width to be based on content */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            /* Distribute space for two buttons */
             gap: 4px;
+            margin: 0;
         }
-
-
-
 
         .activity-controls>input[type="text"]#result-english,
         .activity-controls>input[type="text"]#result-korean {
@@ -268,34 +260,15 @@
             border-radius: 12px;
             font-size: 15px;
             padding: 0 10px;
-            /* Keep horizontal padding */
             box-sizing: border-box;
             min-width: 0;
             line-height: 80px;
-            /* For vertical centering of single-line text */
-        }
-
-        /* Additional styles for button containers within activity-controls */
-        .activity-controls>.button-container-vertical {
-            /* flex: 0 0 120px; */
-            /* Already defined */
-            /* display: flex; */
-            /* Already defined */
-            /* flex-direction: column; */
-            /* Already defined */
-            /* justify-content: space-between; */
-            /* Already defined */
-            /* gap: 4px; */
-            /* Already defined */
-            margin: 0;
-            /* Remove margin if it's inside activity-controls */
         }
 
         /* General modern-btn height and font for consistency */
         /* General dropdown styles */
         select.dropdown,
-        input[type="text"],
-        .modern-btn {
+        input[type="text"] {
             min-height: 32px;
             /* Standard min-height */
             font-size: 15px;
@@ -304,17 +277,23 @@
             /* Standard border-radius */
         }
 
-        /* Specific dropdown styles for activity controls */
+        /* Dropdown styles */
+        select.dropdown {
+            padding: 6px 10px;
+            font-size: 16px;
+            color: var(--main-color);
+            background: var(--background-color);
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            box-sizing: border-box;
+            width: 80px;
+        }
+
         .activity-controls>select.dropdown {
-            /* kill the awkward padding */
             padding: 0;
-            /* make it square based on width */
             width: 40px;
             aspect-ratio: 1 / 1;
-            /* ensure text is vertically centered */
             line-height: 40px;
-
-            /* the rest stays the same */
             border-radius: 8px;
             font-size: 15px;
             box-sizing: border-box;
@@ -326,51 +305,28 @@
             background-size: 10px 10px;
         }
 
-        .dark-theme .activity-controls>select.dropdown {
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23ccc%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5H7z%22%2F%3E%3C%2Fsvg%3E");
-            /* Lighter arrow for dark theme */
-        }
-
-        /* Override for specific inputs in activity-controls if needed */
-        .activity-controls input[type="text"] {
-            padding: 0 10px;
-            /* Ensure padding is consistent */
-            line-height: 40px;
-            /* Vertically center text */
-        }
-
-
         /* Button containers */
         .button-container,
-        .korean-buttons,
-        .button-container-vertical {
+        .korean-buttons {
             display: flex;
             gap: 8px;
             margin: 12px 0;
             flex-direction: column;
             flex: 1;
-            /* Make controls expand to fill their containers */
             justify-content: space-between;
         }
 
-        /* General button styles */
+        /* Button container vertical styles */
         .button-container-vertical .modern-btn {
             margin: 2px 0;
             width: 100%;
             min-width: 0;
         }
 
-        /* Specific button styles within activity controls */
-        .activity-controls>.button-container-vertical .modern-btn {
-            flex: 1;
-            /* Allow buttons to take available space in the column */
-            min-height: 40px;
-            /* Ensure buttons have a minimum height */
-            font-size: 15px;
-            padding: 5px 10px;
-            /* Reduced horizontal padding */
-            width: auto;
-            /* Override general .modern-btn width: 100% */
+        /* Form inputs */
+        .activity-controls input[type="text"] {
+            padding: 0 10px;
+            line-height: 40px;
         }
 
         /* Flag Switcher */
@@ -378,14 +334,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* 8 vw means 8% of the viewport width*/
             gap: min(15vw, 200px);
-            margin: 4px 0 4px 0;
-            /* Reduced vertical spacing */
+            margin: 4px 0;
             padding: 0;
             background: transparent;
         }
 
+        /* Flag button styles */
         .flag-button {
             background: none;
             border: none;
@@ -438,6 +393,7 @@
         #korean-section {
             display: none;
             width: 100%;
+            background-color: inherit;
         }
 
         #english-section {
@@ -456,43 +412,28 @@
             /* Optional: adjust spacing between buttons */
         }
 
-        /* activity-controls overrides for specific context */
-        .activity-controls {
-            align-items: stretch;
-            /* Align items vertically */
-            min-height: 88px;
-            /* Keep the larger min-height for consistency */
+        /* English section */
+        .english-section {
+            background-color: inherit;
         }
 
         .activity-controls>* {
             margin-right: 10px;
-            /* Space between control groups */
             display: flex;
             flex-direction: column;
             justify-content: space-around;
         }
 
+
+
         .input-control,
-        select,
-        .button-container-vertical {
+        select {
             flex: 1;
             /* Make controls expand to fill their containers */
         }
 
         .form-dropdown {
             text-indent: 40%;
-        }
-
-        /* Tooltip for dropdown information */
-        select.dropdown {
-            padding: 6px 10px;
-            font-size: 16px;
-            color: var(--main-color);
-            background: var(--background-color);
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            box-sizing: border-box;
-            width: 80px;
         }
 
         .dropdown-info {
@@ -585,7 +526,7 @@
             <span class="moon">🌙</span>
         </label>
     </div>
-    <div id="english-section" style="background-color: inherit;">
+    <div id="english-section" class="english-section">
         <h2>Scott's Assistant for English Learning</h2>
         <div class="activity-controls">
             <!-- Accessible button labels -->
@@ -620,7 +561,7 @@
             <button id="translate_en" class="modern-btn">Translate to English</button>
         </div>
     </div>
-    <div id="korean-section" style="background-color: inherit;">
+    <div id="korean-section">
         <h2>Scott's Assistant for Korean Learning</h2>
         <div class="activity-controls">
             <!-- Accessible button labels -->
@@ -660,22 +601,24 @@
     </div>
 
     <h2>Scott's Assistant for Programming</h2>
-    <div id="commit-tools" style="
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        background: var(--commit-tools-bg);
-        border-radius: 12px;
-        overflow: hidden;
-        margin-bottom: 10px;
-    ">
+    <div id="commit-tools" class="commit-tools-container">
         <button class="commit-btn" data-command="1">Current Changes</button>
         <button class="commit-btn" data-command="2">Staged Changes</button>
         <button class="commit-btn" data-command="3">Range Changes</button>
     </div>
 
     <style>
+        .commit-tools-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            background: var(--commit-tools-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
         .commit-btn {
             flex: 1;
             color: var(--main-color);
@@ -689,6 +632,7 @@
             border-radius: 8px;
             margin: 4px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -706,13 +650,13 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        .dark-theme .commit-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
         .commit-btn:active {
             transform: translateY(0);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-theme .commit-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
         #commit-tools {
@@ -732,7 +676,7 @@
     <div class="tooltip">
         <span id="credits">Icon Credits</span>
         <div class="tooltiptext">
-            <a href="https://www.flaticon.com/free-icons/dictionary" target="_blank">
+            <a href="https://www.flaticon.com/free-icons/dictionary" target="_blank" rel="noopener">
                 Dictionary icons created by Freepik - Flaticon
             </a>
         </div>
