@@ -11,15 +11,37 @@ function setupCommitButtons() {
             
             switch (commandType) {
                 case '1':
-                    commandString = `echo "Give me a commit suggestion on title and description with the \\"50/72\\" rule within a backtick format based for the following information: $(git diff --word-diff)
-The title should be prefixed with proper category, e.g., [journal][todoist], if you can find it from the committed content. And I don't need backtick symbols to wrap the content of the title and description yet I do need you to generate the content generated in a way that I can copy and past onto a bash session for a git commit. And no need to show 'Title' and 'Description' again. Commite message sohuld be in the imperative. A hyphen is used for bullet list, preceded by a single space, with blank lines in between. Use a hanging indent" | pbcopy`;
+                    commandString = `echo "Generate a conventional commit message for these unstaged changes. Follow these rules:
+- Use format: <type>(<scope>): <subject>
+- Keep subject under 50 characters
+- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
+- Wrap body at 72 characters
+- Use hyphen for bullet points with blank lines between
+- Include change details from: $(git diff --word-diff)
+- Valid types: feat, fix, docs, style, refactor, perf, test, chore
+- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
                     break;
                 case '2':
-                    commandString = `echo "Give me a commit suggestion on title and description with the \\"50/72\\" rule within a backtick format based for the following information: $(git diff --cached --word-diff)
-The title should be prefixed with proper category, e.g., [journal][todoist], if you can find it from the committed content. And I don't need backtick symbols to wrap the content of the title and description yet I do need you to generate the content generated in a way that I can copy and past onto a bash session for a git commit. And no need to show 'Title' and 'Description' again. Commite message sohuld be in the imperative. A hyphen is used for bullet list, preceded by a single space, with blank lines in between. Use a hanging indent" | pbcopy`;
+                    commandString = `echo "Generate a conventional commit message for these staged changes. Follow these rules:
+- Use format: <type>(<scope>): <subject>
+- Keep subject under 50 characters
+- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
+- Wrap body at 72 characters
+- Use hyphen for bullet points with blank lines between
+- Include change details from: $(git diff --cached --word-diff)
+- Valid types: feat, fix, docs, style, refactor, perf, test, chore
+- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
                     break;
                 case '3':
-                    commandString = `echo "Give me suggestions on title and description based on the below information, please use 'title: ' and 'body: ' to attach corresponding content. $(git diff main..HEAD ':!yarn.lock')" | pbcopy`;
+                    commandString = `echo "Generate a conventional commit message for these range changes. Follow these rules:
+- Use format: <type>(<scope>): <subject>
+- Keep subject under 50 characters
+- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
+- Wrap body at 72 characters
+- Use hyphen for bullet points with blank lines between
+- Include change details from: $(git diff main..HEAD ':!yarn.lock')
+- Valid types: feat, fix, docs, style, refactor, perf, test, chore
+- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
                     break;
                 default:
                     return;
