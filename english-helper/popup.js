@@ -48,7 +48,12 @@ function setupCommitButtons() {
             }
             
             navigator.clipboard.writeText(commandString).then(() => {
-                showNotification('Commit message command copied to clipboard!');
+                const types = {
+                    '1': 'Unstaged Changes',
+                    '2': 'Staged Changes',
+                    '3': 'Range Changes'
+                };
+                showNotification('Commit message command copied to clipboard!', false, types[commandType]);
             }).catch(err => {
                 showNotification('Error copying to clipboard!', true);
             });
@@ -65,7 +70,7 @@ chrome.runtime.onMessage.addListener(
                     const result = await executeCommand(command);
                     const prompt = `Give me a commit suggestion on title and description with the "50/72" rule within a backtick format based for the following information:\n${command}`;
                     navigator.clipboard.writeText(prompt).then(() => {
-                        showNotification('Commit message copied to clipboard!');
+                        showNotification('Commit message copied to clipboard!', false, 'AI-Generated');
                     }).catch(err => {
                         showNotification('Error copying to clipboard!', true);
                     });

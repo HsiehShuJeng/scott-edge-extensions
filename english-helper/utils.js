@@ -12,9 +12,11 @@ export function $(id) {
     return document.getElementById(id);
 }
 
-export function showNotification(message, isError = false) {
+export function showNotification(message, isError = false, type = '') {
+    const prefix = type ? `[${type}] ` : '';
+    const fullMessage = `${prefix}${message}`;
     const notification = document.createElement('div');
-    notification.innerText = message;
+    notification.innerText = fullMessage;
     notification.style = `position: fixed; bottom: 20px; right: 20px; background-color: ${isError ? '#FF0000' : '#4CAF50'}; color: white; padding: 10px; border-radius: 5px; z-index: 10000;`;
     document.body.appendChild(notification);
     setTimeout(() => document.body.removeChild(notification), 1500);

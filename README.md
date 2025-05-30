@@ -111,6 +111,39 @@ sequenceDiagram
 
 ## Contributor Onboarding
 
+### Branching Strategy
+```mermaid
+graph TD
+    A[main branch] -->|production-ready| B[Release]
+    C[Feature branch] -->|development| D[New features]
+    E[HOTFIX branch] -->|urgent fixes| F[Critical bugs]
+```
+
+**Branch Types:**
+- **main**: Stable, production-ready code
+- **feature**: For developing new features
+- **hotfix**: For critical bug fixes
+
+**Feature Development Workflow:**
+1. Create feature branch from main:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feat/your-feature-name
+   ```
+2. Develop and test changes
+3. Commit changes using conventional commits:
+   ```bash
+   git add .
+   npm run commit
+   ```
+4. Push branch to repository:
+   ```bash
+   git push origin feat/your-feature-name
+   ```
+5. Create pull request for review
+6. Merge to main after approval
+
 ### Version Management
 This project uses a unified versioning system where:
 - `package.json` is the source of truth for the version
