@@ -43,4 +43,28 @@
 
 ---
 
+## 6. Iterative Scenario Expansion and Architecture Lessons
+
+- **Incremental Support for New Scenarios:**  
+  The extension was iteratively improved to support a wide range of question types, including standard, definition-style, synonym-style, question-style, opposite-style, and spelling questions. Each new scenario required careful DOM analysis and targeted extraction logic.
+
+- **Strict DOM Scoping:**  
+  All extraction logic was updated to strictly scope queries to the currently selected `.challenge-slide.selected`, preventing cross-slide contamination and ensuring accuracy.
+
+- **Scenario Detection and Fallbacks:**  
+  The content script uses scenario-based detection (by question type) to select the correct extraction logic. Fallbacks are in place to handle unexpected or new question types gracefully.
+
+- **Popup Layout and Usability:**  
+  The popup textarea was given a max-height and scroll, ensuring that action buttons remain visible even with long content. Manual entry is always supported, so users are never blocked by parsing failures.
+
+- **Documentation and Diagrams:**  
+  README.md was updated to include a Table of Contents, a scenario table, a Mermaid flowchart for extraction logic, and a component/block architecture diagram. Diagrams use double quotes for special characters, as required by Mermaid.
+
+- **General Lessons for Future Development:**  
+  - Always use strict DOM scoping and scenario detection for dynamic web content.
+  - Keep user experience in mind: never block core functionality due to parsing issues.
+  - Maintain clear, up-to-date documentation and diagrams as the codebase evolves.
+
+---
+
 These lessons ensure the extension is robust, user-friendly, and maintainable.

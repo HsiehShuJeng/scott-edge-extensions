@@ -3,3 +3,5 @@
     - The existing diagrams need to be checked whether they need to be updated in README.md.
     - Any new diagram needs to be added to README.md, please ask for permission. If yes, then add it to README.md.
     - Regarding lesson_learned.md, those pieces of information related to implementation or concept, should be noted into this file.
+2. Regarding diagrams defined by Mermaid,
+    - Remember to double quote the text if there are special characters.
