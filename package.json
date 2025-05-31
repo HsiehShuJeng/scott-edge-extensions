@@ -1,6 +1,6 @@
 {
   "name": "scott-edge-extensions",
-  "version": "2.7.0",
+  "version": "2.8.0",
   "description": "This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt) for learning English. There are 3 scenarios supported so far.",
   "main": "index.js",
   "scripts": {
