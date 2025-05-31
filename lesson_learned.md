@@ -87,6 +87,21 @@ These lessons ensure the extension is robust, user-friendly, and maintainable.
 
 ---
 
+## 9. Handling Restricted Browser Pages in Extension Popup
+
+- **Problem:**  
+  Users encountered an error ("Exception in getSentenceContent: Error: Cannot access chrome:// and edge:// URLs") when attempting to use the extension popup on internal browser pages (chrome://, edge://, extension://). This is due to browser security restrictions that prevent extensions from injecting scripts or accessing content on these pages.
+
+- **Solution:**  
+  The extension's popup logic was updated to detect when the active tab is a restricted internal page. If so, it now displays a user-friendly notification ("This extension cannot be used on internal browser pages. Please switch to a regular website.") and skips script injection, preventing confusing errors.
+
+- **Lessons Learned:**  
+  - Always check for browser-imposed limitations and handle them gracefully in the UI.
+  - Proactive user feedback improves the extension's robustness and user experience.
+  - Documenting such edge cases helps future contributors understand the rationale behind defensive coding patterns.
+
+---
+
 ## 8. Contributor Workflow and Documentation Lessons
 
 - **Smoother Contributor Flow:**  

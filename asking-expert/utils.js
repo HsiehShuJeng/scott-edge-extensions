@@ -17,9 +17,27 @@ export function showNotification(message, isError = false, type = '') {
     const fullMessage = `${prefix}${message}`;
     const notification = document.createElement('div');
     notification.innerText = fullMessage;
-    notification.style = `position: fixed; bottom: 20px; right: 20px; background-color: ${isError ? '#FF0000' : '#4CAF50'}; color: white; padding: 10px; border-radius: 5px; z-index: 10000;`;
+    notification.style = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: ${isError ? '#FF0000' : '#4CAF50'};
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        z-index: 10000;
+        opacity: 1;
+        transition: opacity 0.5s;
+    `;
     document.body.appendChild(notification);
-    setTimeout(() => document.body.removeChild(notification), 1500);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 500); // Wait for fade-out transition
+    }, 2000); // Show for 2 seconds before fading out
 }
 
 export function copyToClipboard(text, notificationMessage) {
