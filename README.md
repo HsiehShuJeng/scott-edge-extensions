@@ -353,6 +353,13 @@ flowchart LR
 - The popup event handler ensures that prompt generation is robust: it tries to parse the page if fields are empty, but always allows manual entry as a fallback.
 - Notifications are shown if parsing fails, guiding the user to enter missing content.
 
+## Limitations & Notifications
+
+- **Restricted Pages:**  
+  The extension cannot be used on internal browser pages (such as `chrome://`, `edge://`, or `extension://` URLs) due to browser security restrictions. If you attempt to use the extension on these pages, a notification will appear for 2 seconds and then fade out, informing you to switch to a regular website.
+- **Notification UX:**  
+  All notifications (including errors and user feedback) are displayed for 2 seconds and then fade out smoothly, providing a clear and non-intrusive user experience.
+
 ## Lessons Learned
 
 - See `lesson_learned.md` for a detailed summary of implementation strategies and key takeaways.

@@ -78,12 +78,23 @@ export async function getSentenceContent() {
     console.log('[popup] getSentenceContent called');
     return new Promise(resolve => {
         chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+            const tab = tabs[0];
+            const url = tab?.url || '';
+            if (
+                url.startsWith('chrome://') ||
+                url.startsWith('edge://') ||
+                url.startsWith('extension://')
+            ) {
+                showNotification('This extension cannot be used on internal browser pages. Please switch to a regular website.', true);
+                resolve(null);
+                return;
+            }
             try {
                 await chrome.scripting.executeScript({
-                    target: { tabId: tabs[0].id },
+                    target: { tabId: tab.id },
                     files: ['content.js']
                 });
-                chrome.tabs.sendMessage(tabs[0].id, { action: "getActiveSentenceContent" }, (response) => {
+                chrome.tabs.sendMessage(tab.id, { action: "getActiveSentenceContent" }, (response) => {
                     if (chrome.runtime.lastError) {
                         console.error('[popup] chrome.runtime.lastError:', chrome.runtime.lastError);
                         resolve(null);
