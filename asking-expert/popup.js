@@ -8,9 +8,18 @@ import { updateActiveFlag } from './ui.js';
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
     
-    // Load saved theme or default to light
+    // Load saved theme or determine by time if not set
     chrome.storage.local.get('theme', (data) => {
-        const theme = data.theme || 'light';
+        let theme = data.theme;
+        if (!theme) {
+            const hour = new Date().getHours();
+            // Dark mode from 18:00 to 06:00
+            if (hour >= 18 || hour < 6) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+        }
         const isDark = theme === 'dark';
         document.body.classList.toggle('dark-theme', isDark);
         themeToggle.checked = isDark;

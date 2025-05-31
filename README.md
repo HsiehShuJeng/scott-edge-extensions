@@ -1,37 +1,50 @@
-# scott-edge-extensions
+# Vocabulary.com Chrome Extension
+
+This extension helps you extract vocabulary questions and context from Vocabulary.com and generate prompts for language learning and programming.
 
 ## Table of Contents
-- [Scenarios](#scenarios)
-- [Loading into Edge](#loading-into-edge)
-- [Development](#development)
-- [Component Diagram](#component-diagram)
-- [Sequence Diagrams](#sequence-diagrams)
-- [Contributor Onboarding](#contributor-onboarding)
+- [Supported Scenarios](#supported-scenarios)
+- [UI Features](#ui-features)
+- [Architecture](#architecture)
+   - [Component Diagram](#component-diagram)
+   - [Extraction Logic Flowchart](#extraction-logic-flowchart)
+   - [Component Architecture Diagram](#component-architecture-diagram)
+- [Development & Contribution](#development--contribution)
+   - [Loading into Edge](#loading-into-edge)
+   - [Development](#development)
+   - [Contributor Onboarding](#contributor-onboarding)
+      - [Branching Strategy](#branching-strategy)
+      - [Feature Development Workflow](#feature-development-workflow)
+      - [Version Management](#version-management)
+      - [Release Process](#release-process)
+      - [Important Note About Version Sync Timing](#important-note-about-version-sync-timing)
+- [Lessons Learned](#lessons-learned)
 
 A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
 
-## Scenarios
-1. A single word
-   > unenforceable
-2. A single word with its context sentence
-   > aloof  
-   His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party.
-3. Multiple words with its context sentence
+---
+
+## Supported Scenarios
+
+- **Single word**: e.g., `unenforceable`
+- **Single word with context sentence**: e.g., `aloof`  
+  _His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party._
+- **Multiple words with context sentence**
+- **All major Vocabulary.com question types** (see Scenario Table below)
+- **Etymology and part of speech**: If available, the prompt will include etymology and part of speech fetched from Etymonline.
+
+---
 
 ## UI Features
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Locality Dropdown Usability**: Locality dropdowns use native browser/OS styling for best usability. Centering of numbers is not forced, as some browsers/OSes do not permit it, but this ensures the most intuitive and accessible experience.
 
-## Loading into Edge
-1. Type `edge://extensions`
-2. Click the 'Reload' button
+---
 
-## Development
-1. Make sure [Microsoft Edge DevTools extension](https://learn.microsoft.com/en-us/microsoft-edge/visual-studio-code/microsoft-edge-devtools-extension) is installed on VS code.
-2. When devloping in VS Code, move to an HTML file, right click the file, and then choose 'Open with Edge' > 'Open Browser with DevTools'.
+## Architecture
 
-## Component Diagram
+### Component Diagram
 
 ```mermaid
 flowchart TD
@@ -55,73 +68,74 @@ flowchart TD
     UI -- user actions --> UI
 ```
 
-## Sequence Diagrams
+### Extraction Logic Flowchart
 
-### 1. Single Word
 ```mermaid
-sequenceDiagram
-    participant User
-    participant PopupUI as Popup UI
-    participant UIJS as ui.js
-    participant Translation as translation.js
-    participant Utils as utils.js
-    participant Clipboard as Clipboard
+flowchart TD
+    Start(["Start"])
+    Start --> |"typeA"| Opposite
+    Start --> |"typeT"| Spelling
+    Start --> |"typeD"| Definition
+    Start --> |"typeS"| Synonym
+    Start --> |"typeP"| Question
+    Start --> |"else"| Fallback
 
-    User->>PopupUI: Enter word & click "Generate Prompt"
-    PopupUI->>UIJS: Event handler
-    UIJS->>Translation: generateOutput('english')
-    Translation->>Utils: copyToClipboard(prompt)
-    Utils->>Clipboard: Write prompt
-    Utils->>UIJS: showNotification
-    UIJS->>User: Notification shown
+    Opposite --> End
+    Spelling --> End
+    Definition --> End
+    Synonym --> End
+    Question --> End
+    Fallback --> End
+    End(["Extract word & sentence"])
 ```
 
-### 2. Single Word with Context Sentence
-```mermaid
-sequenceDiagram
-    participant User
-    participant PopupUI as Popup UI
-    participant UIJS as ui.js
-    participant Translation as translation.js
-    participant Utils as utils.js
-    participant Clipboard as Clipboard
+### Component Architecture Diagram
 
-    User->>PopupUI: Enter word & context sentence, click "Generate Prompt"
-    PopupUI->>UIJS: Event handler
-    UIJS->>Translation: generateOutput('english')
-    Translation->>Utils: copyToClipboard(prompt with context)
-    Utils->>Clipboard: Write prompt
-    Utils->>UIJS: showNotification
-    UIJS->>User: Notification shown
+```mermaid
+flowchart LR
+    subgraph "Browser_Tab[Active Vocabulary.com Tab]"
+        PageDOM["Page DOM<br/>(challenge-slide, question, etc.)"]
+        ContentScript["Content Script<br/>(content.js)"]
+    end
+    subgraph "Extension_Popup[Extension Popup]"
+        PopupUI["Popup UI<br/>(popup.html, ui.js)"]
+    end
+    PopupUI -- "chrome.scripting.executeScript + sendMessage" --> ContentScript
+    ContentScript -- "Extract word & sentence" --> PageDOM
+    ContentScript -- "Send result" --> PopupUI
 ```
 
-### 3. Multiple Words with Context Sentence
-```mermaid
-sequenceDiagram
-    participant User
-    participant PopupUI as Popup UI
-    participant UIJS as ui.js
-    participant Translation as translation.js
-    participant Utils as utils.js
-    participant Clipboard as Clipboard
+### Scenario Table
 
-    User->>PopupUI: Enter multiple words & context sentence, click "Generate Prompt"
-    PopupUI->>UIJS: Event handler
-    UIJS->>Translation: generateOutput('english')
-    Translation->>Utils: copyToClipboard(prompt with multiple words & context)
-    Utils->>Clipboard: Write prompt
-    Utils->>UIJS: showNotification
-    UIJS->>User: Notification shown
-```
+| Type   | Word Source                | Sentence Source/Format                                 |
+|--------|---------------------------|--------------------------------------------------------|
+| typeA  | .instructions strong      | Instructions text + choices + explanation              |
+| typeT  | .correctspelling or <strong> in .sentence.complete/.blanked | .sentence.complete or .sentence.blanked                |
+| typeD  | <strong> in .instructions | "What does [word] mean?" + choices                    |
+| typeS  | <strong> in .instructions | "[word] has the same or almost the same meaning as:" + choices + explanation |
+| typeP  | <strong> in .sentence     | Question text + choices                                |
+| else   | <strong> in .sentence     | .sentence                                              |
 
-## Contributor Onboarding
+---
 
-### Branching Strategy
+## Development & Contribution
+
+### Loading into Edge
+1. Type `edge://extensions`
+2. Click the 'Reload' button
+
+### Development
+1. Make sure [Microsoft Edge DevTools extension](https://learn.microsoft.com/en-us/microsoft-edge/visual-studio-code/microsoft-edge-devtools-extension) is installed on VS code.
+2. When developing in VS Code, move to an HTML file, right click the file, and then choose 'Open with Edge' > 'Open Browser with DevTools'.
+
+### Contributor Onboarding
+
+#### Branching Strategy
 ```mermaid
 graph TD
-    A[main branch] -->|production-ready| B[Release]
-    C[Feature branch] -->|development| D[New features]
-    E[HOTFIX branch] -->|urgent fixes| F[Critical bugs]
+    A["main branch"] -->|"production-ready"| B["Release"]
+    C["Feature branch"] -->|"development"| D["New features"]
+    E["HOTFIX branch"] -->|"urgent fixes"| F["Critical bugs"]
 ```
 
 **Branch Types:**
@@ -137,40 +151,48 @@ graph TD
    git checkout -b feat/your-feature-name
    ```
 2. Develop and test changes
-3. Commit changes using conventional commits:
+3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed:
+   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
+   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
+   - Note all implementation or conceptual changes in `lesson_learned.md`.
+4. Stage and commit changes:
    ```bash
    git add .
-   npm run commit
+   git commit -m "your message"
    ```
-4. Push branch to repository:
+5. Push branch to repository:
    ```bash
    git push origin feat/your-feature-name
    ```
-5. Create pull request for review
-6. Merge to main after approval
+6. Create pull request for review
+7. Merge to main after approval
 
-### Version Management
+**Note:**  
+If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun `node scripts/sync-version.js` to resync the version. This is a known quirk due to version synchronization between `package.json` and `manifest.json`.
+
+#### Version Management
 This project uses a unified versioning system where:
 - `package.json` is the source of truth for the version
 - The extension version in `asking-expert/manifest.json` is automatically synchronized
 - Version updates are managed through `standard-version`
 
-### Development Workflow
+#### Development Workflow
 1. Install dependencies:
    ```bash
    npm install
    ```
 2. Make code changes
-3. Stage changes:
+3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed (see Contributor Onboarding).
+4. Stage changes:
    ```bash
    git add .
    ```
-4. Commit changes using conventional commit format:
+5. Commit changes:
    ```bash
-   npm run commit
+   git commit -m "your message"
    ```
 
-### Release Process
+#### Release Process
 1. Run the release command to:
    - Automatically synchronize manifest.json version from package.json
    - Update `package.json` version based on commit types
@@ -184,14 +206,22 @@ This project uses a unified versioning system where:
    ```bash
    git push --follow-tags
    ```
+3. Run the version sync script to ensure `manifest.json` matches the new version in `package.json`:
+   ```bash
+   node scripts/sync-version.js
+   git add asking-expert/manifest.json
+   git commit -m "chore: sync manifest version after release"
+   git push
+   ```
+   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
 
-### Important Note About Version Sync Timing
+#### Important Note About Version Sync Timing
 ```mermaid
 graph LR
-    A[npm run release] --> B[preversion script]
-    B --> C[Sync current version to manifest.json]
-    C --> D[Bump package.json version]
-    D --> E[Generate changelog]
+    A["npm run release"] --> B["preversion script"]
+    B --> C["Sync current version to manifest.json"]
+    C --> D["Bump package.json version"]
+    D --> E["Generate changelog"]
 ```
 
 This means:
@@ -218,3 +248,217 @@ sequenceDiagram
     Dev->>Git: Run git push --follow-tags
     Git->>GH: Push code and tags
 ```
+
+## Supported Scenarios
+
+### 1. Standard Multiple-Choice (Context Sentence)
+- **Word:** Extracted from `<strong>` in `.sentence`.
+- **Sentence:** The full context sentence.
+
+### 2. Definition-Style Multiple-Choice
+- **Word:** Extracted from `<strong>` in `.instructions`.
+- **Sentence:** Formatted as:
+  ```
+  What does [word] mean?
+  1A [choice 1]
+  2B [choice 2]
+  ...
+  ```
+
+### 3. Synonym-Style Multiple-Choice
+- **Word:** Extracted from `<strong>` in `.instructions`.
+- **Sentence:** Formatted as:
+  ```
+  [word] has the same or almost the same meaning as:
+  1A [choice 1]
+  2B [choice 2]
+  ...
+  Please explain with the 2 words
+  ```
+
+### 4. Spelling Questions
+- **Word:** Extracted from `.correctspelling` if available, otherwise from `<strong>` in `.sentence.complete` or `.sentence.blanked`.
+- **Sentence:** The full sentence from `.sentence.complete` or `.sentence.blanked`.
+
+### 5. Question-Style Multiple-Choice
+- **Word:** Extracted from `<strong>` in `.sentence` in `.questionContent`.
+- **Sentence:** The question text followed by the formatted choices.
+
+### 6. Opposite-Style Multiple-Choice
+- **Word:** Extracted from `<strong>` in `.instructions`.
+- **Sentence:** The instructions text, followed by the choices, and ending with an explanation prompt.
+
+### 7. Manual Entry
+- If the "Word" field is filled manually, "Generate Prompt" will always generate and copy the prompt, regardless of page parsing.
+
+---
+
+## Extraction Logic Flowchart
+
+```mermaid
+flowchart TD
+    Start(["Start"])
+    Start --> |"typeA"| Opposite
+    Start --> |"typeT"| Spelling
+    Start --> |"typeD"| Definition
+    Start --> |"typeS"| Synonym
+    Start --> |"typeP"| Question
+    Start --> |"else"| Fallback
+
+    Opposite --> End
+    Spelling --> End
+    Definition --> End
+    Synonym --> End
+    Question --> End
+    Fallback --> End
+    End(["Extract word & sentence"])
+```
+
+---
+
+## Component Architecture Diagram
+
+```mermaid
+flowchart LR
+    subgraph "Browser_Tab[Active Vocabulary.com Tab]"
+        PageDOM["Page DOM<br/>(challenge-slide, question, etc.)"]
+        ContentScript["Content Script<br/>(content.js)"]
+    end
+    subgraph "Extension_Popup[Extension Popup]"
+        PopupUI["Popup UI<br/>(popup.html, ui.js)"]
+    end
+    PopupUI -- "chrome.scripting.executeScript + sendMessage" --> ContentScript
+    ContentScript -- "Extract word & sentence" --> PageDOM
+    ContentScript -- "Send result" --> PopupUI
+```
+
+---
+
+## Scenario Table
+
+| Type   | Word Source                | Sentence Source/Format                                 |
+|--------|---------------------------|--------------------------------------------------------|
+| typeA  | .instructions strong      | Instructions text + choices + explanation              |
+| typeT  | .correctspelling or <strong> in .sentence.complete/.blanked | .sentence.complete or .sentence.blanked                |
+| typeD  | <strong> in .instructions | "What does [word] mean?" + choices                    |
+| typeS  | <strong> in .instructions | "[word] has the same or almost the same meaning as:" + choices + explanation |
+| typeP  | <strong> in .sentence     | Question text + choices                                |
+| else   | <strong> in .sentence     | .sentence                                              |
+
+---
+
+## How It Works
+
+- The extension always targets the currently visible `.challenge-slide.selected` for extraction.
+- The popup event handler ensures that prompt generation is robust: it tries to parse the page if fields are empty, but always allows manual entry as a fallback.
+- Notifications are shown if parsing fails, guiding the user to enter missing content.
+
+## Lessons Learned
+
+- See `lesson_learned.md` for a detailed summary of implementation strategies and key takeaways.
+
+---
+
+## Contributor Onboarding
+
+### Branching Strategy
+```mermaid
+graph TD
+    A["main branch"] -->|"production-ready"| B["Release"]
+    C["Feature branch"] -->|"development"| D["New features"]
+    E["HOTFIX branch"] -->|"urgent fixes"| F["Critical bugs"]
+```
+
+**Branch Types:**
+- **main**: Stable, production-ready code
+- **feature**: For developing new features
+- **hotfix**: For critical bug fixes
+
+**Feature Development Workflow:**
+1. Create feature branch from main:
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feat/your-feature-name
+   ```
+2. Develop and test changes.
+3. **Before each commit, review and update `README.md` and `lesson_learned.md` as needed:**
+   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
+   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
+   - Note all implementation or conceptual changes in `lesson_learned.md`.
+4. Stage and commit changes:
+   ```bash
+   git add .
+   git commit -m "your message"
+   ```
+5. Run the version sync script to ensure `manifest.json` matches `package.json`:
+   ```bash
+   node scripts/sync-version.js
+   ```
+   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
+6. Push branch to repository:
+   ```bash
+   git push origin feat/your-feature-name
+   ```
+7. Create pull request for review.
+8. Merge to main after approval.
+
+### Version Management
+This project uses a unified versioning system where:
+- `package.json` is the source of truth for the version
+- The extension version in `asking-expert/manifest.json` is automatically synchronized
+- Version updates are managed through `standard-version`
+
+
+### Release Process
+1. Run the release command to:
+   - Automatically synchronize manifest.json version from package.json
+   - Update `package.json` version based on commit types
+   - Generate/update `CHANGELOG.md`
+   - Commit version changes
+   - Create git tag
+   ```bash
+   npm run release
+   ```
+2. Push changes and tags to repository:
+   ```bash
+   git push --follow-tags
+   ```
+
+### Important Note About Version Sync Timing
+```mermaid
+graph LR
+    A["npm run release"] --> B["preversion script"]
+    B --> C["Sync current version to manifest.json"]
+    C --> D["Bump package.json version"]
+    D --> E["Generate changelog"]
+```
+
+This means:
+1. The sync script runs BEFORE version bump
+2. manifest.json gets the current version (before bump)
+3. package.json gets bumped to the new version
+4. This ensures manifest.json always matches the version that was just released
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Git as Git
+    participant NPM as npm
+    participant GH as GitHub
+    participant Script as Sync Script
+
+    Dev->>NPM: Run npm run release
+    NPM->>Script: Execute preversion script
+    Script->>Git: Sync manifest.json version
+    NPM->>Git: Update package.json version
+    NPM->>Git: Update CHANGELOG.md
+    NPM->>Git: Commit changes
+    NPM->>Git: Create version tag
+    Dev->>Git: Run git push --follow-tags
+    Git->>GH: Push code and tags
+```
+
+---
+
+This extension is robust, user-friendly, and supports a wide range of question types on Vocabulary.com.

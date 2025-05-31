@@ -3,3 +3,4 @@ package_extension.sh
 
 # Node.js dependencies
 node_modules/
+.DS_Store

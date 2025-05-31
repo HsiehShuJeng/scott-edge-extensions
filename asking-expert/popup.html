@@ -119,6 +119,8 @@
             width: 100%;
             box-sizing: border-box;
             resize: none;
+            max-height: 95px;
+            overflow-y: auto;
         }
 
         #generate,
@@ -574,7 +576,7 @@
         <input type="text" id="words" placeholder="Word" class="input-control">
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
         <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
-            <button id="generate" class="modern-btn">Generate Prompt</button>
+            <button id="generate" class="modern-btn">Build Contextual Prompt</button>
             <button id="translate_zh" class="modern-btn">Translate to Traditional Chinese</button>
             <button id="translate_en" class="modern-btn">Translate to English</button>
         </div>
@@ -607,7 +609,7 @@
             <input type="text" id="result-korean" readonly aria-label="Session command result">
         </div>
         <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
-        <button id="generate-korean" class="modern-btn">Generate Prompt</button>
+        <button id="generate-korean" class="modern-btn">Build Contextual Prompt</button>
     </div>
     <div class="flag-switcher">
         <button class="flag-button" id="english-btn">
