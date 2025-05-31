@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.7.0...v2.9.0) (2025-05-31)
+
+
+### Features
+
+* **content:** add support for multiple-choice questions ([c5fcc2c](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/c5fcc2c59a0fa77a8ecf2b0271f970301170b7d3))
+* **content:** handle fill-in-the-blank multiple-choice ([11251c1](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/11251c15f564cb2e9a29c7c36d5b97bd943d62ee))
+* **content:** handle opposite-style multiple-choice ([07e9d87](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/07e9d879697f6a6f8283b44ed1d311cb29f87e89))
+* **content:** handle question-style MC ([4e0ee12](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/4e0ee129366364f6a26cdfc5edaf8657c4001edb))
+* **content:** handle spelling questions in content script ([247b000](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/247b000a4502cf1d0c9d81c7541865e36ac0ae05))
+* **translation:** add contextual note to translation ([302158d](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/302158dc0a7a28a81e0daef1bfb63ef0531fa385))
+* **translation:** add etymology integration ([4009b48](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/4009b48749367968846f5de638ad436e2acfc7a3))
+* **ui:** add Etymonline etymology to prompts ([ce8bccb](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/ce8bccbb27b83c8f42b9c71e9c89e410980a951d))
+* **ui:** determine theme by time if unset ([8c1eec5](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/8c1eec5ca0b303d8380cec2069c0c35b1c6f1e94))
+* **ui:** enhance prompt generation logic ([1721874](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/17218741bf16cf392badf93a8ee809e95496d50c))
+* **ui:** extract active sentence and word ([6e282e2](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/6e282e29c9aa87aa971bda275f5424ae06273ffa))
+* **ui:** handle restricted browser pages in popup ([9371e4f](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/9371e4fce6f574e4961508a08892ac6fa0bf4bdc))
+
 ## [2.8.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.7.0...v2.8.0) (2025-05-31)
 
 
