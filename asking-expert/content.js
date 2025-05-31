@@ -113,6 +113,28 @@ chrome.runtime.onMessage.addListener(
                 });
                 sentence += `\nPlease explain with the 2 words`;
                 console.log("[content.js] Synonym-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
+            } else if (currentSlide && currentSlide.querySelector('.question.typeP')) {
+                // Question-style multiple-choice: word from .sentence strong, sentence from question + choices
+                const strong = currentSlide.querySelector('.questionContent .sentence strong');
+                if (strong) selectedWord = strong.textContent.trim();
+                // Start sentence with the question text
+                const questionSentence = currentSlide.querySelector('.questionContent .sentence');
+                sentence = questionSentence ? questionSentence.textContent.trim() : '';
+                // Add choices
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                sentence = sentence.trim();
+                console.log("[content.js] Question-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
             } else {
                 // If no selection or not inside a .sentence, try to find the sentence in the active slide
                 if (!sentenceNode) {
