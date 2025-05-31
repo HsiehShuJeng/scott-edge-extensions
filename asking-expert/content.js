@@ -19,7 +19,27 @@ chrome.runtime.onMessage.addListener(
                     // If the strong tag is just underscores or blanks, keep as underscores
                     if (/^_+$/.test(strong.textContent.trim()) || strong.textContent.trim() === "________") {
                         strong.replaceWith("________");
-                    } else {
+                    } else if (currentSlide && currentSlide.querySelector('.question.typeA')) {
+                // Opposite-style multiple-choice: word from .instructions strong, sentence from instructions + choices + explanation
+                const strong = currentSlide.querySelector('.instructions strong');
+                if (strong) selectedWord = strong.textContent.trim();
+                const instructions = currentSlide.querySelector('.instructions');
+                sentence = instructions ? instructions.textContent.trim() : '';
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                sentence += `\nAside from ${selectedWord}, please explain the other 3 words with their Traditional Chinese meaning considering cultural and contextual connotations natural to Taiwanese.`;
+                console.log("[content.js] Opposite-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
+            } else {
                         strong.replaceWith(strong.textContent);
                     }
                 });
@@ -51,7 +71,27 @@ chrome.runtime.onMessage.addListener(
 
             // Always target the selected slide for the current question
             const currentSlide = document.querySelector('.challenge-slide.selected');
-            if (currentSlide && currentSlide.querySelector('.question.typeT')) {
+            if (currentSlide && currentSlide.querySelector('.question.typeA')) {
+                // Opposite-style multiple-choice: word from .instructions strong, sentence from instructions + choices + explanation
+                const strong = currentSlide.querySelector('.instructions strong');
+                if (strong) selectedWord = strong.textContent.trim();
+                const instructions = currentSlide.querySelector('.instructions');
+                sentence = instructions ? instructions.textContent.trim() : '';
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                sentence += `\nAside from ${selectedWord}, please explain the other 3 words with their Traditional Chinese meaning considering cultural and contextual connotations natural to Taiwanese.`;
+                console.log("[content.js] Opposite-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
+            } else if (currentSlide && currentSlide.querySelector('.question.typeT')) {
                 // Spelling: get word from .correctspelling if available
                 const correctSpelling = currentSlide.querySelector('.correctspelling');
                 if (correctSpelling) {
