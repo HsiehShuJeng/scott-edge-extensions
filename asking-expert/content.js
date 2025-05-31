@@ -49,37 +49,49 @@ chrome.runtime.onMessage.addListener(
                 }
             }
 
-            // If no selection or not inside a .sentence, try to find the sentence in the active slide
-            if (!sentenceNode) {
-                const activeSlide = document.querySelector('.challenge-slide.active.selected');
-                if (activeSlide) {
-                    sentenceNode = activeSlide.querySelector('.sentence');
-                    console.log("[content.js] Using .challenge-slide.active.selected .sentence:", sentenceNode ? sentenceNode.textContent : "not found");
+            // Always target the selected slide for the current question
+            const currentSlide = document.querySelector('.challenge-slide.selected');
+            if (currentSlide && currentSlide.querySelector('.question.typeT')) {
+                // Spelling: get word from .correctspelling
+                const correctSpelling = currentSlide.querySelector('.correctspelling');
+                if (correctSpelling) {
+                    selectedWord = correctSpelling.textContent.trim();
                 }
-            }
-            // Fallback: first visible .sentence element
-            if (!sentenceNode) {
-                sentenceNode = Array.from(document.querySelectorAll('.sentence'))
-                    .find(el => el.offsetParent !== null);
-                console.log("[content.js] Fallback to first visible .sentence:", sentenceNode ? sentenceNode.textContent : "not found");
-            }
-
-            if (sentenceNode) {
-                sentence = getPlainSentenceText(sentenceNode);
-            }
-
-            // If no word is selected via highlight, fall back to the <strong> text
-            if (!selectedWord && sentenceNode) {
-                const strongElem = sentenceNode.querySelector('strong');
-                if (strongElem) {
-                    selectedWord = strongElem.textContent.trim();
+                // Prefer .sentence.complete, fallback to .sentence.blanked
+                const complete = currentSlide.querySelector('.sentence.complete');
+                const blanked = currentSlide.querySelector('.sentence.blanked');
+                if (complete) sentence = complete.textContent.trim();
+                else if (blanked) sentence = blanked.textContent.trim();
+                console.log("[content.js] Spelling question detected. Word:", selectedWord, "Sentence:", sentence);
+            } else {
+                // If no selection or not inside a .sentence, try to find the sentence in the active slide
+                if (!sentenceNode) {
+                    if (currentSlide) {
+                        sentenceNode = currentSlide.querySelector('.sentence');
+                        console.log("[content.js] Using .challenge-slide.selected .sentence:", sentenceNode ? sentenceNode.textContent : "not found");
+                    }
                 }
-            }
-            // If still no word, get the correct answer from the definition block in the active slide
-            if (!selectedWord) {
-                const slideElem = document.querySelector('.challenge-slide.active.selected');
-                if (slideElem) {
-                    const defWordElem = slideElem.querySelector('.def .word');
+                // Fallback: first visible .sentence element
+                if (!sentenceNode) {
+                    sentenceNode = Array.from(document.querySelectorAll('.sentence'))
+                        .find(el => el.offsetParent !== null);
+                    console.log("[content.js] Fallback to first visible .sentence:", sentenceNode ? sentenceNode.textContent : "not found");
+                }
+
+                if (sentenceNode) {
+                    sentence = getPlainSentenceText(sentenceNode);
+                }
+
+                // If no word is selected via highlight, fall back to the <strong> text
+                if (!selectedWord && sentenceNode) {
+                    const strongElem = sentenceNode.querySelector('strong');
+                    if (strongElem) {
+                        selectedWord = strongElem.textContent.trim();
+                    }
+                }
+                // If still no word, get the correct answer from the definition block in the active slide
+                if (!selectedWord && currentSlide) {
+                    const defWordElem = currentSlide.querySelector('.def .word');
                     if (defWordElem) {
                         selectedWord = defWordElem.textContent.trim();
                     }
