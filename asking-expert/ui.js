@@ -73,14 +73,25 @@ export function registerEventListeners() {
     document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
     document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
     document.getElementById('generate').addEventListener('click', async () => {
-        // If either word or sentence is empty, fetch from the active tab
         const word = $(ID_WORDS).value.trim();
         const sentence = $(ID_SENTENCE).value.trim();
-        if (!word || !sentence) {
-            await getSentenceContent();
+        if (word) {
+            // Scenario 1: Word field has content, generate and copy prompt immediately
+            generateOutput('english');
+        } else {
+            // Scenario 2: Try to parse the page and fill fields
+            const parsedSentence = await getSentenceContent();
+            if (!$(ID_WORDS).value.trim()) {
+                showNotification('No word found on the page. Please enter a word manually.', true);
+            }
+            if (!$(ID_SENTENCE).value.trim()) {
+                showNotification('No sentence found on the page. Please enter a sentence manually.', true);
+            }
+            // If parsing succeeded, generate and copy prompt
+            if ($(ID_WORDS).value.trim() && $(ID_SENTENCE).value.trim()) {
+                generateOutput('english');
+            }
         }
-        // After ensuring fields are filled, generate and copy the prompt
-        generateOutput('english');
     });
     document.getElementById('generate-korean').addEventListener('click', async () => {
         let content = $(ID_KOREAN_WORD).value.trim();
