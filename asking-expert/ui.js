@@ -1,6 +1,6 @@
-import { generateTranslationPrompt, generateOutput } from './translation.js';
+import { generateTranslationPrompt, generateOutput, getSentenceContent } from './translation.js';
 import { handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from './session.js';
-import { $, showNotification, ID_KOREAN_WORD, handleResultClick } from './utils.js';
+import { $, showNotification, ID_KOREAN_WORD, handleResultClick, ID_WORDS, ID_SENTENCE } from './utils.js';
 import { autoResize } from './popup.js'; // Import autoResize
 
 export function calculateMaxHeight() {
@@ -72,7 +72,16 @@ export function updateActiveFlag() {
 export function registerEventListeners() {
     document.getElementById('translate_zh').addEventListener('click', () => generateTranslationPrompt('zh'));
     document.getElementById('translate_en').addEventListener('click', () => generateTranslationPrompt('en'));
-    document.getElementById('generate').addEventListener('click', () => generateOutput('english'));
+    document.getElementById('generate').addEventListener('click', async () => {
+        // If either word or sentence is empty, fetch from the active tab
+        const word = $(ID_WORDS).value.trim();
+        const sentence = $(ID_SENTENCE).value.trim();
+        if (!word || !sentence) {
+            await getSentenceContent();
+        }
+        // After ensuring fields are filled, generate and copy the prompt
+        generateOutput('english');
+    });
     document.getElementById('generate-korean').addEventListener('click', async () => {
         let content = $(ID_KOREAN_WORD).value.trim();
         if (!content) {
@@ -101,4 +110,12 @@ export function initializeUI() {
     toggleSectionVisibility('english-section');
     updateActiveFlag();
     registerEventListeners();
+    
+    // Automatically fetch and set the active sentence and word
+    getSentenceContent().then((sentence) => {
+        if (sentence) {
+            // Trigger auto-resize after content is set
+            autoResize($(ID_SENTENCE));
+        }
+    });
 }
