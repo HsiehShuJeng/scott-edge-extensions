@@ -8,9 +8,14 @@
 
 ## 2. Robust Content Script Extraction
 - **Targeting the Active Question:**  
-  The content script always tries to find `.challenge-slide.active.selected .sentence` for the current question. If not found, it falls back to the first visible `.sentence` element.
+  The content script always tries to find `.challenge-slide.selected` for the current question, which is the visible/active slide.
+- **Multiple Supported Scenarios:**  
+  - **Standard multiple-choice:** Word from `<strong>` in `.sentence`, sentence is the context.
+  - **Definition-style multiple-choice:** Word from `<strong>` in `.instructions`, sentence is "What does [word] mean?" + choices.
+  - **Synonym-style multiple-choice:** Word from `<strong>` in `.instructions`, sentence is "[word] has the same or almost the same meaning as:" + choices + "Please explain with the 2 words".
+  - **Spelling questions:** Word from `.correctspelling` if available, otherwise from `<strong>` in `.sentence.complete` or `.sentence.blanked`.
 - **Word Extraction Logic:**  
-  The script first tries to extract the word from a `<strong>` tag inside the sentence. If that fails, it looks for the correct answer in the `.def .word` element within the active slide.
+  The script uses the appropriate extraction method for each scenario, with fallbacks for edge cases.
 - **Debug Logging:**  
   Console logs were added to help trace which element is being selected and what text is being extracted, making debugging much easier.
 
