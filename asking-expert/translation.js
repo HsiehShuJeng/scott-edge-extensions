@@ -40,7 +40,7 @@ export async function generateOutput(language) {
         output = sentence ? `${sentence}\n\n` : "";
         const lastWord = words.pop();
         const combinedWords = words.length > 0 ? words.join("', '") + "', and '" + lastWord : lastWord;
-        output += `What does '${combinedWords}' mean here? Give me the detailed explanation in English, its etymology stories in English, all the corresponding traditional Chinese translations, and sentences using the word in the real world either in conversations or books. Lastly, list the most 3 related synonyms and antonyms respectively with each term followed by its traditional Chinese translation.\n\n`;
+        output += `What does '${combinedWords}' mean here? Give me the detailed explanation in English, its etymology stories in English, all the corresponding traditional Chinese translations, and sentences using the word in the real world either in conversations or books. Lastly, list the most 3 related synonyms and antonyms respectively with each term followed by its traditional Chinese translation considering cultural and contextual connotations.\n\n`;
         output += "The paragraph for the detailed explanation\n\n";
         output += "The paragraph for the etymology stories\n\n";
         output += "The paragraph for example sentences\n";
