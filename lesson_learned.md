@@ -67,4 +67,20 @@
 
 ---
 
+## 7. Integration of Etymonline for Etymology and Part of Speech
+
+- **Prompt Generation Enhancement:**  
+  The "Generate Prompt" function was integrated with Etymonline to fetch etymology and part of speech for the extracted word, when available. This information is now included in the generated prompt, providing richer linguistic context for language learners and programmers.
+
+- **Implementation Details:**  
+  - The translation logic asynchronously queries Etymonline for the extracted word.
+  - If etymology and part of speech are found, they are appended to the prompt.
+  - The UI and prompt generation flow were updated to handle asynchronous etymology fetching and robust error handling for missing or ambiguous results.
+
+- **Lessons Learned:**  
+  - Integrating external linguistic data sources (like Etymonline) can significantly enhance the educational value of prompts.
+  - Asynchronous data fetching must be carefully managed to avoid blocking the user experience.
+  - Including part of speech helps clarify word usage, especially for words with multiple grammatical roles.
+  - Documentation and diagrams must be updated to reflect new data flows and dependencies.
+
 These lessons ensure the extension is robust, user-friendly, and maintainable.

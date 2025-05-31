@@ -24,6 +24,7 @@ A browser extension for language learners (English and Korean) and programmers, 
   _His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party._
 - **Multiple words with context sentence**
 - **All major Vocabulary.com question types** (see Scenario Table below)
+- **Etymology and part of speech**: If available, the prompt will include etymology and part of speech fetched from Etymonline.
 
 ---
 
