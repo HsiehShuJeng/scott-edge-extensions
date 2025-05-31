@@ -71,7 +71,41 @@ chrome.runtime.onMessage.addListener(
 
             // Always target the selected slide for the current question
             const currentSlide = document.querySelector('.challenge-slide.selected');
-            if (currentSlide && currentSlide.querySelector('.question.typeA')) {
+            if (currentSlide && currentSlide.querySelector('.question.typeF')) {
+                // Fill-in-the-blank multiple-choice: extract correct word and build sentence with choices and explanation
+                const correct = currentSlide.querySelector('.choices > a.correct');
+                if (correct) {
+                    let text = '';
+                    for (const node of correct.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = correct.textContent.trim();
+                    selectedWord = text;
+                } else {
+                    const defWord = currentSlide.querySelector('.def .word');
+                    if (defWord) selectedWord = defWord.textContent.trim();
+                }
+                // Start sentence with the question text
+                const questionSentence = currentSlide.querySelector('.questionContent .sentence');
+                sentence = questionSentence ? questionSentence.textContent.trim() : '';
+                // Add choices
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                sentence += `\n\nAside from the answer please explain why the rest are not appropriate and attach their Traditional Chinese meaning considering cultural and contextual connotations natural to Taiwanese.`;
+                console.log("[content.js] Fill-in-the-blank multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
+            } else if (currentSlide && currentSlide.querySelector('.question.typeA')) {
                 // Opposite-style multiple-choice: word from .instructions strong, sentence from instructions + choices + explanation
                 const strong = currentSlide.querySelector('.instructions strong');
                 if (strong) selectedWord = strong.textContent.trim();
