@@ -33,6 +33,10 @@ This extension helps you extract vocabulary questions and context from Vocabular
 - **Word:** Extracted from `.correctspelling` if available, otherwise from `<strong>` in `.sentence.complete` or `.sentence.blanked`.
 - **Sentence:** The full sentence from `.sentence.complete` or `.sentence.blanked`.
 
+### 4. Question-Style Multiple-Choice
+- **Word:** Extracted from `<strong>` in `.sentence` in `.questionContent`.
+- **Sentence:** The question text followed by the formatted choices.
+
 ### 5. Manual Entry
 - If the "Word" field is filled manually, "Generate Prompt" will always generate and copy the prompt, regardless of page parsing.
 

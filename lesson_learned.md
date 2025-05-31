@@ -13,6 +13,7 @@
   - **Standard multiple-choice:** Word from `<strong>` in `.sentence`, sentence is the context.
   - **Definition-style multiple-choice:** Word from `<strong>` in `.instructions`, sentence is "What does [word] mean?" + choices.
   - **Synonym-style multiple-choice:** Word from `<strong>` in `.instructions`, sentence is "[word] has the same or almost the same meaning as:" + choices + "Please explain with the 2 words".
+  - **Question-style multiple-choice:** Word from `<strong>` in `.sentence` in `.questionContent`, sentence is the question text followed by the choices.
   - **Spelling questions:** Word from `.correctspelling` if available, otherwise from `<strong>` in `.sentence.complete` or `.sentence.blanked`.
 - **Word Extraction Logic:**  
   The script uses the appropriate extraction method for each scenario, with fallbacks for edge cases.
