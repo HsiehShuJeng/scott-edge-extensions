@@ -84,3 +84,22 @@
   - Documentation and diagrams must be updated to reflect new data flows and dependencies.
 
 These lessons ensure the extension is robust, user-friendly, and maintainable.
+
+---
+
+## 8. Contributor Workflow and Documentation Lessons
+
+- **Smoother Contributor Flow:**  
+  The development flow was updated to use `git commit` instead of `npm run commit` for a faster, less laggy experience. Commitizen is no longer required for standard commits, but contributors should still follow clear, descriptive commit messages.
+
+- **Documentation Requirements:**  
+  Before each commit, contributors must review and update `README.md` and `lesson_learned.md` as needed. This includes:
+  - Updating diagrams, the scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
+  - Adding new diagrams if new concepts are introduced (with permission if unsure).
+  - Noting all implementation or conceptual changes in `lesson_learned.md`.
+
+- **Manifest Version Sync Quirk:**  
+  When switching or deleting branches, an unstaged change in `manifest.json` may appear due to version synchronization with `package.json`. This is a known quirk. Contributors should rerun `node scripts/sync-version.js` to resync if needed. The team decided not to automate this with a post-checkout git hook, to keep the workflow simple and avoid extra setup for contributors.
+
+- **Continuous Alignment:**  
+  The project enforces continuous alignment between code, documentation, and diagrams, ensuring that onboarding and scenario documentation are always up to date with the actual workflow and architecture.

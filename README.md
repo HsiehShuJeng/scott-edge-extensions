@@ -10,8 +10,15 @@ This extension helps you extract vocabulary questions and context from Vocabular
    - [Extraction Logic Flowchart](#extraction-logic-flowchart)
    - [Component Architecture Diagram](#component-architecture-diagram)
 - [Development & Contribution](#development--contribution)
+   - [Loading into Edge](#loading-into-edge)
+   - [Development](#development)
+   - [Contributor Onboarding](#contributor-onboarding)
+      - [Branching Strategy](#branching-strategy)
+      - [Feature Development Workflow](#feature-development-workflow)
+      - [Version Management](#version-management)
+      - [Release Process](#release-process)
+      - [Important Note About Version Sync Timing](#important-note-about-version-sync-timing)
 - [Lessons Learned](#lessons-learned)
-- [Contributor Onboarding](#contributor-onboarding)
 
 A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
 
@@ -144,17 +151,24 @@ graph TD
    git checkout -b feat/your-feature-name
    ```
 2. Develop and test changes
-3. Commit changes using conventional commits:
+3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed:
+   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
+   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
+   - Note all implementation or conceptual changes in `lesson_learned.md`.
+4. Stage and commit changes:
    ```bash
    git add .
-   npm run commit
+   git commit -m "your message"
    ```
-4. Push branch to repository:
+5. Push branch to repository:
    ```bash
    git push origin feat/your-feature-name
    ```
-5. Create pull request for review
-6. Merge to main after approval
+6. Create pull request for review
+7. Merge to main after approval
+
+**Note:**  
+If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun `node scripts/sync-version.js` to resync the version. This is a known quirk due to version synchronization between `package.json` and `manifest.json`.
 
 #### Version Management
 This project uses a unified versioning system where:
@@ -168,13 +182,14 @@ This project uses a unified versioning system where:
    npm install
    ```
 2. Make code changes
-3. Stage changes:
+3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed (see Contributor Onboarding).
+4. Stage changes:
    ```bash
    git add .
    ```
-4. Commit changes using conventional commit format:
+5. Commit changes:
    ```bash
-   npm run commit
+   git commit -m "your message"
    ```
 
 #### Release Process
@@ -191,6 +206,14 @@ This project uses a unified versioning system where:
    ```bash
    git push --follow-tags
    ```
+3. Run the version sync script to ensure `manifest.json` matches the new version in `package.json`:
+   ```bash
+   node scripts/sync-version.js
+   git add asking-expert/manifest.json
+   git commit -m "chore: sync manifest version after release"
+   git push
+   ```
+   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
 
 #### Important Note About Version Sync Timing
 ```mermaid
@@ -358,18 +381,27 @@ graph TD
    git pull origin main
    git checkout -b feat/your-feature-name
    ```
-2. Develop and test changes
-3. Commit changes using conventional commits:
+2. Develop and test changes.
+3. **Before each commit, review and update `README.md` and `lesson_learned.md` as needed:**
+   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
+   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
+   - Note all implementation or conceptual changes in `lesson_learned.md`.
+4. Stage and commit changes:
    ```bash
    git add .
-   npm run commit
+   git commit -m "your message"
    ```
-4. Push branch to repository:
+5. Run the version sync script to ensure `manifest.json` matches `package.json`:
+   ```bash
+   node scripts/sync-version.js
+   ```
+   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
+6. Push branch to repository:
    ```bash
    git push origin feat/your-feature-name
    ```
-5. Create pull request for review
-6. Merge to main after approval
+7. Create pull request for review.
+8. Merge to main after approval.
 
 ### Version Management
 This project uses a unified versioning system where:
@@ -377,20 +409,6 @@ This project uses a unified versioning system where:
 - The extension version in `asking-expert/manifest.json` is automatically synchronized
 - Version updates are managed through `standard-version`
 
-### Development Workflow
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Make code changes
-3. Stage changes:
-   ```bash
-   git add .
-   ```
-4. Commit changes using conventional commit format:
-   ```bash
-   npm run commit
-   ```
 
 ### Release Process
 1. Run the release command to:
