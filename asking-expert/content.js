@@ -52,17 +52,67 @@ chrome.runtime.onMessage.addListener(
             // Always target the selected slide for the current question
             const currentSlide = document.querySelector('.challenge-slide.selected');
             if (currentSlide && currentSlide.querySelector('.question.typeT')) {
-                // Spelling: get word from .correctspelling
+                // Spelling: get word from .correctspelling if available
                 const correctSpelling = currentSlide.querySelector('.correctspelling');
                 if (correctSpelling) {
                     selectedWord = correctSpelling.textContent.trim();
+                } else {
+                    // Fallback: first <strong> in .sentence.complete or .sentence.blanked
+                    const complete = currentSlide.querySelector('.sentence.complete');
+                    const blanked = currentSlide.querySelector('.sentence.blanked');
+                    const sentenceNode = complete || blanked;
+                    if (sentenceNode) {
+                        const strong = sentenceNode.querySelector('strong');
+                        if (strong) selectedWord = strong.textContent.trim();
+                        sentence = sentenceNode.textContent.trim();
+                    }
                 }
-                // Prefer .sentence.complete, fallback to .sentence.blanked
-                const complete = currentSlide.querySelector('.sentence.complete');
-                const blanked = currentSlide.querySelector('.sentence.blanked');
-                if (complete) sentence = complete.textContent.trim();
-                else if (blanked) sentence = blanked.textContent.trim();
+                // Prefer .sentence.complete, fallback to .sentence.blanked for sentence
+                if (!sentence) {
+                    const complete = currentSlide.querySelector('.sentence.complete');
+                    const blanked = currentSlide.querySelector('.sentence.blanked');
+                    if (complete) sentence = complete.textContent.trim();
+                    else if (blanked) sentence = blanked.textContent.trim();
+                }
                 console.log("[content.js] Spelling question detected. Word:", selectedWord, "Sentence:", sentence);
+            } else if (currentSlide && currentSlide.querySelector('.question.typeD')) {
+                // Definition-style multiple-choice: word from .instructions strong, sentence from choices
+                const strong = currentSlide.querySelector('.instructions strong');
+                if (strong) selectedWord = strong.textContent.trim();
+                sentence = `What does ${selectedWord} mean?`;
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    // Get only the text node (not the inner div.tools)
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                console.log("[content.js] Definition-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
+            } else if (currentSlide && currentSlide.querySelector('.question.typeS')) {
+                // Synonym-style multiple-choice: word from .instructions strong, sentence from choices
+                const strong = currentSlide.querySelector('.instructions strong');
+                if (strong) selectedWord = strong.textContent.trim();
+                sentence = `${selectedWord} has the same or almost the same meaning as:`;
+                const choices = currentSlide.querySelectorAll('.choices > a');
+                choices.forEach(choice => {
+                    const key = choice.getAttribute('accesskey') || '';
+                    let text = '';
+                    for (const node of choice.childNodes) {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            text += node.textContent.trim();
+                        }
+                    }
+                    if (!text) text = choice.textContent.trim();
+                    sentence += `\n${key} ${text}`;
+                });
+                sentence += `\nPlease explain with the 2 words`;
+                console.log("[content.js] Synonym-style multiple-choice detected. Word:", selectedWord, "Sentence:", sentence);
             } else {
                 // If no selection or not inside a .sentence, try to find the sentence in the active slide
                 if (!sentenceNode) {
