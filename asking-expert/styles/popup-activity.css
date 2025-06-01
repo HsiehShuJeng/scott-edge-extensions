@@ -17,6 +17,8 @@
   justify-content: center;
   gap: 1px;
 }
+.button-container-vertical button { margin: 2px; }
+
 
 .activity-controls > .button-container-vertical {
   flex: 1 1 0;
