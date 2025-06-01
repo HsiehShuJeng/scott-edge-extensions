@@ -1,4 +1,5 @@
 package_extension.sh
+dist
 *.zip
 
 # Node.js dependencies

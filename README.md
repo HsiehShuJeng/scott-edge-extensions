@@ -366,6 +366,19 @@ flowchart LR
 
 ---
 
+## Modular CSS & UI Consistency
+
+- When modularizing CSS, always preserve the original selector order, specificity, and cascade to avoid regressions.
+- Use `gap` for flexbox spacing, but remove default margins from buttons for pixel-perfect control.
+- For theme-adaptive dropdown arrows, use CSS variables and set `background-image` on the correct selector.
+- Use `em` units for margin/padding when you want spacing to scale with font size (e.g., `margin: 0.5em 0;` for headings).
+- Control overall popup spacing with `body { padding: ... }` and use `padding-top` for space above absolutely positioned elements.
+- Always visually test after each modularization step in both light and dark themes.
+- Remove default browser margins from elements when you want precise control.
+- Document modularization and spacing strategies in the codebase for future contributors.
+
+---
+
 ## Linting & Code Quality
 
 - **HTML:**  
