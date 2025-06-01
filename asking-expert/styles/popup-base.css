@@ -56,6 +56,7 @@
 
 html, body {
   min-width: 300px;
+  width: px;
   margin: 0;
   padding: 0;
   display: flex;
@@ -195,4 +196,9 @@ select.dropdown {
 
 #theme-toggle {
   display: none;
+}
+
+/* Responsive button font size in button-container */
+.button-container .modern-btn {
+  font-size: clamp(0.9rem, 4vw, 1.2rem);
 }

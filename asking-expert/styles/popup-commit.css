@@ -3,12 +3,13 @@
 .commit-tools-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: stretch;
+  align-items: stretch;
   background: var(--commit-tools-bg);
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 10px;
+  gap: 0; /* No gap by default, buttons will be flush */
 }
 
 .commit-btn {
@@ -21,13 +22,23 @@
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
-  border-radius: 8px;
-  margin: 4px;
+  border-radius: 0;
+  margin: 0;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Only round the left corners of the first button and right corners of the last button */
+.commit-btn:first-child {
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.commit-btn:last-child {
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .dark-theme .commit-btn {

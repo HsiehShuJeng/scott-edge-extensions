@@ -15,9 +15,10 @@
   padding: var(--main-padding);
   position: absolute;
   z-index: 1;
-  top: 100%;
+  bottom: 100%;
   left: 50%;
   margin-left: calc(-1 * var(--tooltip-width) / 2);
+  margin-bottom: 8px;
   box-shadow: var(--tooltip-shadow);
   opacity: 0;
   transition: opacity 0.3s;
