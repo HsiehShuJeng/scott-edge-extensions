@@ -366,6 +366,20 @@ flowchart LR
 
 ---
 
+## Linting & Code Quality
+
+- **HTML:**  
+  Run `npx htmlhint` to check HTML files using `.htmlhintrc`.
+- **CSS:**  
+  Run `npx stylelint "**/*.css"` to check CSS files using `.stylelintrc.json`.
+- **Editor Integration:**  
+  For best results, install the HTMLHint and Stylelint plugins in VSCode or your editor of choice.
+
+- **Note:**  
+  If you want to add JavaScript linting, consider adding ESLint and documenting it similarly.
+
+---
+
 ## Contributor Onboarding
 
 ### Branching Strategy
