@@ -6,18 +6,16 @@ This extension helps you extract vocabulary questions and context from Vocabular
 - [Supported Scenarios](#supported-scenarios)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
-   - [Component Diagram](#component-diagram)
-   - [Extraction Logic Flowchart](#extraction-logic-flowchart)
-   - [Component Architecture Diagram](#component-architecture-diagram)
+  - [Component Diagram](#component-diagram)
+  - [Extraction Logic Flowchart](#extraction-logic-flowchart)
+  - [Component Architecture Diagram](#component-architecture-diagram)
 - [Development & Contribution](#development--contribution)
-   - [Loading into Edge](#loading-into-edge)
-   - [Development](#development)
-   - [Contributor Onboarding](#contributor-onboarding)
-      - [Branching Strategy](#branching-strategy)
-      - [Feature Development Workflow](#feature-development-workflow)
-      - [Version Management](#version-management)
-      - [Release Process](#release-process)
-      - [Important Note About Version Sync Timing](#important-note-about-version-sync-timing)
+  - [Loading into Edge](#loading-into-edge)
+  - [Development](#development)
+  - [Contributor Onboarding](#contributor-onboarding)
+- [Modular CSS & UI Consistency](#modular-css--ui-consistency)
+- [Linting & Code Quality](#linting--code-quality)
+- [Limitations & Notifications](#limitations--notifications)
 - [Lessons Learned](#lessons-learned)
 
 A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
@@ -362,19 +360,19 @@ flowchart LR
 
 ## Lessons Learned
 
-- See `lesson_learned.md` for a detailed summary of implementation strategies and key takeaways.
+See [`lesson_learned.md`](lesson_learned.md) for a concise summary of implementation strategies, key takeaways, and unique architectural decisions. Redundant scenario and workflow details have been consolidated for clarity.
 
 ---
 
 ## Modular CSS & UI Consistency
 
-- When modularizing CSS, always preserve the original selector order, specificity, and cascade to avoid regressions.
-- Use `gap` for flexbox spacing, but remove default margins from buttons for pixel-perfect control.
+- When modularizing CSS, preserve selector order, specificity, and cascade to avoid regressions.
+- Use `gap` for flexbox spacing, and remove default margins from buttons for pixel-perfect control.
 - For theme-adaptive dropdown arrows, use CSS variables and set `background-image` on the correct selector.
-- Use `em` units for margin/padding when you want spacing to scale with font size (e.g., `margin: 0.5em 0;` for headings).
+- Use `em` units for margin/padding when you want spacing to scale with font size.
 - Control overall popup spacing with `body { padding: ... }` and use `padding-top` for space above absolutely positioned elements.
-- Always visually test after each modularization step in both light and dark themes.
-- Remove default browser margins from elements when you want precise control.
+- Visually test after each modularization step in both light and dark themes.
+- Remove default browser margins from elements for precise control.
 - Document modularization and spacing strategies in the codebase for future contributors.
 
 ---
@@ -392,107 +390,3 @@ flowchart LR
   If you want to add JavaScript linting, consider adding ESLint and documenting it similarly.
 
 ---
-
-## Contributor Onboarding
-
-### Branching Strategy
-```mermaid
-graph TD
-    A["main branch"] -->|"production-ready"| B["Release"]
-    C["Feature branch"] -->|"development"| D["New features"]
-    E["HOTFIX branch"] -->|"urgent fixes"| F["Critical bugs"]
-```
-
-**Branch Types:**
-- **main**: Stable, production-ready code
-- **feature**: For developing new features
-- **hotfix**: For critical bug fixes
-
-**Feature Development Workflow:**
-1. Create feature branch from main:
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b feat/your-feature-name
-   ```
-2. Develop and test changes.
-3. **Before each commit, review and update `README.md` and `lesson_learned.md` as needed:**
-   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
-   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
-   - Note all implementation or conceptual changes in `lesson_learned.md`.
-4. Stage and commit changes:
-   ```bash
-   git add .
-   git commit -m "your message"
-   ```
-5. Run the version sync script to ensure `manifest.json` matches `package.json`:
-   ```bash
-   node scripts/sync-version.js
-   ```
-   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
-6. Push branch to repository:
-   ```bash
-   git push origin feat/your-feature-name
-   ```
-7. Create pull request for review.
-8. Merge to main after approval.
-
-### Version Management
-This project uses a unified versioning system where:
-- `package.json` is the source of truth for the version
-- The extension version in `asking-expert/manifest.json` is automatically synchronized
-- Version updates are managed through `standard-version`
-
-
-### Release Process
-1. Run the release command to:
-   - Automatically synchronize manifest.json version from package.json
-   - Update `package.json` version based on commit types
-   - Generate/update `CHANGELOG.md`
-   - Commit version changes
-   - Create git tag
-   ```bash
-   npm run release
-   ```
-2. Push changes and tags to repository:
-   ```bash
-   git push --follow-tags
-   ```
-
-### Important Note About Version Sync Timing
-```mermaid
-graph LR
-    A["npm run release"] --> B["preversion script"]
-    B --> C["Sync current version to manifest.json"]
-    C --> D["Bump package.json version"]
-    D --> E["Generate changelog"]
-```
-
-This means:
-1. The sync script runs BEFORE version bump
-2. manifest.json gets the current version (before bump)
-3. package.json gets bumped to the new version
-4. This ensures manifest.json always matches the version that was just released
-
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Git as Git
-    participant NPM as npm
-    participant GH as GitHub
-    participant Script as Sync Script
-
-    Dev->>NPM: Run npm run release
-    NPM->>Script: Execute preversion script
-    Script->>Git: Sync manifest.json version
-    NPM->>Git: Update package.json version
-    NPM->>Git: Update CHANGELOG.md
-    NPM->>Git: Commit changes
-    NPM->>Git: Create version tag
-    Dev->>Git: Run git push --follow-tags
-    Git->>GH: Push code and tags
-```
-
----
-
-This extension is robust, user-friendly, and supports a wide range of question types on Vocabulary.com.
