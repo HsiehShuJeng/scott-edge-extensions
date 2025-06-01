@@ -1,0 +1,33 @@
+/* popup-tooltip.css: Tooltip and info popover styles */
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: var(--tooltip-width);
+  background-color: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  text-align: center;
+  border-radius: var(--button-radius);
+  padding: var(--main-padding);
+  position: absolute;
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  margin-left: calc(-1 * var(--tooltip-width) / 2);
+  box-shadow: var(--tooltip-shadow);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext a {
+  color: var(--tooltip-link, #1976d2);
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

@@ -1,0 +1,30 @@
+/* popup-error.css: Error highlight and notification styles */
+
+.error-highlight {
+  border: 2px solid #dc3545 !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.6) !important;
+  background: #ffeaea !important;
+  transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+
+.dark-theme .error-highlight {
+  background: #3a1a1a !important;
+}
+
+/* Notification popup (injected by JS) */
+.extension-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--notification-bg);
+  color: var(--notification-text);
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 10000;
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+
+.extension-notification.error {
+  background-color: var(--notification-error-bg);
+}

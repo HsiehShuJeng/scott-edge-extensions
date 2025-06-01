@@ -1,0 +1,125 @@
+/* popup-activity.css: Activity controls, dropdowns, input fields, vertical containers */
+
+/* Original working layout for activity-controls and children */
+.activity-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 6px;
+  min-height: 60px;
+  width: 100%;
+}
+
+.button-container-vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+}
+.button-container-vertical button { margin: 2px; }
+
+
+.activity-controls > .button-container-vertical {
+  flex: 1 1 0;
+  margin: 0;
+}
+
+.activity-controls > select.dropdown {
+  display: flex;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 0 8px 0 8px;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  text-align: center;
+  text-align-last: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: var(--main-color);
+  background-color: var(--background-color);
+  border: 1px solid #aaa;
+  background-image: var(--dropdown-arrow-svg-light);
+  background-repeat: no-repeat;
+  background-position: calc(100% - 7px) center;
+  background-size: 10px 10px;
+}
+
+.dark-theme .activity-controls > select.dropdown {
+  background-image: var(--dropdown-arrow-svg-dark);
+  border-color: #555;
+}
+
+.activity-controls > input[type="text"]#result-english,
+.activity-controls > input[type="text"]#result-korean {
+  flex: 2 1 0;
+  height: 48px;
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: 15px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  min-width: 0;
+  line-height: 48px;
+  margin: 0;
+}
+
+select.dropdown,
+input[type="text"] {
+  min-height: 32px;
+}
+
+select.dropdown {
+  color: var(--main-color);
+  background: var(--background-color);
+  border: 1px solid #aaa;
+}
+
+select.dropdown option {
+  text-align: center;
+}
+
+.dark-theme .activity-controls > select.dropdown {
+  background-image: var(--dropdown-arrow-svg-dark);
+  border-color: #555;
+}
+
+.input-control,
+select {
+  flex: 1;
+}
+
+.form-dropdown {
+  text-indent: 40%;
+}
+
+.dropdown-info {
+  position: absolute;
+  visibility: hidden;
+  text-align: left;
+  width: 100px;
+  background-color: var(--background-color);
+  color: var(--main-color);
+  border-radius: var(--button-radius);
+  padding: var(--main-padding);
+  box-shadow: var(--tooltip-shadow);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.dropdown:hover + .dropdown-info {
+  visibility: visible;
+  opacity: 1;
+}
+
+.activity-controls input[type="text"] {
+  padding: 0 10px;
+  line-height: 40px;
+}

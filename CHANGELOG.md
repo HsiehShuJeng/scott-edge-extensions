@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.9.1...v2.10.0) (2025-06-01)
+
+
+### Features
+
+* **ui:** add image prompt button and styling ([55c2659](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/55c2659298a8f4c4c395b3213ca44b19f48dd52c))
+
 ### [2.9.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.9.0...v2.9.1) (2025-05-31)
 
 ## [2.9.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.7.0...v2.9.0) (2025-05-31)

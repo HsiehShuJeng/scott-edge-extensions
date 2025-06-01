@@ -17,12 +17,20 @@ export function showNotification(message, isError = false, type = '') {
     const fullMessage = `${prefix}${message}`;
     const notification = document.createElement('div');
     notification.innerText = fullMessage;
+
+    // Use CSS variables for theme-aware notification
+    const computed = getComputedStyle(document.body);
+    const bg = isError
+        ? computed.getPropertyValue('--notification-error-bg') || '#FF0000'
+        : computed.getPropertyValue('--notification-bg') || '#4CAF50';
+    const color = computed.getPropertyValue('--notification-text') || '#fff';
+
     notification.style = `
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background-color: ${isError ? '#FF0000' : '#4CAF50'};
-        color: white;
+        background-color: ${bg};
+        color: ${color};
         padding: 10px;
         border-radius: 5px;
         z-index: 10000;
