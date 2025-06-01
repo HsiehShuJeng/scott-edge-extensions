@@ -163,4 +163,32 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         textareas.forEach(autoResize);
     });
+
+    // === Image Prompt Button Logic ===
+    const generateImageBtn = document.getElementById('generate_image');
+    const sentenceTextarea = document.getElementById('sentence');
+    if (generateImageBtn && sentenceTextarea) {
+        generateImageBtn.addEventListener('click', () => {
+            const value = sentenceTextarea.value.trim();
+            if (value) {
+                const prompt = `Generate an image, 16:9, matching the vibe of ${value}`;
+                navigator.clipboard.writeText(prompt).then(() => {
+                    showNotification('Image prompt copied to clipboard!');
+                }).catch(() => {
+                    showNotification('Failed to copy image prompt', true);
+                });
+            } else {
+                // Highlight textarea and show notification inside it
+                sentenceTextarea.classList.add('error-highlight');
+                const original = sentenceTextarea.value;
+                sentenceTextarea.value = "You need to fill a sentence or a context so that 'Build Image Prompt' can work";
+                sentenceTextarea.readOnly = true;
+                setTimeout(() => {
+                    sentenceTextarea.classList.remove('error-highlight');
+                    sentenceTextarea.value = original;
+                    sentenceTextarea.readOnly = false;
+                }, 4000);
+            }
+        });
+    }
 });

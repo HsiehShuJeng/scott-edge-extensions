@@ -6,8 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scott's Assistant for English Learning and Programming</title>
     <style>
+        .error-highlight {
+            border: 2px solid #dc3545 !important;
+            box-shadow: 0 0 8px rgba(220, 53, 69, 0.6) !important;
+            background: #ffeaea !important;
+            transition: box-shadow 0.3s, border-color 0.3s, background 0.3s;
+        }
+
+        .dark-theme .error-highlight {
+            background: #3a1a1a !important;
+        }
+
         /* Variables */
         :root {
+            --notification-bg: #4CAF50;
+            --notification-error-bg: #FF0000;
+            --notification-text: #fff;
             /* Light theme (default) */
             --flag-active-glow: #4cc9f0;
             --main-padding: 10px;
@@ -38,6 +52,9 @@
         }
 
         .dark-theme {
+            --notification-bg: #2e7d32;
+            --notification-error-bg: #b02a37;
+            --notification-text: #f0f0f0;
             --flag-active-glow: #90caf9;
 
             /* Dark theme */
@@ -230,6 +247,7 @@
             margin: 0 4px;
             width: 100%;
             min-width: 0;
+            font-size: clamp(12px, 1.2vw, 15px);
         }
 
         /* Compact and aligned activity-controls */
@@ -286,29 +304,45 @@
             border: 1px solid #aaa;
         }
 
-        .activity-controls > select.dropdown {
-            display: block; /* Override display:flex from parent's >* rule */
-            flex: 0 0 40px; /* Don't grow, don't shrink, basis is 40px */
-            width: 40px;    /* Explicit width */
-            height: 40px;   /* Explicit height */
-            padding: 0; /* Ensure no padding interferes with centering */
-            line-height: 40px; /* For vertical text centering */
+        .activity-controls>select.dropdown {
+            display: block;
+            /* Override display:flex from parent's >* rule */
+            flex: 0 0 40px;
+            /* Don't grow, don't shrink, basis is 40px */
+            width: 40px;
+            /* Explicit width */
+            height: 40px;
+            /* Explicit height */
+            padding: 0;
+            /* Ensure no padding interferes with centering */
+            line-height: 40px;
+            /* For vertical text centering */
             border-radius: 8px;
             font-size: 15px;
             box-sizing: border-box;
-            text-align: center; /* Horizontal centering */
-            text-align-last: center; /* Ensures the last line is centered, useful for single-line select */
-            -webkit-appearance: none; /* For Safari/Chrome */
-            -moz-appearance: none;    /* For Firefox */
+            text-align: center;
+            /* Horizontal centering */
+            text-align-last: center;
+            /* Ensures the last line is centered, useful for single-line select */
+            -webkit-appearance: none;
+            /* For Safari/Chrome */
+            -moz-appearance: none;
+            /* For Firefox */
             appearance: none;
-            background-image: var(--dropdown-arrow-svg-light); /* Default to light arrow */
+            background-image: var(--dropdown-arrow-svg-light);
+            /* Default to light arrow */
             background-repeat: no-repeat;
-            background-position: calc(100% - 7px) center; /* Position arrow to the right */
-            background-size: 10px 10px; /* Adjust size of the arrow */
+            background-position: calc(100% - 7px) center;
+            /* Position arrow to the right */
+            background-size: 10px 10px;
+            /* Adjust size of the arrow */
             /* Inherited styles like color, background-color, border will still apply */
-            color: var(--main-color); /* Ensure text color is applied */
-            background-color: var(--background-color); /* Ensure background color is applied */
-            border: 1px solid #aaa; /* Ensure border is visible */
+            color: var(--main-color);
+            /* Ensure text color is applied */
+            background-color: var(--background-color);
+            /* Ensure background color is applied */
+            border: 1px solid #aaa;
+            /* Ensure border is visible */
         }
 
         /* Ensure options are also centered if possible, though browser support varies */
@@ -317,13 +351,22 @@
             /* For some browsers, you might need to style options more directly if they don't inherit */
         }
 
-        .dark-theme .activity-controls > select.dropdown {
+        .dark-theme .activity-controls>select.dropdown {
             background-image: var(--dropdown-arrow-svg-dark);
-            border-color: #555; /* Adjusted border color for dark theme */
+            border-color: #555;
+            /* Adjusted border color for dark theme */
         }
 
         /* Button containers */
-        .button-container,
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
+            height: 136px;
+            width: 100%;
+        }
+
         .korean-buttons {
             display: flex;
             gap: 8px;
@@ -395,6 +438,12 @@
         }
 
         .button-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
+            height: 136px;
+            width: 100%;
             margin-bottom: 4px;
             /* Further reduced space below button group */
         }
@@ -577,6 +626,7 @@
         <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
         <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
             <button id="generate" class="modern-btn">Build Contextual Prompt</button>
+            <button id="generate_image" class="modern-btn">Build Image Prompt</button>
             <button id="translate_zh" class="modern-btn">Translate to Traditional Chinese</button>
             <button id="translate_en" class="modern-btn">Translate to English</button>
         </div>
