@@ -1,0 +1,11 @@
+/* popup-theme.css: Theme-specific overrides and dark mode */
+
+:root {
+  /* Light theme is default, variables are in popup-base.css */
+}
+
+.dark-theme {
+  /* Only theme-specific overrides here if not in base */
+  /* Example: */
+  /* --main-color, --background-color, --highlight-color, etc. */
+}
