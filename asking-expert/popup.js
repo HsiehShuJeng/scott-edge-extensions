@@ -1,10 +1,13 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
 
-import { updateActiveFlag } from './ui.js';
 
-
-// Theme toggle functionality
+/**
+ * Sets up theme toggle functionality with automatic dark mode detection
+ * Dark mode is automatically enabled between 18:00-06:00 if no preference is saved
+ * @function setupThemeToggle
+ * @returns {void}
+ */
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
     
@@ -33,7 +36,12 @@ function setupThemeToggle() {
     });
 }
 
-// Add event listeners for commit buttons
+/**
+ * Sets up event listeners for commit message generation buttons
+ * Generates enhanced conventional commit prompts for different change types
+ * @function setupCommitButtons
+ * @returns {void}
+ */
 function setupCommitButtons() {
     const commitButtons = document.querySelectorAll('.commit-btn');
     commitButtons.forEach(button => {
@@ -41,39 +49,67 @@ function setupCommitButtons() {
             const commandType = this.getAttribute('data-command');
             let commandString = '';
             
+            // Enhanced conventional commit rules
+            const baseRules = `Generate a conventional commit message following these enhanced rules:
+
+STRUCTURE:
+- Format: <type>[optional scope]: <description>
+- Optional body and footer sections
+
+TYPES (prioritized):
+- feat: new features or capabilities
+- fix: bug fixes or corrections  
+- docs: documentation only changes
+- style: formatting, missing semicolons (no code change)
+- refactor: code change that neither fixes bug nor adds feature
+- perf: performance improvements
+- test: adding missing tests or correcting existing tests
+- build: changes affecting build system or dependencies
+- ci: changes to CI configuration files and scripts
+- chore: other changes that don't modify src or test files
+- revert: reverts a previous commit
+
+GUIDELINES:
+- Subject line: imperative mood, no period, under 50 chars
+- Body: wrap at 72 characters, use present tense
+- Include breaking changes in footer with 'BREAKING CHANGE:'
+- Reference issues with 'Closes #123' or 'Fixes #456'
+- Use scope for component/module (e.g., auth, ui, api)
+
+EXAMPLES:
+- feat(auth): add user login validation
+- fix(ui): resolve button alignment on mobile
+- docs: update API documentation for v2.0
+- style: format code according to eslint rules
+- refactor(core): simplify authentication logic`;
+            
             switch (commandType) {
                 case '1':
-                    commandString = `echo "Generate a conventional commit message for these unstaged changes. Follow these rules:
-- Use format: <type>(<scope>): <subject>
-- Keep subject under 50 characters
-- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
-- Wrap body at 72 characters
-- Use hyphen for bullet points with blank lines between
-- Include change details from: $(git diff --word-diff)
-- Valid types: feat, fix, docs, style, refactor, perf, test, chore
-- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
+                    commandString = `echo "${baseRules}
+
+ANALYZE THESE UNSTAGED CHANGES:
+$(git diff --word-diff --stat)
+
+DETAILED CHANGES:
+$(git diff --word-diff)" | pbcopy`;
                     break;
                 case '2':
-                    commandString = `echo "Generate a conventional commit message for these staged changes. Follow these rules:
-- Use format: <type>(<scope>): <subject>
-- Keep subject under 50 characters
-- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
-- Wrap body at 72 characters
-- Use hyphen for bullet points with blank lines between
-- Include change details from: $(git diff --cached --word-diff)
-- Valid types: feat, fix, docs, style, refactor, perf, test, chore
-- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
+                    commandString = `echo "${baseRules}
+
+ANALYZE THESE STAGED CHANGES:
+$(git diff --cached --word-diff --stat)
+
+DETAILED CHANGES:
+$(git diff --cached --word-diff)" | pbcopy`;
                     break;
                 case '3':
-                    commandString = `echo "Generate a conventional commit message for these range changes. Follow these rules:
-- Use format: <type>(<scope>): <subject>
-- Keep subject under 50 characters
-- Use imperative mood (e.g., 'Fix bug' not 'Fixed bug')
-- Wrap body at 72 characters
-- Use hyphen for bullet points with blank lines between
-- Include change details from: $(git diff main..HEAD -- . ':(exclude)**/yarn.lock')
-- Valid types: feat, fix, docs, style, refactor, perf, test, chore
-- Add scope if applicable (e.g., ui, api, config)" | pbcopy`;
+                    commandString = `echo "${baseRules}
+
+ANALYZE THESE RANGE CHANGES:
+$(git diff main..HEAD --stat -- . ':(exclude)**/yarn.lock' ':(exclude)**/package-lock.json')
+
+DETAILED CHANGES:
+$(git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/package-lock.json')" | pbcopy`;
                     break;
                 default:
                     return;
@@ -81,11 +117,11 @@ function setupCommitButtons() {
             
             navigator.clipboard.writeText(commandString).then(() => {
                 const types = {
-                    '1': 'Unstaged Changes',
-                    '2': 'Staged Changes',
-                    '3': 'Range Changes'
+                    '1': 'Unstaged Changes Analysis',
+                    '2': 'Staged Changes Analysis', 
+                    '3': 'Range Changes Analysis'
                 };
-                showNotification('Commit message command copied to clipboard!', false, types[commandType]);
+                showNotification(`${types[commandType]} prompt copied!`, false, 'Conventional Commits');
             }).catch(err => {
                 showNotification('Error copying to clipboard!', true);
             });
@@ -93,8 +129,13 @@ function setupCommitButtons() {
     });
 }
 
+/**
+ * Handles Chrome runtime messages for command execution
+ * Processes EXECUTE_COMMAND type messages and generates AI prompts
+ * @param {Object} request - The message request object
+ */
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function(request) {
         if (request.type === 'EXECUTE_COMMAND') {
             const command = request.command;
             (async () => {
@@ -114,6 +155,12 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+/**
+ * Executes shell commands via Chrome extension messaging
+ * @param {string} command - The shell command to execute
+ * @returns {Promise<Object>} Promise resolving to command execution result
+ * @throws {Error} When command execution fails
+ */
 async function executeCommand(command) {
     try {
         const result = await new Promise((resolve, reject) => {
@@ -137,11 +184,12 @@ async function executeCommand(command) {
     }
 }
 
-// initializeUI();
-// setupCommitButtons();
-// setupThemeToggle();
 
-// Textarea auto-resize function
+/**
+ * Auto-resizes textarea height based on content
+ * @param {HTMLTextAreaElement} textarea - The textarea element to resize
+ * @returns {void}
+ */
 export function autoResize(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
