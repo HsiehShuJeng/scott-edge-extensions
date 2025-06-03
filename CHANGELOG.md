@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.11.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.10.1...v2.11.0) (2025-06-03)
+
+
+### Features
+
+* **popup:** add enhanced commit rules templates ([24e8282](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/24e8282100315ff69ebc5e36f27894b8d95bde42))
+
 ### [2.10.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.10.0...v2.10.1) (2025-06-01)
 
 ## [2.10.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.9.1...v2.10.0) (2025-06-01)
