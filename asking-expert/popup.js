@@ -1,8 +1,6 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
 
-import { updateActiveFlag } from './ui.js';
-
 
 /**
  * Sets up theme toggle functionality with automatic dark mode detection
@@ -135,11 +133,9 @@ $(git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/pa
  * Handles Chrome runtime messages for command execution
  * Processes EXECUTE_COMMAND type messages and generates AI prompts
  * @param {Object} request - The message request object
- * @param {Object} sender - The sender information
- * @param {Function} sendResponse - Response callback function
  */
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
+    function(request) {
         if (request.type === 'EXECUTE_COMMAND') {
             const command = request.command;
             (async () => {
