@@ -4,7 +4,12 @@ import { showNotification } from './utils.js';
 import { updateActiveFlag } from './ui.js';
 
 
-// Theme toggle functionality
+/**
+ * Sets up theme toggle functionality with automatic dark mode detection
+ * Dark mode is automatically enabled between 18:00-06:00 if no preference is saved
+ * @function setupThemeToggle
+ * @returns {void}
+ */
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
     
@@ -33,7 +38,12 @@ function setupThemeToggle() {
     });
 }
 
-// Add event listeners for commit buttons
+/**
+ * Sets up event listeners for commit message generation buttons
+ * Generates enhanced conventional commit prompts for different change types
+ * @function setupCommitButtons
+ * @returns {void}
+ */
 function setupCommitButtons() {
     const commitButtons = document.querySelectorAll('.commit-btn');
     commitButtons.forEach(button => {
@@ -121,6 +131,13 @@ $(git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/pa
     });
 }
 
+/**
+ * Handles Chrome runtime messages for command execution
+ * Processes EXECUTE_COMMAND type messages and generates AI prompts
+ * @param {Object} request - The message request object
+ * @param {Object} sender - The sender information
+ * @param {Function} sendResponse - Response callback function
+ */
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         if (request.type === 'EXECUTE_COMMAND') {
@@ -142,6 +159,12 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
+/**
+ * Executes shell commands via Chrome extension messaging
+ * @param {string} command - The shell command to execute
+ * @returns {Promise<Object>} Promise resolving to command execution result
+ * @throws {Error} When command execution fails
+ */
 async function executeCommand(command) {
     try {
         const result = await new Promise((resolve, reject) => {
@@ -165,11 +188,12 @@ async function executeCommand(command) {
     }
 }
 
-// initializeUI();
-// setupCommitButtons();
-// setupThemeToggle();
 
-// Textarea auto-resize function
+/**
+ * Auto-resizes textarea height based on content
+ * @param {HTMLTextAreaElement} textarea - The textarea element to resize
+ * @returns {void}
+ */
 export function autoResize(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 300) + 'px';
