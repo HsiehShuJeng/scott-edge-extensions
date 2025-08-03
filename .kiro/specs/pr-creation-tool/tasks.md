@@ -7,7 +7,7 @@
   - Include responsive design and theme support (light/dark modes)
   - _Requirements: 3.1, 3.2, 3.3, 3.4_
 
-- [ ] 2. Add PR tools HTML structure to popup
+- [x] 2. Add PR tools HTML structure to popup
   - Insert PR tools section in `asking-expert/popup.html` after commit-tools div
   - Add textarea element with proper placeholder text and styling classes
   - Add generate button with consistent styling and accessibility attributes

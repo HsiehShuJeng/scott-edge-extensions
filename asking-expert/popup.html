@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="styles/popup-activity.css">
     <link rel="stylesheet" href="styles/popup-flags.css">
     <link rel="stylesheet" href="styles/popup-commit.css">
+    <link rel="stylesheet" href="styles/popup-pr.css">
 </head>
 
 <body>
@@ -106,6 +107,13 @@
         <button class="commit-btn" data-command="3">Range Changes</button>
     </div>
 
+    <div id="pr-tools" class="pr-tools-container">
+        <textarea id="pr-description" rows="4"
+            placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
+            class="input-control pr-textarea" aria-label="Pull request title and description"></textarea>
+        <button id="generate-pr-command" class="pr-btn" type="button"
+            aria-label="Generate pull request command">Generate PR Command</button>
+    </div>
 
     <div class="tooltip">
         <span id="credits">Icon Credits</span>
