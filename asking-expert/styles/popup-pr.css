@@ -1,0 +1,121 @@
+/* popup-pr.css: PR tools section styles */
+
+.pr-tools-container {
+  display: flex;
+  flex-direction: column;
+  background: var(--commit-tools-bg);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  gap: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.dark-theme .pr-tools-container {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.pr-textarea {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--main-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+  font-size: 14px;
+  padding: 10px;
+  resize: none;
+  min-height: 80px;
+  max-height: 200px;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.dark-theme .pr-textarea {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+}
+
+.pr-textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+}
+
+.dark-theme .pr-textarea:focus {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.pr-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.dark-theme .pr-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.pr-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--main-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  text-align: center;
+}
+
+.dark-theme .pr-btn {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+}
+
+.pr-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.pr-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .pr-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+  .pr-tools-container {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .pr-textarea {
+    font-size: 13px;
+    padding: 8px;
+    min-height: 70px;
+  }
+  
+  .pr-btn {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
