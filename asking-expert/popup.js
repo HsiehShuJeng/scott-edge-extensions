@@ -186,6 +186,61 @@ async function executeCommand(command) {
 
 
 /**
+ * Generates PR command with proper shell escaping
+ * @param {string} prText - The PR title and description text
+ * @returns {string} The formatted printf command
+ */
+function generatePRCommand(prText) {
+    // Escape single quotes for shell command
+    const escapedText = prText.replace(/'/g, "'\"'\"'");
+    
+    // Generate the printf command with git repository information extraction
+    const command = `printf "#create_pull_request\\n%b\\nowner: %s\\nrepo: %s\\nhead: %s\\nbase: %s\\n" '${escapedText}' "$(git config --get remote.origin.url | sed -E 's@.*:([^/]+)/.*@\\1@')" "$(git config --get remote.origin.url | sed -E 's@.*/([^/]+)\\.git@\\1@')" "$(git symbolic-ref --short HEAD)" "$(git remote show origin | awk '/HEAD branch/ {print $NF}')" | pbcopy`;
+    
+    return command;
+}
+
+/**
+ * Validates PR input text
+ * @param {string} text - The input text to validate
+ * @returns {boolean} True if valid, false otherwise
+ */
+function validatePRInput(text) {
+    return text && text.trim().length > 0;
+}
+
+/**
+ * Handles PR command generation button click
+ * Validates input, generates command, and copies to clipboard
+ * @returns {void}
+ */
+function handlePRGeneration() {
+    const textarea = document.getElementById('pr-description');
+    const prText = textarea.value;
+    
+    // Validate input
+    if (!validatePRInput(prText)) {
+        showNotification('Please enter PR title and description', true);
+        return;
+    }
+    
+    try {
+        // Generate the command
+        const command = generatePRCommand(prText);
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(command).then(() => {
+            showNotification('PR command copied to clipboard!', false, 'Pull Request');
+        }).catch(() => {
+            showNotification('Failed to copy command to clipboard', true);
+        });
+    } catch (error) {
+        console.error('Error generating PR command:', error);
+        showNotification('Error generating PR command', true);
+    }
+}
+
+/**
  * Auto-resizes textarea height based on content
  * @param {HTMLTextAreaElement} textarea - The textarea element to resize
  * @returns {void}

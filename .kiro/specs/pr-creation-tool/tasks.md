@@ -14,7 +14,7 @@
   - Link the new CSS stylesheet in the HTML head section
   - _Requirements: 1.1, 1.2, 1.3, 3.1, 3.2_
 
-- [ ] 3. Implement core PR command generation function
+- [x] 3. Implement core PR command generation function
   - Add `generatePRCommand()` function in `asking-expert/popup.js`
   - Implement proper shell escaping for special characters in PR text
   - Create printf command string with git repository information extraction
