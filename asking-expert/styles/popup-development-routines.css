@@ -5,15 +5,17 @@
   flex-direction: row !important;
   background: var(--commit-tools-bg);
   border-radius: 12px;
-  padding: 12px;
+  padding: 6px 8px;
   margin-bottom: 10px;
-  gap: 12px;
+  gap: 3px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
-  min-width: 0; /* Prevent flex items from overflowing */
-  align-items: stretch; /* Make sections same height */
+  min-width: 0;
+  /* Prevent flex items from overflowing */
+  align-items: stretch;
+  /* Make sections same height */
   flex-wrap: nowrap !important;
 }
 
@@ -24,23 +26,25 @@
 .dev-routine-section {
   display: flex !important;
   flex-direction: column !important;
-  flex: 1 1 50% !important; /* Equal width sections */
+  flex: 1 1 50% !important;
+  /* Equal width sections */
   gap: 10px;
-  min-width: 0; /* Prevent overflow */
-  width: 50%; /* Explicit width */
+  min-width: 0;
+  /* Prevent overflow */
+  width: 50%;
+  /* Explicit width */
 }
 
 .dev-routine-left {
   /* Left section for branch name suggestion */
   flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.1); /* Visual separator */
-  padding-right: 6px;
+  padding-right: 3px;
 }
 
 .dev-routine-right {
   /* Right section for PR command generation */
   flex-shrink: 0;
-  padding-left: 6px;
+  padding-left: 3px;
 }
 
 .dev-routine-textarea {
@@ -134,24 +138,25 @@
 @media (max-width: 250px) {
   #development-routines.development-routines-container {
     flex-direction: column !important;
-    gap: 10px;
+    gap: 4px;
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 350px) {
   #development-routines.development-routines-container {
-    padding: 8px;
-    gap: 8px;
+    /* top/bottom, left/right */
+    padding: 4px 6px !important;
+    gap: 2px !important;
   }
-  
+
   .dev-routine-textarea {
     font-size: 13px;
     padding: 8px;
     min-height: 70px;
   }
-  
+
   .dev-routine-btn {
     font-size: 13px;
-    padding: 10px;
+    padding: 8px;
   }
 }
