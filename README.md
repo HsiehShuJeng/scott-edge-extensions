@@ -1,9 +1,10 @@
-# Vocabulary.com Chrome Extension
+# Scott's Assistant for Language Learning and Programming
 
-This extension helps you extract vocabulary questions and context from Vocabulary.com and generate prompts for language learning and programming.
+This browser extension provides comprehensive assistance for language learners (English and Korean) and programmers. It extracts vocabulary questions and context from Vocabulary.com, generates optimized LLM prompts for language learning, and provides programming tools for commit message generation and pull request creation.
 
 ## Table of Contents
-- [Supported Scenarios](#supported-scenarios)
+- [Language Learning Features](#language-learning-features)
+- [Programming Features](#programming-features)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
   - [Component Diagram](#component-diagram)
@@ -18,11 +19,38 @@ This extension helps you extract vocabulary questions and context from Vocabular
 - [Limitations & Notifications](#limitations--notifications)
 - [Lessons Learned](#lessons-learned)
 
-A browser extension for language learners (English and Korean) and programmers, generating optimized LLM prompts for vocabulary in context and commit messages for code changes.
+---
+
+## Language Learning Features
+
+### English Learning
+- **Vocabulary extraction** from Vocabulary.com with context
+- **Etymology and part of speech** integration from Etymonline
+- **Contextual prompt generation** for LLM assistance
+- **Image prompt generation** for visual learning
+- **Translation to Traditional Chinese**
+
+### Korean Learning
+- **Korean sentence input** with contextual prompt generation
+- **Multi-line text support** for complex Korean content
+- **Integrated learning session management**
+
+## Programming Features
+
+### Commit Message Generation
+- **Current Changes Analysis**  
+Generate commit messages for unstaged changes (follows enhanced conventional commit standards with AI-optimized prompts)
+- **Staged Changes Analysis**  
+Generate commit messages for staged changes  
+- **Range Changes Analysis**  
+Generate commit messages for changes between branches
+
+### Pull Request Creation
+- **PR Command Generation** - Generate printf commands for PR creation (automatically extracts git repository information and outputs ready-to-execute shell commands)
 
 ---
 
-## Supported Scenarios
+## Language Learning Scenarios
 
 - **Single word**: e.g., `unenforceable`
 - **Single word with context sentence**: e.g., `aloof`  
@@ -36,7 +64,11 @@ A browser extension for language learners (English and Korean) and programmers, 
 ## UI Features
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
-- **Locality Dropdown Usability**: Locality dropdowns use native browser/OS styling for best usability. Centering of numbers is not forced, as some browsers/OSes do not permit it, but this ensures the most intuitive and accessible experience.
+- **Multi-language Support**: Dedicated sections for English and Korean learning
+- **Programming Tools**: Integrated commit message and PR creation tools
+- **Auto-resize Textareas**: Dynamic sizing for better content input
+- **Consistent Notifications**: Clear success/error feedback across all features
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
 
 ---
 
@@ -53,20 +85,48 @@ flowchart TD
     Etymology["Etymology Fetcher (etymology.js)"]
     Utils["Utilities (utils.js)"]
     PopupJS["Popup Bootstrap (popup.js)"]
+    CommitTools["Commit Tools"]
+    PRTools["PR Creation Tools"]
 
     UI -- interacts with --> PopupJS
     PopupJS -- initializes --> UI
     UI -- uses --> Session
     UI -- uses --> Translation
     UI -- uses --> Utils
+    UI -- uses --> CommitTools
+    UI -- uses --> PRTools
     Translation -- uses --> Etymology
     Translation -- fetches from --> ContentScript
     Session -- uses --> Utils
     ContentScript -- provides data to --> Translation
+    CommitTools -- generates --> Utils
+    PRTools -- generates --> Utils
     UI -- user actions --> UI
 ```
 
-### Extraction Logic Flowchart
+### Programming Tools Workflow
+
+```mermaid
+flowchart TD
+    Start(["User Input"])
+    Start --> CommitBtn["Commit Button Click"]
+    Start --> PRBtn["PR Button Click"]
+    
+    CommitBtn --> GitDiff["Generate Git Diff Command"]
+    GitDiff --> CopyCommit["Copy to Clipboard"]
+    
+    PRBtn --> ValidateInput["Validate PR Input"]
+    ValidateInput --> |"Valid"| GenerateCmd["Generate Printf Command"]
+    ValidateInput --> |"Invalid"| ShowError["Show Error Message"]
+    GenerateCmd --> CopyPR["Copy to Clipboard"]
+    
+    CopyCommit --> Notify["Show Success Notification"]
+    CopyPR --> Notify
+    ShowError --> End
+    Notify --> End(["Complete"])
+```
+
+### Language Learning Extraction Logic
 
 ```mermaid
 flowchart TD
