@@ -202,12 +202,29 @@ function generatePRCommand(prText) {
 }
 
 /**
- * Validates PR input text
+ * Validates PR input text with detailed error checking
  * @param {string} text - The input text to validate
- * @returns {boolean} True if valid, false otherwise
+ * @returns {Object} Validation result with isValid boolean and error message
  */
 function validatePRInput(text) {
-    return text && text.trim().length > 0;
+    if (!text) {
+        return { isValid: false, error: 'Please enter PR title and description' };
+    }
+    
+    const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+        return { isValid: false, error: 'PR description cannot be empty or just whitespace' };
+    }
+    
+    if (trimmedText.length < 3) {
+        return { isValid: false, error: 'PR description is too short (minimum 3 characters)' };
+    }
+    
+    if (trimmedText.length > 5000) {
+        return { isValid: false, error: 'PR description is too long (maximum 5000 characters)' };
+    }
+    
+    return { isValid: true, error: null };
 }
 
 /**
@@ -217,27 +234,54 @@ function validatePRInput(text) {
  */
 function handlePRGeneration() {
     const textarea = document.getElementById('pr-description');
+    
+    // Check if textarea element exists
+    if (!textarea) {
+        console.error('PR description textarea not found');
+        showNotification('Internal error: PR input field not found', true);
+        return;
+    }
+    
     const prText = textarea.value;
 
-    // Validate input
-    if (!validatePRInput(prText)) {
-        showNotification('Please enter PR title and description', true);
+    // Validate input with detailed error messages
+    const validation = validatePRInput(prText);
+    if (!validation.isValid) {
+        showNotification(validation.error, true);
+        // Focus the textarea to help user
+        textarea.focus();
         return;
     }
 
     try {
         // Generate the command string
         const command = generatePRCommand(prText);
+        
+        // Verify command was generated
+        if (!command || command.trim().length === 0) {
+            throw new Error('Generated command is empty');
+        }
 
-        // Copy to clipboard
+        // Check if clipboard API is available
+        if (!navigator.clipboard) {
+            showNotification('Clipboard API not available in this browser', true);
+            console.error('Clipboard API not supported');
+            return;
+        }
+
+        // Copy to clipboard with enhanced error handling
         navigator.clipboard.writeText(command).then(() => {
             showNotification('PR command copied to clipboard!', false, 'Pull Request');
-        }).catch(() => {
-            showNotification('Failed to copy command to clipboard', true);
+            console.log('PR command generated successfully');
+            console.log('Command length:', command.length, 'characters');
+            console.log('First 150 chars:', command.substring(0, 150) + '...');
+        }).catch((clipboardError) => {
+            console.error('Clipboard operation failed:', clipboardError);
+            showNotification('Failed to copy command to clipboard. Please try again.', true);
         });
     } catch (error) {
         console.error('Error generating PR command:', error);
-        showNotification('Error generating PR command', true);
+        showNotification(`Error generating PR command: ${error.message}`, true);
     }
 }
 
