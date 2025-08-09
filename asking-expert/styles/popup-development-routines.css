@@ -1,24 +1,54 @@
-/* popup-pr.css: PR tools section styles */
+/* popup-development-routines.css: Development routines section styles */
 
-.pr-tools-container {
-  display: flex;
-  flex-direction: column;
+#development-routines.development-routines-container {
+  display: flex !important;
+  flex-direction: row !important;
   background: var(--commit-tools-bg);
   border-radius: 12px;
-  padding: 12px;
+  /* top right bottom left */
+  padding: 6px 8px 2px 8px;
   margin-bottom: 10px;
-  gap: 10px;
+  gap: 3px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
+  min-width: 0;
+  /* Prevent flex items from overflowing */
+  align-items: stretch;
+  /* Make sections same height */
+  flex-wrap: nowrap !important;
 }
 
-.dark-theme .pr-tools-container {
+.dark-theme #development-routines.development-routines-container {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.pr-textarea {
+.dev-routine-section {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 50% !important;
+  /* Equal width sections */
+  gap: 10px;
+  min-width: 0;
+  /* Prevent overflow */
+  width: 50%;
+  /* Explicit width */
+}
+
+.dev-routine-left {
+  /* Left section for branch name suggestion */
+  flex-shrink: 0;
+  padding-right: 3px;
+}
+
+.dev-routine-right {
+  /* Right section for PR command generation */
+  flex-shrink: 0;
+  padding-left: 3px;
+}
+
+.dev-routine-textarea {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -33,36 +63,39 @@
   transition: all 0.3s ease;
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0px;
 }
 
-.dark-theme .pr-textarea {
+.dark-theme .dev-routine-textarea {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: #e0e0e0;
 }
 
-.pr-textarea:focus {
+.dev-routine-textarea:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.15);
   box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
 }
 
-.dark-theme .pr-textarea:focus {
+.dark-theme .dev-routine-textarea:focus {
   border-color: rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.05);
 }
 
-.pr-textarea::placeholder {
+.dev-routine-textarea::placeholder {
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
 
-.dark-theme .pr-textarea::placeholder {
+.dark-theme .dev-routine-textarea::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
 
-.pr-btn {
+.dev-routine-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -78,44 +111,55 @@
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.dark-theme .pr-btn {
+.dark-theme .dev-routine-btn {
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.05);
   color: #e0e0e0;
 }
 
-.pr-btn:hover {
+.dev-routine-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   background: rgba(255, 255, 255, 0.2);
 }
 
-.pr-btn:active {
+.dev-routine-btn:active {
   transform: translateY(0);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.dark-theme .pr-btn:hover {
+.dark-theme .dev-routine-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive adjustments */
-@media (max-width: 400px) {
-  .pr-tools-container {
-    padding: 8px;
-    gap: 8px;
+/* Responsive adjustments - only stack vertically on very small screens */
+@media (max-width: 250px) {
+  #development-routines.development-routines-container {
+    flex-direction: column !important;
+    gap: 4px;
   }
-  
-  .pr-textarea {
+}
+
+@media (max-width: 350px) {
+  #development-routines.development-routines-container {
+    /* top/bottom, left/right */
+    padding: 4px 6px !important;
+    gap: 2px !important;
+  }
+
+  .dev-routine-textarea {
     font-size: 13px;
     padding: 8px;
     min-height: 70px;
   }
-  
-  .pr-btn {
+
+  .dev-routine-btn {
     font-size: 13px;
-    padding: 10px;
+    padding: 8px;
+    margin-bottom: 3px;
   }
 }
