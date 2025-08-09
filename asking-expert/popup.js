@@ -191,8 +191,8 @@ async function executeCommand(command) {
  * @returns {string} The formatted printf command string for local execution
  */
 function generatePRCommand(prText) {
-    // Escape single quotes for shell command
-    const escapedText = prText.replace(/'/g, "'\"'\"'");
+    // Escape single quotes for shell command - simpler approach
+    const escapedText = prText.replace(/'/g, "'\\''");
 
     // Generate the printf command exactly as specified - this is a pure string
     // that will be copied to clipboard for the user to paste and execute locally
@@ -257,11 +257,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setupThemeToggle();
 
     // Setup auto-resize for textareas
-    const textareas = document.querySelectorAll('#sentence, #korean-word');
+    const textareas = document.querySelectorAll('#sentence, #korean-word, #pr-description');
     textareas.forEach(ta => {
         autoResize(ta); // Initial resize
         ta.addEventListener('input', () => autoResize(ta));
     });
+
+    // === PR Command Button Logic ===
+    const generatePRBtn = document.getElementById('generate-pr-command');
+    if (generatePRBtn) {
+        generatePRBtn.addEventListener('click', handlePRGeneration);
+    }
 
     // Also resize on window changes
     window.addEventListener('resize', () => {
