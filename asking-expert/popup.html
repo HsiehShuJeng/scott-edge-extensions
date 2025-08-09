@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="styles/popup-activity.css">
     <link rel="stylesheet" href="styles/popup-flags.css">
     <link rel="stylesheet" href="styles/popup-commit.css">
-    <link rel="stylesheet" href="styles/popup-pr.css">
+    <link rel="stylesheet" href="styles/popup-development-routines.css">
 </head>
 
 <body>
@@ -107,12 +107,24 @@
         <button class="commit-btn" data-command="3">Range Changes</button>
     </div>
 
-    <div id="pr-tools" class="pr-tools-container">
-        <textarea id="pr-description" rows="4"
-            placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
-            class="input-control pr-textarea" aria-label="Pull request title and description"></textarea>
-        <button id="generate-pr-command" class="pr-btn" type="button"
-            aria-label="Generate pull request command">Generate PR Command</button>
+    <div id="development-routines" class="development-routines-container">
+        <!-- Left side: Branch Name Suggestion -->
+        <div class="dev-routine-section dev-routine-left">
+            <textarea id="branch-description" rows="4"
+                placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
+                class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
+            <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
+                aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
+        </div>
+        
+        <!-- Right side: PR Command Generation (existing) -->
+        <div class="dev-routine-section dev-routine-right">
+            <textarea id="pr-description" rows="4"
+                placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
+                class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
+            <button id="generate-pr-command" class="dev-routine-btn" type="button"
+                aria-label="Generate pull request command">Generate PR Command</button>
+        </div>
     </div>
 
     <div class="tooltip">

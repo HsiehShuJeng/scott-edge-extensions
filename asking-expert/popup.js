@@ -186,6 +186,105 @@ async function executeCommand(command) {
 
 
 /**
+ * Generates branch naming prompt with user input and template
+ * @param {string} featureText - The feature description or bug report text
+ * @returns {string} The formatted prompt string for LLM input
+ */
+function generateBranchPrompt(featureText) {
+    const trimmedText = featureText.trim();
+    if (!trimmedText) {
+        return null;
+    }
+    
+    const prompt = `${trimmedText}\n\nBased on the above requirement(s), please suggest branch names for brainstorming and references. As development effort will be made based on the requirement.`;
+    
+    return prompt;
+}
+
+/**
+ * Validates branch description input text
+ * @param {string} text - The input text to validate
+ * @returns {Object} Validation result with isValid boolean and error message
+ */
+function validateBranchInput(text) {
+    if (!text) {
+        return { isValid: false, error: 'Please enter a feature description or bug report' };
+    }
+    
+    const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+        return { isValid: false, error: 'Feature description cannot be empty or just whitespace' };
+    }
+    
+    if (trimmedText.length < 3) {
+        return { isValid: false, error: 'Feature description is too short (minimum 3 characters)' };
+    }
+    
+    if (trimmedText.length > 2000) {
+        return { isValid: false, error: 'Feature description is too long (maximum 2000 characters)' };
+    }
+    
+    return { isValid: true, error: null };
+}
+
+/**
+ * Handles branch prompt generation button click
+ * Validates input, generates prompt, and copies to clipboard
+ * @returns {void}
+ */
+function handleBranchPromptGeneration() {
+    const textarea = document.getElementById('branch-description');
+    
+    // Check if textarea element exists
+    if (!textarea) {
+        console.error('Branch description textarea not found');
+        showNotification('Internal error: Branch input field not found', true);
+        return;
+    }
+    
+    const featureText = textarea.value;
+
+    // Validate input with detailed error messages
+    const validation = validateBranchInput(featureText);
+    if (!validation.isValid) {
+        showNotification(validation.error, true);
+        // Focus the textarea to help user
+        textarea.focus();
+        return;
+    }
+
+    try {
+        // Generate the prompt string
+        const prompt = generateBranchPrompt(featureText);
+        
+        // Verify prompt was generated
+        if (!prompt || prompt.trim().length === 0) {
+            throw new Error('Generated prompt is empty');
+        }
+
+        // Check if clipboard API is available
+        if (!navigator.clipboard) {
+            showNotification('Clipboard API not available in this browser', true);
+            console.error('Clipboard API not supported');
+            return;
+        }
+
+        // Copy to clipboard with enhanced error handling
+        navigator.clipboard.writeText(prompt).then(() => {
+            showNotification('Branch naming prompt copied to clipboard!', false, 'Branch Suggestion');
+            console.log('Branch prompt generated successfully');
+            console.log('Prompt length:', prompt.length, 'characters');
+        }).catch((clipboardError) => {
+            console.error('Clipboard operation failed:', clipboardError);
+            showNotification('Failed to copy prompt to clipboard. Please try again.', true);
+        });
+    } catch (error) {
+        console.error('Error generating branch prompt:', error);
+        showNotification(`Error generating branch prompt: ${error.message}`, true);
+    }
+}
+
+/**
  * Generates PR command with proper shell escaping
  * @param {string} prText - The PR title and description text
  * @returns {string} The formatted printf command string for local execution
@@ -301,11 +400,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setupThemeToggle();
 
     // Setup auto-resize for textareas
-    const textareas = document.querySelectorAll('#sentence, #korean-word, #pr-description');
+    const textareas = document.querySelectorAll('#sentence, #korean-word, #pr-description, #branch-description');
     textareas.forEach(ta => {
         autoResize(ta); // Initial resize
         ta.addEventListener('input', () => autoResize(ta));
     });
+
+    // === Branch Prompt Button Logic ===
+    const generateBranchPromptBtn = document.getElementById('generate-branch-prompt');
+    if (generateBranchPromptBtn) {
+        generateBranchPromptBtn.addEventListener('click', handleBranchPromptGeneration);
+    }
 
     // === PR Command Button Logic ===
     const generatePRBtn = document.getElementById('generate-pr-command');
