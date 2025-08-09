@@ -5,10 +5,14 @@ This browser extension provides comprehensive assistance for language learners (
 ## Table of Contents
 - [Language Learning Features](#language-learning-features)
 - [Programming Features](#programming-features)
+  - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
+  - [Pull Request Creation](#pull-request-creation)
+  - [Branch Naming Tools](#branch-naming-tools)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
   - [Component Diagram](#component-diagram)
-  - [Extraction Logic Flowchart](#extraction-logic-flowchart)
+  - [Programming Tools Workflow](#programming-tools-workflow)
+  - [Language Learning Extraction Logic](#language-learning-extraction-logic)
   - [Component Architecture Diagram](#component-architecture-diagram)
 - [Development & Contribution](#development--contribution)
   - [Loading into Edge](#loading-into-edge)
@@ -37,19 +41,63 @@ This browser extension provides comprehensive assistance for language learners (
 
 ## Programming Features
 
-### Commit Message Generation
+### Enhanced Commit Message Generation
 - **Current Changes Analysis**  
-Generate commit messages for unstaged changes (follows enhanced conventional commit standards with AI-optimized prompts)
+Generate commit messages for unstaged changes using `git diff --word-diff`
 - **Staged Changes Analysis**  
-Generate commit messages for staged changes  
+Generate commit messages for staged changes using `git diff --cached --word-diff`
 - **Range Changes Analysis**  
-Generate commit messages for changes between branches
+Generate commit messages for changes between branches using `git diff main..HEAD`
+- **AI-Optimized Prompt Generation**  
+Creates a structured prompt based on file changes and conventional commit rules for LLM processing.
+
+#### Conventional Commit Framework
+The extension implements comprehensive conventional commit rules with the following structure:
+
+**Format:** `<type>[optional scope]: <description>`
+
+**Supported Types (prioritized):**
+- `feat`: new features or capabilities
+- `fix`: bug fixes or corrections  
+- `docs`: documentation only changes
+- `style`: formatting, missing semicolons (no code change)
+- `refactor`: code change that neither fixes bug nor adds feature
+- `perf`: performance improvements
+- `test`: adding missing tests or correcting existing tests
+- `build`: changes affecting build system or dependencies
+- `ci`: changes to CI configuration files and scripts
+- `chore`: other changes that don't modify src or test files
+- `revert`: reverts a previous commit
+
+**Guidelines:**
+- Subject line: imperative mood, no period, under 50 characters
+- Body: wrap at 72 characters, use present tense
+- Include breaking changes in footer with `BREAKING CHANGE:`
+- Reference issues with `Closes #123` or `Fixes #456`
+- Use scope for component/module (e.g., auth, ui, api)
+
+**Examples:**
+- `feat(auth): add user login validation`
+- `fix(ui): resolve button alignment on mobile`
+- `docs: update API documentation for v2.0`
 
 ### Pull Request Creation
 - **PR Command Generation**  
-Generate printf commands for PR creation (automatically extracts git repository information and outputs ready-to-execute shell commands)
+Generate printf commands for PR creation with automatic git repository detection
+- **Shell Command Output**  
+Creates ready-to-execute commands that extract owner, repo, head, and base branch information
+- **Input Validation**  
+Validates PR descriptions (3-5000 characters) with detailed error messages
 
----
+### Branch Naming Tools
+- **Feature Description Input**  
+Generate branch naming suggestions based on feature descriptions or bug reports
+- **Input Validation**  
+Validates input length (3-2000 characters) and provides clear error messages
+- **Prompt Generation**  
+Creates structured prompts for LLM-assisted branch naming with development context
+
+
 
 ## Language Learning Scenarios
 
@@ -66,8 +114,8 @@ Generate printf commands for PR creation (automatically extracts git repository 
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Multi-language Support**: Dedicated sections for English and Korean learning
-- **Programming Tools**: Integrated commit message and PR creation tools
-- **Auto-resize Textareas**: Dynamic sizing for better content input
+- **Programming Tools**: Three-tier commit message generation, PR creation commands, and branch naming assistance
+- **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
 - **Accessibility**: Proper ARIA labels and keyboard navigation support
 
@@ -86,8 +134,9 @@ flowchart TD
     Etymology["Etymology Fetcher (etymology.js)"]
     Utils["Utilities (utils.js)"]
     PopupJS["Popup Bootstrap (popup.js)"]
-    CommitTools["Commit Tools"]
+    CommitTools["Enhanced Commit Tools"]
     PRTools["PR Creation Tools"]
+    BranchTools["Branch Naming Tools"]
 
     UI -- interacts with --> PopupJS
     PopupJS -- initializes --> UI
@@ -96,12 +145,14 @@ flowchart TD
     UI -- uses --> Utils
     UI -- uses --> CommitTools
     UI -- uses --> PRTools
+    UI -- uses --> BranchTools
     Translation -- uses --> Etymology
     Translation -- fetches from --> ContentScript
     Session -- uses --> Utils
     ContentScript -- provides data to --> Translation
     CommitTools -- generates --> Utils
     PRTools -- generates --> Utils
+    BranchTools -- generates --> Utils
     UI -- user actions --> UI
 ```
 
@@ -112,18 +163,33 @@ flowchart TD
     Start(["User Input"])
     Start --> CommitBtn["Commit Button Click"]
     Start --> PRBtn["PR Button Click"]
+    Start --> BranchBtn["Branch Button Click"]
     
-    CommitBtn --> GitDiff["Generate Git Diff Command"]
-    GitDiff --> CopyCommit["Copy to Clipboard"]
+    CommitBtn --> CommitType{"Select Commit Type"}
+    CommitType --> |"Current"| CurrentDiff["Generate Current Changes Diff"]
+    CommitType --> |"Staged"| StagedDiff["Generate Staged Changes Diff"]
+    CommitType --> |"Range"| RangeDiff["Generate Range Changes Diff"]
     
-    PRBtn --> ValidateInput["Validate PR Input"]
-    ValidateInput --> |"Valid"| GenerateCmd["Generate Printf Command"]
-    ValidateInput --> |"Invalid"| ShowError["Show Error Message"]
-    GenerateCmd --> CopyPR["Copy to Clipboard"]
+    CurrentDiff --> EnhancedRules["Apply Enhanced Conventional Commit Rules"]
+    StagedDiff --> EnhancedRules
+    RangeDiff --> EnhancedRules
+    EnhancedRules --> CopyCommit["Copy to Clipboard"]
+    
+    PRBtn --> ValidatePR["Validate PR Input"]
+    ValidatePR --> |"Valid"| GeneratePRCmd["Generate Printf Command"]
+    ValidatePR --> |"Invalid"| ShowPRError["Show Error Message"]
+    GeneratePRCmd --> CopyPR["Copy to Clipboard"]
+    
+    BranchBtn --> ValidateBranch["Validate Branch Input"]
+    ValidateBranch --> |"Valid"| GenerateBranchPrompt["Generate Branch Naming Prompt"]
+    ValidateBranch --> |"Invalid"| ShowBranchError["Show Error Message"]
+    GenerateBranchPrompt --> CopyBranch["Copy to Clipboard"]
     
     CopyCommit --> Notify["Show Success Notification"]
     CopyPR --> Notify
-    ShowError --> End
+    CopyBranch --> Notify
+    ShowPRError --> End
+    ShowBranchError --> End
     Notify --> End(["Complete"])
 ```
 
@@ -186,6 +252,14 @@ flowchart LR
 ### Development
 1. Make sure [Microsoft Edge DevTools extension](https://learn.microsoft.com/en-us/microsoft-edge/visual-studio-code/microsoft-edge-devtools-extension) is installed on VS code.
 2. When developing in VS Code, move to an HTML file, right click the file, and then choose 'Open with Edge' > 'Open Browser with DevTools'.
+
+#### Current Architecture
+- **Main extension files**: Located in `asking-expert/` directory
+- **Popup interface**: `popup.html`, `popup.js` (main bootstrap)
+- **Content scripts**: `content.js` (page interaction)
+- **Modular components**: `ui.js`, `translation.js`, `session.js`, `utils.js`, `etymology.js`
+- **Styling**: Modular CSS files in `asking-expert/styles/` directory
+- **Programming tools**: Integrated commit, PR, and branch naming functionality
 
 ### Contributor Onboarding
 
