@@ -12,6 +12,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Please run the following linting checks for my browser extension:\n1. Run HTML linting:\n   echo \"🔍 Running HTML linting...\"\n   npx htmlhint asking-expert/popup.html\n2. Run CSS linting:\n   echo \"🔍 Running CSS linting...\"\n   npx stylelint \"asking-expert/styles/*.css\"\nPlease execute these commands and let me know if there are any style issues that need to be fixed before I create a pull request."
+    "prompt": "Please run the following linting checks for my browser extension:\n1. Run HTML linting:\n   echo \"🔍 Running HTML linting...\"\n   npx htmlhint asking-expert/popup.html\n2. Run CSS linting:\n   echo \"🔍 Running CSS linting...\"\n   npx stylelint \"asking-expert/styles/*.css\"\nPlease execute these commands and let me know if there are any style issues that need to be fixed before I create a pull request. There will 4 commands to be executed. DO NOT COMBINE THEM TO EXECUTE WITHOUT MY ADDITIONAL ORDER."
   }
 }

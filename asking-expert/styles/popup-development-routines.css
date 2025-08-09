@@ -5,7 +5,8 @@
   flex-direction: row !important;
   background: var(--commit-tools-bg);
   border-radius: 12px;
-  padding: 6px 8px;
+  /* top right bottom left */
+  padding: 6px 8px 2px 8px;
   margin-bottom: 10px;
   gap: 3px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -64,6 +65,7 @@
   backdrop-filter: blur(5px);
   width: 100%;
   box-sizing: border-box;
+  margin-bottom: 0px;
 }
 
 .dark-theme .dev-routine-textarea {
@@ -158,5 +160,6 @@
   .dev-routine-btn {
     font-size: 13px;
     padding: 8px;
+    margin-bottom: 3px;
   }
 }
