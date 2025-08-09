@@ -46,7 +46,8 @@ Generate commit messages for staged changes
 Generate commit messages for changes between branches
 
 ### Pull Request Creation
-- **PR Command Generation** - Generate printf commands for PR creation (automatically extracts git repository information and outputs ready-to-execute shell commands)
+- **PR Command Generation**  
+Generate printf commands for PR creation (automatically extracts git repository information and outputs ready-to-execute shell commands)
 
 ---
 
