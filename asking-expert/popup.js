@@ -10,7 +10,7 @@ import { showNotification } from './utils.js';
  */
 function setupThemeToggle() {
     const themeToggle = document.getElementById('theme-toggle');
-    
+
     // Load saved theme or determine by time if not set
     chrome.storage.local.get('theme', (data) => {
         let theme = data.theme;
@@ -45,10 +45,10 @@ function setupThemeToggle() {
 function setupCommitButtons() {
     const commitButtons = document.querySelectorAll('.commit-btn');
     commitButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function () {
             const commandType = this.getAttribute('data-command');
             let commandString = '';
-            
+
             // Enhanced conventional commit rules
             const baseRules = `Generate a conventional commit message following these enhanced rules:
 
@@ -82,7 +82,7 @@ EXAMPLES:
 - docs: update API documentation for v2.0
 - style: format code according to eslint rules
 - refactor(core): simplify authentication logic`;
-            
+
             switch (commandType) {
                 case '1':
                     commandString = `echo "${baseRules}
@@ -114,11 +114,11 @@ $(git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/pa
                 default:
                     return;
             }
-            
+
             navigator.clipboard.writeText(commandString).then(() => {
                 const types = {
                     '1': 'Unstaged Changes Analysis',
-                    '2': 'Staged Changes Analysis', 
+                    '2': 'Staged Changes Analysis',
                     '3': 'Range Changes Analysis'
                 };
                 showNotification(`${types[commandType]} prompt copied!`, false, 'Conventional Commits');
@@ -135,7 +135,7 @@ $(git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/pa
  * @param {Object} request - The message request object
  */
 chrome.runtime.onMessage.addListener(
-    function(request) {
+    function (request) {
         if (request.type === 'EXECUTE_COMMAND') {
             const command = request.command;
             (async () => {
@@ -167,7 +167,7 @@ async function executeCommand(command) {
             chrome.runtime.sendMessage({
                 type: 'EXECUTE_COMMAND_TOOL',
                 command: command
-            }, function(response) {
+            }, function (response) {
                 if (response && response.output) {
                     resolve({ output: response.output });
                 } else if (response && response.error) {
@@ -188,15 +188,16 @@ async function executeCommand(command) {
 /**
  * Generates PR command with proper shell escaping
  * @param {string} prText - The PR title and description text
- * @returns {string} The formatted printf command
+ * @returns {string} The formatted printf command string for local execution
  */
 function generatePRCommand(prText) {
     // Escape single quotes for shell command
     const escapedText = prText.replace(/'/g, "'\"'\"'");
-    
-    // Generate the printf command with git repository information extraction
+
+    // Generate the printf command exactly as specified - this is a pure string
+    // that will be copied to clipboard for the user to paste and execute locally
     const command = `printf "#create_pull_request\\n%b\\nowner: %s\\nrepo: %s\\nhead: %s\\nbase: %s\\n" '${escapedText}' "$(git config --get remote.origin.url | sed -E 's@.*:([^/]+)/.*@\\1@')" "$(git config --get remote.origin.url | sed -E 's@.*/([^/]+)\\.git@\\1@')" "$(git symbolic-ref --short HEAD)" "$(git remote show origin | awk '/HEAD branch/ {print $NF}')" | pbcopy`;
-    
+
     return command;
 }
 
@@ -217,17 +218,17 @@ function validatePRInput(text) {
 function handlePRGeneration() {
     const textarea = document.getElementById('pr-description');
     const prText = textarea.value;
-    
+
     // Validate input
     if (!validatePRInput(prText)) {
         showNotification('Please enter PR title and description', true);
         return;
     }
-    
+
     try {
-        // Generate the command
+        // Generate the command string
         const command = generatePRCommand(prText);
-        
+
         // Copy to clipboard
         navigator.clipboard.writeText(command).then(() => {
             showNotification('PR command copied to clipboard!', false, 'Pull Request');
@@ -254,14 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeUI();
     setupCommitButtons();
     setupThemeToggle();
-    
+
     // Setup auto-resize for textareas
     const textareas = document.querySelectorAll('#sentence, #korean-word');
     textareas.forEach(ta => {
         autoResize(ta); // Initial resize
         ta.addEventListener('input', () => autoResize(ta));
     });
-    
+
     // Also resize on window changes
     window.addEventListener('resize', () => {
         textareas.forEach(autoResize);

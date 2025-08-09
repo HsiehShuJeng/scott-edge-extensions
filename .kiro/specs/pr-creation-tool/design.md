@@ -69,12 +69,6 @@ PR Creation Tool
 - Copies command to clipboard
 - Shows success/error notifications
 
-**extractGitInfo()**
-- Uses git commands to extract repository information
-- Handles owner/repo extraction from remote URL
-- Gets current branch and base branch information
-- Provides fallback values for missing information
-
 #### Command Generation Logic
 ```javascript
 const generatePRCommand = (prText) => {
@@ -82,6 +76,8 @@ const generatePRCommand = (prText) => {
     return `printf "#create_pull_request\\n%b\\nowner: %s\\nrepo: %s\\nhead: %s\\nbase: %s\\n" '${escapedText}' "$(git config --get remote.origin.url | sed -E 's@.*:([^/]+)/.*@\\1@')" "$(git config --get remote.origin.url | sed -E 's@.*/([^/]+)\\.git@\\1@')" "$(git symbolic-ref --short HEAD)" "$(git remote show origin | awk '/HEAD branch/ {print $NF}')" | pbcopy`;
 };
 ```
+
+**Note**: The function generates a pure command string that contains embedded shell commands. The git information extraction happens when the user executes the command locally in their terminal, not within the extension.
 
 ## Data Models
 
@@ -120,10 +116,10 @@ interface PRCommand {
 - **Whitespace Only**: Treat as empty input
 - **Special Characters**: Properly escape quotes and special shell characters
 
-### Git Information Extraction
-- **No Git Repository**: Show notification "Not in a git repository"
-- **No Remote Origin**: Show notification "No remote origin configured"
-- **Branch Detection Failure**: Use fallback values (current: "main", base: "main")
+### Command Generation
+- **Invalid Input**: Show notification for empty or whitespace-only input
+- **Command Generation**: Always succeeds since it's a pure string operation
+- **Git Information**: Extracted when user executes the command locally, not within extension
 
 ### Clipboard Operations
 - **Copy Failure**: Show notification "Failed to copy command to clipboard"
@@ -142,10 +138,10 @@ interface PRCommand {
    - Verify printf command format
    - Test with various input lengths and formats
 
-2. **Git Information Extraction**
-   - Mock git command responses
-   - Test URL parsing for different remote formats
-   - Test branch detection edge cases
+2. **Command String Generation**
+   - Test proper escaping of special characters in PR text
+   - Verify printf command format matches expected output
+   - Test with various input lengths and formats
 
 3. **Input Validation**
    - Empty input handling

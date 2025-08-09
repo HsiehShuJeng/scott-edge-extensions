@@ -45,10 +45,10 @@ This feature adds a Pull Request creation tool to the "Asking Expert" browser ex
 
 #### Acceptance Criteria
 
-1. IF git repository information cannot be extracted THEN the system SHALL display an appropriate error message
-2. IF the clipboard copy operation fails THEN the system SHALL notify the user of the failure
-3. WHEN an error occurs THEN the system SHALL not break the existing extension functionality
-4. WHEN the user provides invalid input THEN the system SHALL provide helpful guidance
+1. IF the clipboard copy operation fails THEN the system SHALL notify the user of the failure
+2. WHEN an error occurs THEN the system SHALL not break the existing extension functionality
+3. WHEN the user provides invalid input THEN the system SHALL provide helpful guidance
+4. WHEN command generation fails THEN the system SHALL display an appropriate error message
 
 ### Requirement 5
 
@@ -57,7 +57,7 @@ This feature adds a Pull Request creation tool to the "Asking Expert" browser ex
 #### Acceptance Criteria
 
 1. WHEN the command is generated THEN the system SHALL format it as a complete printf command with proper shell escaping
-2. WHEN the command includes repository details THEN the system SHALL extract owner and repo from git remote origin URL using sed commands
-3. WHEN the command includes branch information THEN the system SHALL use git symbolic-ref for current branch and git remote show for base branch
+2. WHEN the command includes repository details THEN the system SHALL embed sed commands to extract owner and repo from git remote origin URL
+3. WHEN the command includes branch information THEN the system SHALL embed git symbolic-ref and git remote show commands for branch detection
 4. WHEN the command is copied to clipboard THEN the user SHALL be able to paste and execute it directly in their terminal without modification
 5. WHEN the command is executed THEN the system SHALL output formatted text that can be used with PR creation tools and copy it to clipboard via pbcopy
