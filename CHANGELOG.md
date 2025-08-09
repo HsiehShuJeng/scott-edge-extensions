@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.12.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.11.0...v2.12.0) (2025-08-09)
+
+
+### Features
+
+* **pr-creation-tool:** complete PR command UI integration ([5dd1ee2](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/5dd1ee2f706fa6d5fbd684e257abb6630ca1d3a6))
+* **pr-creation-tool:** integrate PR tools UI into extension popup ([9595906](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/959590622684fd6b0d36920aaaaf636ce9879ef3))
+* **pr-tools:** add robust validation and copy UX ([9650b45](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/9650b45d434498bd5be5c16f80e2570cb8e51d8b))
+* **pr:** add PR command generation and input handling ([d56ccb5](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/d56ccb562399dba13b60bb7b78965ee756a96f7e))
+
 ## [2.11.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.10.1...v2.11.0) (2025-06-03)
 
 
