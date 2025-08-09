@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.13.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.12.0...v2.13.0) (2025-08-09)
+
+
+### Features
+
+* **pr-tools:** add branch name suggestion specs ([4099f25](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/4099f25cbbaff29648544a21082fa3e4a0816686))
+* **pr-tools:** add branch prompt gen and split layout ([1170cba](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/1170cba2b7320044eba7ed374e66d9864adaab0d))
+
 ## [2.12.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.11.0...v2.12.0) (2025-08-09)
 
 
