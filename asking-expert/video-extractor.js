@@ -7,7 +7,7 @@ import { showNotification } from './utils.js';
 
 /**
  * Extracts questions and options from the current page's HTML structure
- * @returns {Promise<string>} Formatted markdown string with questions and options
+ * @returns {Promise<string>} Formatted TSV string with Chinese instructions
  */
 export async function extractQuestionsFromPage() {
     try {
@@ -23,10 +23,10 @@ export async function extractQuestionsFromPage() {
             throw new Error('This feature only works on DeepSRT challenge pages');
         }
 
-        // Execute content script to extract questions
+        // Execute content script to extract questions and page info
         const results = await chrome.scripting.executeScript({
             target: { tabId: tab.id },
-            function: extractQuestionsFromDOM
+            function: extractQuestionsAndPageInfo
         });
 
         if (!results || !results[0] || !results[0].result) {
@@ -39,13 +39,17 @@ export async function extractQuestionsFromPage() {
             throw new Error(extractedData.error || 'Failed to extract questions');
         }
 
-        // Format the questions as markdown
-        const markdown = formatQuestionsAsMarkdown(extractedData.questions);
+        // Format the questions as TSV with Chinese instructions
+        const tsvOutput = formatQuestionsAsTSV(
+            extractedData.questions, 
+            extractedData.videoTitle, 
+            extractedData.videoUrl
+        );
         
         // Copy to clipboard
-        await navigator.clipboard.writeText(markdown);
+        await navigator.clipboard.writeText(tsvOutput);
         
-        return markdown;
+        return tsvOutput;
     } catch (error) {
         console.error('Error extracting questions:', error);
         throw error;
@@ -53,13 +57,28 @@ export async function extractQuestionsFromPage() {
 }
 
 /**
- * Content script function to extract questions from DOM
+ * Content script function to extract questions and page info from DOM
  * This function runs in the context of the webpage
- * @returns {Object} Extraction result with success status and questions data
+ * @returns {Object} Extraction result with success status, questions data, video title, and URL
  */
-function extractQuestionsFromDOM() {
+function extractQuestionsAndPageInfo() {
     try {
         const questions = [];
+        
+        // Extract video title from the page
+        const videoTitleEl = document.querySelector('.video-title');
+        const videoTitle = videoTitleEl ? videoTitleEl.textContent.trim() : '';
+        
+        // Extract video URL - try to get YouTube URL from the page
+        let videoUrl = '';
+        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
+        if (videoThumbnail) {
+            const src = videoThumbnail.src;
+            const videoIdMatch = src.match(/\/vi\/([^\/]+)\//);
+            if (videoIdMatch) {
+                videoUrl = `https://www.youtube.com/watch?v=${videoIdMatch[1]}`;
+            }
+        }
         
         // Find all question cards
         const questionCards = document.querySelectorAll('.question-card');
@@ -124,7 +143,9 @@ function extractQuestionsFromDOM() {
         return {
             success: true,
             questions: questions,
-            totalFound: questions.length
+            totalFound: questions.length,
+            videoTitle: videoTitle,
+            videoUrl: videoUrl
         };
     } catch (error) {
         return {
@@ -135,33 +156,62 @@ function extractQuestionsFromDOM() {
 }
 
 /**
- * Formats extracted questions as markdown
+ * Formats extracted questions as TSV with Chinese instructions
  * @param {Array} questions - Array of question objects
- * @returns {string} Formatted markdown string
+ * @param {string} videoTitle - Title of the video
+ * @param {string} videoUrl - URL of the video
+ * @returns {string} Formatted TSV string with Chinese instructions
  */
-function formatQuestionsAsMarkdown(questions) {
-    let markdown = '# DeepSRT Challenge Questions\n\n';
-    
-    questions.forEach((question, index) => {
-        markdown += `## Question ${question.number}\n\n`;
-        markdown += `${question.text}\n\n`;
+function formatQuestionsAsTSV(questions, videoTitle = '', videoUrl = '') {
+    const chineseInstructions = `請把上面的 10 道題目整理成 TSV（tab 分隔），以 MD 格式輸出資料本體、不要表頭、不要多餘解說。 固定 9 欄且順序為：Video Title、Question、Answer、Option A、Option B、Option C、Option D、Reason、Related URL with Timestamp
+
+規則：
+1. 只用 TAB 分隔；每題一列，正好 10 列。
+2. 若題目只有 A/B/C，Option D 一律填「無」。
+3. Answer 請填正確「選項文字」（不是 A/B/C/D）。
+4. Reason 僅一句話依據。
+5. 連結要加時間錨點 &t={秒}s。
+6. 題目或選項若有換行，改成單行（可用空白或 / 串接）。
+
+影片轉錄內容請參考上方影片 URL：${videoUrl}
+
+\`\`\`
+`;
+
+    // Process each question into TSV format
+    const tsvRows = questions.map((question, index) => {
+        // Clean text by removing line breaks and normalizing spaces
+        const cleanText = (text) => text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         
-        // Add options
-        Object.entries(question.options).forEach(([letter, text]) => {
-            markdown += `**${letter})** ${text}\n\n`;
-        });
+        const questionText = cleanText(question.text);
+        const optionA = cleanText(question.options.A || '');
+        const optionB = cleanText(question.options.B || '');
+        const optionC = cleanText(question.options.C || '');
+        const optionD = question.options.D ? cleanText(question.options.D) : '無';
         
-        // Add separator between questions (except for the last one)
-        if (index < questions.length - 1) {
-            markdown += '---\n\n';
-        }
+        // For now, we'll use placeholder values for Answer, Reason, and URL with timestamp
+        // These would need to be filled in manually or extracted from additional data
+        const answer = '待填入正確選項文字';
+        const reason = '待填入一句話依據';
+        const urlWithTimestamp = videoUrl ? `${videoUrl}&t=0s` : '待填入連結與時間錨點';
+        
+        // Create TSV row (tab-separated values)
+        return [
+            videoTitle,
+            questionText,
+            answer,
+            optionA,
+            optionB,
+            optionC,
+            optionD,
+            reason,
+            urlWithTimestamp
+        ].join('\t');
     });
     
-    // Add footer with extraction info
-    markdown += `\n*Extracted ${questions.length} questions from DeepSRT challenge page*\n`;
-    markdown += `*Generated on ${new Date().toLocaleString()}*\n`;
+    const tsvContent = tsvRows.join('\n');
     
-    return markdown;
+    return `${chineseInstructions}${tsvContent}\n\`\`\`\n\n*提取了 ${questions.length} 道題目*\n*生成時間：${new Date().toLocaleString()}*`;
 }
 
 /**
@@ -188,10 +238,10 @@ export async function handleExtractQuestions() {
         
         // Success state
         statusEl.className = 'status-message success';
-        statusEl.textContent = `Successfully extracted and copied questions to clipboard!`;
+        statusEl.textContent = `Successfully extracted and copied TSV format to clipboard!`;
         
         // Show notification
-        showNotification('Questions extracted and copied to clipboard!', false, 'Video Extractor');
+        showNotification('Questions extracted as TSV and copied to clipboard!', false, 'Video Extractor');
         
         // Reset button after delay
         setTimeout(() => {

@@ -38,7 +38,7 @@ function setupThemeToggle() {
 }
 
 /**
- * Sets up tab navigation functionality
+ * Sets up tab navigation functionality with hover switching
  * @function setupTabNavigation
  * @returns {void}
  */
@@ -46,20 +46,32 @@ function setupTabNavigation() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    function switchToTab(targetTab) {
+        // Remove active class from all buttons and contents
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabContents.forEach(content => content.classList.remove('active'));
+        
+        // Add active class to target button and corresponding content
+        const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
+        const targetContent = document.getElementById(`${targetTab}-tab`);
+        
+        if (targetButton && targetContent) {
+            targetButton.classList.add('active');
+            targetContent.classList.add('active');
+        }
+    }
+
     tabButtons.forEach(button => {
+        const targetTab = button.getAttribute('data-tab');
+        
+        // Click event for explicit selection
         button.addEventListener('click', () => {
-            const targetTab = button.getAttribute('data-tab');
-            
-            // Remove active class from all buttons and contents
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabContents.forEach(content => content.classList.remove('active'));
-            
-            // Add active class to clicked button and corresponding content
-            button.classList.add('active');
-            const targetContent = document.getElementById(`${targetTab}-tab`);
-            if (targetContent) {
-                targetContent.classList.add('active');
-            }
+            switchToTab(targetTab);
+        });
+        
+        // Hover event for preview switching
+        button.addEventListener('mouseenter', () => {
+            switchToTab(targetTab);
         });
     });
 }

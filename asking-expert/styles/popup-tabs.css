@@ -1,52 +1,81 @@
-/* Tab Navigation Styles */
+/* Tab Navigation Styles - Top-left positioned like browser tabs */
 .tab-navigation {
     display: flex;
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: 20px;
-    background-color: var(--background-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 
 .tab-button {
-    flex: 1;
-    padding: 12px 16px;
-    border: none;
-    background-color: transparent;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+    background-color: var(--background-color);
     color: var(--text-color);
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    border-radius: 8px 8px 0 0;
+    margin-right: 2px;
     position: relative;
+    min-width: 30px;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.tab-button:first-child {
+    margin-left: 10px;
 }
 
 .tab-button:hover {
-    background-color: var(--hover-color);
+    background-color: var(--active-tab-bg);
     color: var(--primary-color);
+    min-width: auto;
+    padding: 8px 16px;
+    z-index: 11;
 }
 
 .tab-button.active {
     color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
     background-color: var(--active-tab-bg);
     font-weight: 600;
+    border-color: var(--primary-color);
+    min-width: auto;
+    padding: 8px 16px;
 }
 
-.tab-button.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background-color: var(--primary-color);
-    border-radius: 2px 2px 0 0;
+/* Tab text - show abbreviated by default, full on hover/active */
+.tab-button .tab-text-short {
+    display: inline;
+}
+
+.tab-button .tab-text-full {
+    display: none;
+}
+
+.tab-button:hover .tab-text-short,
+.tab-button.active .tab-text-short {
+    display: none;
+}
+
+.tab-button:hover .tab-text-full,
+.tab-button.active .tab-text-full {
+    display: inline;
 }
 
 /* Tab Content Styles */
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
+    margin-top: 40px; /* Space for top-positioned tabs */
+    padding-top: 10px;
 }
 
 .tab-content.active {
