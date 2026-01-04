@@ -1,5 +1,6 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
+import { handleExtractQuestions } from './video-extractor.js';
 
 
 /**
@@ -37,11 +38,43 @@ function setupThemeToggle() {
 }
 
 /**
- * Sets up event listeners for commit message generation buttons
- * Generates enhanced conventional commit prompts for different change types
- * @function setupCommitButtons
+ * Sets up tab navigation functionality
+ * @function setupTabNavigation
  * @returns {void}
  */
+function setupTabNavigation() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.getAttribute('data-tab');
+            
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked button and corresponding content
+            button.classList.add('active');
+            const targetContent = document.getElementById(`${targetTab}-tab`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+        });
+    });
+}
+
+/**
+ * Sets up video extractor functionality
+ * @function setupVideoExtractor
+ * @returns {void}
+ */
+function setupVideoExtractor() {
+    const extractBtn = document.getElementById('extract-questions');
+    if (extractBtn) {
+        extractBtn.addEventListener('click', handleExtractQuestions);
+    }
+}
 function setupCommitButtons() {
     const commitButtons = document.querySelectorAll('.commit-btn');
     commitButtons.forEach(button => {
@@ -398,6 +431,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeUI();
     setupCommitButtons();
     setupThemeToggle();
+    setupTabNavigation();
+    setupVideoExtractor();
 
     // Setup auto-resize for textareas
     const textareas = document.querySelectorAll('#sentence, #korean-word, #pr-description, #branch-description');

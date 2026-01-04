@@ -2,10 +2,34 @@
 
 :root {
   /* Light theme is default, variables are in popup-base.css */
+  --text-color: var(--main-color);
+  --text-secondary: #666;
+  --border-color: #ddd;
+  --hover-color: #f5f5f5;
+  --primary-color: var(--highlight-color);
+  --active-tab-bg: #fff;
+  --success-bg: #d4edda;
+  --success-color: #155724;
+  --success-border: #c3e6cb;
+  --error-bg: #f8d7da;
+  --error-border: #f5c6cb;
+  --info-bg: #d1ecf1;
+  --info-color: #0c5460;
+  --info-border: #bee5eb;
 }
 
 .dark-theme {
   /* Only theme-specific overrides here if not in base */
-  /* Example: */
-  /* --main-color, --background-color, --highlight-color, etc. */
+  --text-secondary: #aaa;
+  --border-color: #555;
+  --hover-color: #333;
+  --active-tab-bg: #2a2a2a;
+  --success-bg: #1e3a1e;
+  --success-color: #4caf50;
+  --success-border: #2e5d2e;
+  --error-bg: #3d1f1f;
+  --error-border: #5d2f2f;
+  --info-bg: #1f2a3d;
+  --info-color: #4cc9f0;
+  --info-border: #2f3a5d;
 }

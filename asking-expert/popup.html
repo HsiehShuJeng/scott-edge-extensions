@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="styles/popup-flags.css">
     <link rel="stylesheet" href="styles/popup-commit.css">
     <link rel="stylesheet" href="styles/popup-development-routines.css">
+    <link rel="stylesheet" href="styles/popup-tabs.css">
 </head>
 
 <body>
@@ -91,13 +92,32 @@
         <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
         <button id="generate-korean" class="modern-btn">Build Contextual Prompt</button>
     </div>
-    <div class="flag-switcher">
-        <button class="flag-button" id="english-btn">
-            <img src="images/usa-flag.png" alt="USA Flag">
-        </button>
-        <button class="flag-button" id="korean-btn">
-            <img src="images/korean-flag.png" alt="Korean Flag">
-        </button>
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-button active" data-tab="language">Language</button>
+        <button class="tab-button" data-tab="video">Video</button>
+    </div>
+
+    <!-- Language Tab Content -->
+    <div id="language-tab" class="tab-content active">
+        <div class="flag-switcher">
+            <button class="flag-button" id="english-btn">
+                <img src="images/usa-flag.png" alt="USA Flag">
+            </button>
+            <button class="flag-button" id="korean-btn">
+                <img src="images/korean-flag.png" alt="Korean Flag">
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Tab Content -->
+    <div id="video-tab" class="tab-content">
+        <h2>Video Question Extractor</h2>
+        <div class="video-section">
+            <p class="instruction-text">Extract 10 questions and options from DeepSRT challenge pages</p>
+            <button id="extract-questions" class="modern-btn">Extract Questions from Current Page</button>
+            <div id="extraction-status" class="status-message"></div>
+        </div>
     </div>
 
     <h2>Scott's Assistant for Programming</h2>
