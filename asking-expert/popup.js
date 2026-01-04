@@ -1,6 +1,6 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
-import { handleExtractQuestions } from './video-extractor.js';
+import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction } from './video-extractor.js';
 
 
 /**
@@ -39,6 +39,7 @@ function setupThemeToggle() {
 
 /**
  * Sets up tab navigation functionality with hover switching
+ * Optimized for performance
  * @function setupTabNavigation
  * @returns {void}
  */
@@ -46,33 +47,54 @@ function setupTabNavigation() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
 
-    function switchToTab(targetTab) {
-        // Remove active class from all buttons and contents
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        tabContents.forEach(content => content.classList.remove('active'));
-        
-        // Add active class to target button and corresponding content
-        const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
-        const targetContent = document.getElementById(`${targetTab}-tab`);
-        
-        if (targetButton && targetContent) {
-            targetButton.classList.add('active');
-            targetContent.classList.add('active');
-        }
-    }
-
+    // Cache DOM elements for better performance
+    const tabMap = new Map();
     tabButtons.forEach(button => {
         const targetTab = button.getAttribute('data-tab');
+        const targetContent = document.getElementById(`${targetTab}-tab`);
+        tabMap.set(button, { targetTab, targetContent });
+    });
+
+    function switchToTab(targetTab) {
+        // Use requestAnimationFrame for smooth transitions
+        requestAnimationFrame(() => {
+            // Remove active class from all buttons and contents
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to target button and corresponding content
+            const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
+            const targetContent = document.getElementById(`${targetTab}-tab`);
+            
+            if (targetButton && targetContent) {
+                targetButton.classList.add('active');
+                targetContent.classList.add('active');
+            }
+        });
+    }
+
+    // Use event delegation for better performance
+    tabButtons.forEach(button => {
+        const { targetTab } = tabMap.get(button);
         
         // Click event for explicit selection
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
             switchToTab(targetTab);
-        });
+        }, { passive: true });
         
-        // Hover event for preview switching
+        // Hover event for preview switching with throttling
+        let hoverTimeout;
         button.addEventListener('mouseenter', () => {
-            switchToTab(targetTab);
-        });
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(() => {
+                switchToTab(targetTab);
+            }, 50); // Small delay to prevent excessive switching
+        }, { passive: true });
+        
+        button.addEventListener('mouseleave', () => {
+            clearTimeout(hoverTimeout);
+        }, { passive: true });
     });
 }
 
@@ -83,8 +105,27 @@ function setupTabNavigation() {
  */
 function setupVideoExtractor() {
     const extractBtn = document.getElementById('extract-questions');
+    const videoIdActionBtn = document.getElementById('video-id-action');
+    const videoIdInput = document.getElementById('video-id-input');
+    
     if (extractBtn) {
         extractBtn.addEventListener('click', handleExtractQuestions);
+    }
+    
+    if (videoIdActionBtn) {
+        videoIdActionBtn.addEventListener('click', handleVideoIdAction);
+    }
+    
+    // Auto-detect video ID when the popup opens if on a DeepSRT page
+    if (videoIdInput) {
+        autoDetectVideoId().then(videoId => {
+            if (videoId) {
+                videoIdInput.value = videoId;
+                videoIdInput.placeholder = 'Auto-detected from page';
+            }
+        }).catch(error => {
+            console.log('Could not auto-detect video ID:', error.message);
+        });
     }
 }
 function setupCommitButtons() {

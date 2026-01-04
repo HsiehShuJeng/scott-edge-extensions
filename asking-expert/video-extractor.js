@@ -6,11 +6,122 @@
 import { showNotification } from './utils.js';
 
 /**
+ * Auto-detects video ID from DeepSRT page and populates the input field
+ * @returns {Promise<string|null>} The detected video ID or null if not found
+ */
+export async function autoDetectVideoId() {
+    try {
+        // Get the active tab
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        
+        if (!tab) {
+            return null;
+        }
+
+        // Check if the page is a DeepSRT challenge page
+        if (!tab.url.includes('challenges.deepsrt.com/challenge/')) {
+            return null;
+        }
+
+        // Execute content script to extract video ID from page
+        const results = await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            function: extractVideoIdFromPage
+        });
+
+        if (results && results[0] && results[0].result) {
+            return results[0].result;
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error auto-detecting video ID:', error);
+        return null;
+    }
+}
+
+/**
+ * Content script function to extract video ID from DOM
+ * This function runs in the context of the webpage
+ * @returns {string|null} The extracted video ID or null if not found
+ */
+function extractVideoIdFromPage() {
+    try {
+        // Try to find video ID from img src attribute
+        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
+        if (videoThumbnail) {
+            const src = videoThumbnail.src;
+            const videoIdMatch = src.match(/\/vi\/([^\/]+)\//);
+            if (videoIdMatch) {
+                return videoIdMatch[1];
+            }
+        }
+
+        // Alternative: try to find video ID from any YouTube links on the page
+        const youtubeLinks = document.querySelectorAll('a[href*="youtube.com/watch"], a[href*="youtu.be/"]');
+        for (const link of youtubeLinks) {
+            const href = link.href;
+            let videoIdMatch = href.match(/[?&]v=([^&]+)/);
+            if (!videoIdMatch) {
+                videoIdMatch = href.match(/youtu\.be\/([^?]+)/);
+            }
+            if (videoIdMatch) {
+                return videoIdMatch[1];
+            }
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error extracting video ID from page:', error);
+        return null;
+    }
+}
+
+/**
+ * Handles the video ID action button click (copy ID and open YouTube)
+ * @returns {Promise<void>}
+ */
+export async function handleVideoIdAction() {
+    const videoIdInput = document.getElementById('video-id-input');
+    
+    if (!videoIdInput) {
+        console.error('Video ID input not found');
+        return;
+    }
+
+    const videoId = videoIdInput.value.trim();
+    
+    if (!videoId) {
+        showNotification('Please enter a video ID first', true, 'Video ID');
+        videoIdInput.focus();
+        return;
+    }
+
+    try {
+        // Copy video ID to clipboard
+        await navigator.clipboard.writeText(videoId);
+        
+        // Open YouTube video in new tab
+        const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+        await chrome.tabs.create({ url: youtubeUrl });
+        
+        showNotification('Video ID copied and YouTube opened!', false, 'Video ID');
+    } catch (error) {
+        console.error('Error handling video ID action:', error);
+        showNotification('Failed to copy ID or open YouTube', true, 'Video ID');
+    }
+}
+
+/**
  * Extracts questions and options from the current page's HTML structure
  * @returns {Promise<string>} Formatted TSV string with Chinese instructions
  */
 export async function extractQuestionsFromPage() {
     try {
+        // Get the video ID from the input field
+        const videoIdInput = document.getElementById('video-id-input');
+        const videoId = videoIdInput ? videoIdInput.value.trim() : '';
+        
         // Get the active tab
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         
@@ -39,11 +150,11 @@ export async function extractQuestionsFromPage() {
             throw new Error(extractedData.error || 'Failed to extract questions');
         }
 
-        // Format the questions as TSV with Chinese instructions
+        // Format the questions as TSV with Chinese instructions using video ID from input
         const tsvOutput = formatQuestionsAsTSV(
             extractedData.questions, 
             extractedData.videoTitle, 
-            extractedData.videoUrl
+            videoId
         );
         
         // Copy to clipboard
@@ -159,10 +270,12 @@ function extractQuestionsAndPageInfo() {
  * Formats extracted questions as TSV with Chinese instructions
  * @param {Array} questions - Array of question objects
  * @param {string} videoTitle - Title of the video
- * @param {string} videoUrl - URL of the video
+ * @param {string} videoId - Video ID from input field
  * @returns {string} Formatted TSV string with Chinese instructions
  */
-function formatQuestionsAsTSV(questions, videoTitle = '', videoUrl = '') {
+function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
+    const videoUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '';
+    
     const chineseInstructions = `請把上面的 10 道題目整理成 TSV（tab 分隔），以 MD 格式輸出資料本體、不要表頭、不要多餘解說。 固定 9 欄且順序為：Video Title、Question、Answer、Option A、Option B、Option C、Option D、Reason、Related URL with Timestamp
 
 規則：
@@ -234,7 +347,7 @@ export async function handleExtractQuestions() {
     statusEl.textContent = 'Extracting questions from current page...';
 
     try {
-        const markdown = await extractQuestionsFromPage();
+        const tsvOutput = await extractQuestionsFromPage();
         
         // Success state
         statusEl.className = 'status-message success';

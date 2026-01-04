@@ -134,6 +134,97 @@
     border: 1px solid var(--info-border);
 }
 
+/* Video ID Input Section Styles */
+.video-id-section {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.video-id-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.video-id-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.video-id-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    font-size: 14px;
+    font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-id-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-color-alpha);
+}
+
+.video-id-input::placeholder {
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+.video-id-action {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--button-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 40px;
+}
+
+.video-id-action:hover {
+    background-color: var(--button-hover-bg);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.video-id-action:active {
+    transform: translateY(0);
+}
+
+.video-id-action svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Extract Button Container - Centered */
+.extract-button-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.extract-btn {
+    min-width: 200px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
 /* Responsive adjustments for tabs */
 @media (max-width: 400px) {
     .tab-button {
@@ -143,5 +234,26 @@
     
     .instruction-text {
         font-size: 13px;
+    }
+    
+    .video-id-section {
+        margin: 15px 0;
+        padding: 12px;
+    }
+    
+    .video-id-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .video-id-action {
+        align-self: stretch;
+        min-width: auto;
+    }
+    
+    .extract-btn {
+        min-width: auto;
+        width: 100%;
+        padding: 12px 16px;
     }
 }
