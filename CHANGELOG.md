@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.17.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.17.0...v2.17.1) (2026-01-04)
+
 ### [2.16.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.16.0...v2.16.1) (2026-01-04)
 
 ## [2.13.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.12.0...v2.13.0) (2025-08-09)
