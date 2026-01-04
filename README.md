@@ -326,27 +326,18 @@ This project uses a unified versioning system where:
    ```
 
 #### Release Process
-1. Run the release command to:
-   - Automatically synchronize manifest.json version from package.json
-   - Update `package.json` version based on commit types
-   - Generate/update `CHANGELOG.md`
-   - Commit version changes
-   - Create git tag
+1. Commit your changes with conventional commit messages
+2. Upgrade version using the following workflow:
    ```bash
+   npm version minor  # or patch/major as needed
+   node scripts/sync-version.js
+   git commit -m "chore: bump version to X.X.X"  # X.X.X is dynamic
    npm run release
    ```
-2. Push changes and tags to repository:
+3. Push changes and tags to repository:
    ```bash
    git push --follow-tags
    ```
-3. Run the version sync script to ensure `manifest.json` matches the new version in `package.json`:
-   ```bash
-   node scripts/sync-version.js
-   git add asking-expert/manifest.json
-   git commit -m "chore: sync manifest version after release"
-   git push
-   ```
-   - If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun this script before proceeding.
 
 #### Important Note About Version Sync Timing
 ```mermaid
