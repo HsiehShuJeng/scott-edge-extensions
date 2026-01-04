@@ -327,15 +327,13 @@ This project uses a unified versioning system where:
 
 #### Release Process
 1. Commit your changes with conventional commit messages
-2. Upgrade version using the following workflow:
+2. Run the release workflow:
    ```bash
-   npm version minor  # or patch/major as needed
-   node scripts/sync-version.js
-   git commit -m "chore: bump version to X.X.X"  # X.X.X is dynamic
+   git commit -m "your message"
    npm run release
-   ```
-3. Push changes and tags to repository:
-   ```bash
+   node scripts/sync-version.js
+   git add .
+   git commit -m "chore: bump version to X.X.X"  # X.X.X is dynamic
    git push --follow-tags
    ```
 
