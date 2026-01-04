@@ -26,79 +26,13 @@
             <span class="moon">🌙</span>
         </label>
     </div>
-    <div id="english-section" class="english-section">
-        <h2>Scott's Assistant for English Learning</h2>
-        <div class="activity-controls">
-            <!-- Accessible button labels -->
-            <div class="button-container-vertical">
-                <button id="start-english" class="modern-btn" aria-label="Start English Session">Start</button>
-                <button id="end-english" class="modern-btn" aria-label="End English Session">Finish</button>
-            </div>
-
-            <!-- Label for dropdown -->
-            <label for="locality-dropdown"></label>
-            <select id="locality-dropdown" aria-label="Select locality code" class="dropdown">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <!-- Add more options as needed -->
-            </select>
-            <div class="dropdown-info">
-                1: Taipei Work<br>
-                2: Taipei Home<br>
-                3: Hualien Home
-            </div>
-
-            <!-- Label for result input -->
-            <label for="result-english"></label>
-            <input type="text" id="result-english" readonly aria-label="Session command result">
-        </div>
-        <input type="text" id="words" placeholder="Word" class="input-control">
-        <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
-        <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
-            <button id="generate" class="modern-btn">Build Contextual Prompt</button>
-            <button id="generate_image" class="modern-btn">Build Image Prompt</button>
-            <button id="translate_zh" class="modern-btn">Translate to Traditional Chinese</button>
-            <button id="translate_en" class="modern-btn">Translate to English</button>
-        </div>
-    </div>
-    <div id="korean-section">
-        <h2>Scott's Assistant for Korean Learning</h2>
-        <div class="activity-controls">
-            <!-- Accessible button labels -->
-            <div class="button-container-vertical">
-                <button id="start-korean" class="modern-btn" aria-label="Start Korean Session">Start</button>
-                <button id="end-korean" class="modern-btn" aria-label="End Korean Session">Finish</button>
-            </div>
-
-            <!-- Label for dropdown -->
-            <label for="locality-dropdown-korean"></label>
-            <select id="locality-dropdown-korean" aria-label="Select locality code" class="dropdown">
-                <option value="1" selected>1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <!-- Add more options as needed -->
-            </select>
-            <div class="dropdown-info">
-                1: Taipei Work<br>
-                2: Taipei Home<br>
-                3: Hualien Home
-            </div>
-
-            <!-- Label for result input -->
-            <label for="result-korean"></label>
-            <input type="text" id="result-korean" readonly aria-label="Session command result">
-        </div>
-        <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
-        <button id="generate-korean" class="modern-btn">Build Contextual Prompt</button>
-    </div>
     <!-- Tab Navigation -->
     <div class="tab-navigation">
-        <button class="tab-button active" data-tab="language">
+        <button class="tab-button active" data-tab="language" type="button">
             <span class="tab-text-short">L</span>
             <span class="tab-text-full">Language</span>
         </button>
-        <button class="tab-button" data-tab="video">
+        <button class="tab-button" data-tab="video" type="button">
             <span class="tab-text-short">V</span>
             <span class="tab-text-full">Video</span>
         </button>
@@ -107,12 +41,119 @@
     <!-- Language Tab Content -->
     <div id="language-tab" class="tab-content active">
         <div class="flag-switcher">
-            <button class="flag-button" id="english-btn">
+            <button class="flag-button" id="english-btn" type="button">
                 <img src="images/usa-flag.png" alt="USA Flag">
             </button>
-            <button class="flag-button" id="korean-btn">
+            <button class="flag-button" id="korean-btn" type="button">
                 <img src="images/korean-flag.png" alt="Korean Flag">
             </button>
+        </div>
+
+        <!-- English Learning Section -->
+        <div id="english-section" class="english-section">
+            <h2>Scott's Assistant for English Learning</h2>
+            <div class="activity-controls">
+                <!-- Accessible button labels -->
+                <div class="button-container-vertical">
+                    <button id="start-english" class="modern-btn" aria-label="Start English Session" type="button">Start</button>
+                    <button id="end-english" class="modern-btn" aria-label="End English Session" type="button">Finish</button>
+                </div>
+
+                <!-- Label for dropdown -->
+                <label for="locality-dropdown"></label>
+                <select id="locality-dropdown" aria-label="Select locality code" class="dropdown">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <!-- Add more options as needed -->
+                </select>
+                <div class="dropdown-info">
+                    1: Taipei Work<br>
+                    2: Taipei Home<br>
+                    3: Hualien Home
+                </div>
+
+                <!-- Label for result input -->
+                <label for="result-english"></label>
+                <input type="text" id="result-english" readonly aria-label="Session command result">
+            </div>
+            <input type="text" id="words" placeholder="Word" class="input-control">
+            <textarea id="sentence" rows="6" placeholder="Optional sentence (context)" class="input-control"></textarea>
+            <div class="button-container"> <!-- Wrapper for buttons for better styling control -->
+                <button id="generate" class="modern-btn" type="button">Build Contextual Prompt</button>
+                <button id="generate_image" class="modern-btn" type="button">Build Image Prompt</button>
+                <button id="translate_zh" class="modern-btn" type="button">Translate to Traditional Chinese</button>
+                <button id="translate_en" class="modern-btn" type="button">Translate to English</button>
+            </div>
+        </div>
+
+        <!-- Korean Learning Section -->
+        <div id="korean-section">
+            <h2>Scott's Assistant for Korean Learning</h2>
+            <div class="activity-controls">
+                <!-- Accessible button labels -->
+                <div class="button-container-vertical">
+                    <button id="start-korean" class="modern-btn" aria-label="Start Korean Session" type="button">Start</button>
+                    <button id="end-korean" class="modern-btn" aria-label="End Korean Session" type="button">Finish</button>
+                </div>
+
+                <!-- Label for dropdown -->
+                <label for="locality-dropdown-korean"></label>
+                <select id="locality-dropdown-korean" aria-label="Select locality code" class="dropdown">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <!-- Add more options as needed -->
+                </select>
+                <div class="dropdown-info">
+                    1: Taipei Work<br>
+                    2: Taipei Home<br>
+                    3: Hualien Home
+                </div>
+
+                <!-- Label for result input -->
+                <label for="result-korean"></label>
+                <input type="text" id="result-korean" readonly aria-label="Session command result">
+            </div>
+            <textarea id="korean-word" rows="6" placeholder="Korean Sentences (Words)" class="input-control"></textarea>
+            <button id="generate-korean" class="modern-btn" type="button">Build Contextual Prompt</button>
+        </div>
+
+        <!-- Programming Section -->
+        <h2>Scott's Assistant for Programming</h2>
+        <div id="commit-tools" class="commit-tools-container">
+            <button class="commit-btn" data-command="1" type="button">Current Changes</button>
+            <button class="commit-btn" data-command="2" type="button">Staged Changes</button>
+            <button class="commit-btn" data-command="3" type="button">Range Changes</button>
+        </div>
+
+        <div id="development-routines" class="development-routines-container">
+            <!-- Left side: Branch Name Suggestion -->
+            <div class="dev-routine-section dev-routine-left">
+                <textarea id="branch-description" rows="4"
+                    placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
+                    class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
+                <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
+                    aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
+            </div>
+            
+            <!-- Right side: PR Command Generation (existing) -->
+            <div class="dev-routine-section dev-routine-right">
+                <textarea id="pr-description" rows="4"
+                    placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
+                    class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
+                <button id="generate-pr-command" class="dev-routine-btn" type="button"
+                    aria-label="Generate pull request command">Generate PR Command</button>
+            </div>
+        </div>
+
+        <div class="tooltip">
+            <span id="credits">Icon Credits</span>
+            <div class="tooltiptext">
+                <a href="https://www.flaticon.com/free-icons/dictionary" target="_blank" rel="noopener">
+                    Dictionary icons created by Freepik - Flaticon
+                </a>
+            </div>
         </div>
     </div>
 
@@ -121,44 +162,8 @@
         <h2>Video Question Extractor</h2>
         <div class="video-section">
             <p class="instruction-text">Extract 10 questions and options from DeepSRT challenge pages</p>
-            <button id="extract-questions" class="modern-btn">Extract Questions from Current Page</button>
+            <button id="extract-questions" class="modern-btn" type="button">Extract Questions from Current Page</button>
             <div id="extraction-status" class="status-message"></div>
-        </div>
-    </div>
-
-    <h2>Scott's Assistant for Programming</h2>
-    <div id="commit-tools" class="commit-tools-container">
-        <button class="commit-btn" data-command="1">Current Changes</button>
-        <button class="commit-btn" data-command="2">Staged Changes</button>
-        <button class="commit-btn" data-command="3">Range Changes</button>
-    </div>
-
-    <div id="development-routines" class="development-routines-container">
-        <!-- Left side: Branch Name Suggestion -->
-        <div class="dev-routine-section dev-routine-left">
-            <textarea id="branch-description" rows="4"
-                placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
-                class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
-            <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
-                aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
-        </div>
-        
-        <!-- Right side: PR Command Generation (existing) -->
-        <div class="dev-routine-section dev-routine-right">
-            <textarea id="pr-description" rows="4"
-                placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
-                class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
-            <button id="generate-pr-command" class="dev-routine-btn" type="button"
-                aria-label="Generate pull request command">Generate PR Command</button>
-        </div>
-    </div>
-
-    <div class="tooltip">
-        <span id="credits">Icon Credits</span>
-        <div class="tooltiptext">
-            <a href="https://www.flaticon.com/free-icons/dictionary" target="_blank" rel="noopener">
-                Dictionary icons created by Freepik - Flaticon
-            </a>
         </div>
     </div>
     <script type="module" src="popup.js"></script>
