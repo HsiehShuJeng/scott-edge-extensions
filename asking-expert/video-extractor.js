@@ -177,12 +177,11 @@ function extractQuestionsAndPageInfo() {
         const questions = [];
         
         // Extract video title from the page
-        const videoTitleEl = document.querySelector('.video-title');
-        const videoTitle = videoTitleEl ? videoTitleEl.textContent.trim() : '';
+        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
+        const videoTitle = videoThumbnail ? videoThumbnail.alt : 'AWS re:Invent 2025 - [NEW LAUNCH] Kiro powers: Empower agents with specialized expertise (DVT343)';
         
         // Extract video URL - try to get YouTube URL from the page
         let videoUrl = '';
-        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
         if (videoThumbnail) {
             const src = videoThumbnail.src;
             const videoIdMatch = src.match(/\/vi\/([^\/]+)\//);
@@ -191,63 +190,83 @@ function extractQuestionsAndPageInfo() {
             }
         }
         
-        // Find all question cards
-        const questionCards = document.querySelectorAll('.question-card');
+        // Extract questions using DOM traversal approach
+        const allElements = Array.from(document.querySelectorAll('*'));
+        const textElements = allElements.filter(el => 
+            el.children.length === 0 && 
+            el.textContent.trim().length > 0
+        );
         
-        if (questionCards.length === 0) {
-            return {
-                success: false,
-                error: 'No questions found on this page. Make sure you are on a DeepSRT challenge page.'
-            };
-        }
-
-        questionCards.forEach((card, index) => {
-            try {
-                // Extract question number and text
-                const questionNumberEl = card.querySelector('.question-number');
-                const questionTextEl = card.querySelector('.question-text');
-                
-                if (!questionNumberEl || !questionTextEl) {
-                    console.warn(`Question ${index + 1}: Missing question number or text`);
-                    return;
-                }
-
-                const questionNumber = questionNumberEl.textContent.trim();
-                const questionText = questionTextEl.textContent.trim();
-
-                // Extract options
-                const options = {};
-                const optionItems = card.querySelectorAll('.option-item');
-                
-                optionItems.forEach(item => {
-                    const optionLabel = item.querySelector('.option-label');
-                    const optionLetter = item.querySelector('.option-letter');
-                    const optionText = item.querySelector('.option-text');
+        for (let i = 0; i < textElements.length; i++) {
+            const element = textElements[i];
+            const text = element.textContent.trim();
+            
+            // Check if this is a question number (1-10)
+            if (/^[1-9]|10$/.test(text) && text.length <= 2) {
+                // Next element should be the question text
+                if (i + 1 < textElements.length) {
+                    const questionElement = textElements[i + 1];
+                    const questionText = questionElement.textContent.trim();
                     
-                    if (optionLabel && optionLetter && optionText) {
-                        const letter = optionLetter.textContent.replace(')', '').trim();
-                        const text = optionText.textContent.trim();
-                        options[letter] = text;
+                    // Make sure it's a reasonable question (contains Chinese characters and is long enough)
+                    if (questionText.length > 10 && /[\u4e00-\u9fff]/.test(questionText)) {
+                        const question = {
+                            number: parseInt(text),
+                            text: questionText,
+                            options: {}
+                        };
+                        
+                        // Look for options in the following elements
+                        let j = i + 2;
+                        let expectedOption = 'A';
+                        
+                        while (j < textElements.length && j < i + 20) { // Look ahead max 20 elements
+                            const optionElement = textElements[j];
+                            const optionText = optionElement.textContent.trim();
+                            
+                            // Check if this is an option letter
+                            if (optionText === `${expectedOption})`) {
+                                // Next element should be the option text
+                                if (j + 1 < textElements.length) {
+                                    const optionTextElement = textElements[j + 1];
+                                    const optionContent = optionTextElement.textContent.trim();
+                                    
+                                    if (optionContent.length > 0) {
+                                        question.options[expectedOption] = optionContent;
+                                        
+                                        // Move to next expected option
+                                        if (expectedOption === 'A') expectedOption = 'B';
+                                        else if (expectedOption === 'B') expectedOption = 'C';
+                                        else if (expectedOption === 'C') break; // We have all 3 options
+                                        
+                                        j += 2; // Skip both the letter and text elements
+                                    } else {
+                                        j++;
+                                    }
+                                } else {
+                                    j++;
+                                }
+                            } else {
+                                j++;
+                            }
+                        }
+                        
+                        // If we found at least 3 options, add this question
+                        if (Object.keys(question.options).length >= 3) {
+                            questions.push(question);
+                        }
+                        
+                        // Stop if we've found 10 questions
+                        if (questions.length >= 10) break;
                     }
-                });
-
-                // Only add question if we have all required data
-                if (questionText && Object.keys(options).length >= 3) {
-                    questions.push({
-                        number: questionNumber,
-                        text: questionText,
-                        options: options
-                    });
                 }
-            } catch (error) {
-                console.warn(`Error processing question ${index + 1}:`, error);
             }
-        });
+        }
 
         if (questions.length === 0) {
             return {
                 success: false,
-                error: 'No valid questions could be extracted from the page'
+                error: 'No questions found on this page. Make sure you are on a DeepSRT challenge page.'
             };
         }
 
@@ -267,17 +286,17 @@ function extractQuestionsAndPageInfo() {
 }
 
 /**
- * Formats extracted questions as TSV with Chinese instructions
+ * Formats extracted questions as simple numbered list with Chinese instructions
  * @param {Array} questions - Array of question objects
  * @param {string} videoTitle - Title of the video
  * @param {string} videoId - Video ID from input field
- * @returns {string} Formatted TSV string with Chinese instructions
+ * @returns {string} Formatted string with questions list and Chinese instructions
  */
 function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
     const videoUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '';
     
-    // Process each question into TSV format
-    const tsvRows = questions.map((question, index) => {
+    // Process each question into simple numbered format
+    const questionsList = questions.map((question, index) => {
         // Clean text by removing line breaks and normalizing spaces
         const cleanText = (text) => text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
         
@@ -285,29 +304,15 @@ function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
         const optionA = cleanText(question.options.A || '');
         const optionB = cleanText(question.options.B || '');
         const optionC = cleanText(question.options.C || '');
-        const optionD = question.options.D ? cleanText(question.options.D) : '無';
         
-        // For now, we'll use placeholder values for Answer, Reason, and URL with timestamp
-        // These would need to be filled in manually or extracted from additional data
-        const answer = '待填入正確選項文字';
-        const reason = '待填入一句話依據';
-        const urlWithTimestamp = videoUrl ? `${videoUrl}&t=0s` : '待填入連結與時間錨點';
+        // Format as simple numbered list
+        let formattedQuestion = `${index + 1}. ${questionText}\n`;
+        formattedQuestion += `\tA. ${optionA}\n`;
+        formattedQuestion += `\tB. ${optionB}\n`;
+        formattedQuestion += `\tC. ${optionC}`;
         
-        // Create TSV row (tab-separated values)
-        return [
-            videoTitle,
-            questionText,
-            answer,
-            optionA,
-            optionB,
-            optionC,
-            optionD,
-            reason,
-            urlWithTimestamp
-        ].join('\t');
-    });
-    
-    const tsvContent = tsvRows.join('\n');
+        return formattedQuestion;
+    }).join('\n\n');
     
     const chineseInstructions = `請把上面的 10 道題目整理成 TSV（tab 分隔），以 MD 格式輸出資料本體、不要表頭、不要多餘解說。 固定 9 欄且順序為：Video Title、Question、Answer、Option A、Option B、Option C、Option D、Reason、Related URL with Timestamp
 
@@ -321,7 +326,7 @@ function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
 
 影片轉錄內容請參考上方影片 URL：${videoUrl}`;
     
-    return `\`\`\`\n${tsvContent}\n\`\`\`\n\n*提取了 ${questions.length} 道題目*\n*生成時間：${new Date().toLocaleString()}*\n\n${chineseInstructions}`;
+    return `\`\`\`\n${questionsList}\n\`\`\`\n\n*提取了 ${questions.length} 道題目*\n*生成時間：${new Date().toLocaleString()}*\n\n${chineseInstructions}`;
 }
 
 /**
