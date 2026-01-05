@@ -1,6 +1,7 @@
 import { initializeUI } from './ui.js';
 import { showNotification } from './utils.js';
 import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction } from './video-extractor.js';
+import { handleQuizGeneratorClick } from './youtube-quiz-generator.js';
 
 
 /**
@@ -107,6 +108,7 @@ function setupVideoExtractor() {
     const extractBtn = document.getElementById('extract-questions');
     const videoIdActionBtn = document.getElementById('video-id-action');
     const videoIdInput = document.getElementById('video-id-input');
+    const quizGeneratorBtn = document.getElementById('quiz-generator');
     
     if (extractBtn) {
         extractBtn.addEventListener('click', handleExtractQuestions);
@@ -114,6 +116,10 @@ function setupVideoExtractor() {
     
     if (videoIdActionBtn) {
         videoIdActionBtn.addEventListener('click', handleVideoIdAction);
+    }
+    
+    if (quizGeneratorBtn) {
+        quizGeneratorBtn.addEventListener('click', handleQuizGeneratorClick);
     }
     
     // Auto-detect video ID when the popup opens if on a DeepSRT page
