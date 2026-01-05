@@ -1,5 +1,5 @@
 ---
-inclusion: always
+inclusion: manual
 ---
 
 # Development Workflow and Quality Standards
