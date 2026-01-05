@@ -139,22 +139,26 @@
         <div class="video-section">
             <p class="instruction-text">Extract 10 questions and options from DeepSRT challenge pages</p>
             
-            <!-- Video ID Input Section -->
-            <div class="video-id-section">
-                <label for="video-id-input" class="video-id-label">Video ID:</label>
-                <div class="video-id-container">
-                    <input type="text" id="video-id-input" class="video-id-input" placeholder="Auto-detected or enter manually">
-                    <button id="video-id-action" class="video-id-action" type="button" title="Copy ID and open YouTube">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                        </svg>
-                    </button>
+            <!-- Grid Layout Container -->
+            <div class="video-grid-container">
+                <!-- Main Extraction Tool Grid Item -->
+                <div class="video-grid-item">
+                    <div class="video-id-section">
+                        <label for="video-id-input" class="video-id-label">Video ID:</label>
+                        <div class="video-id-container">
+                            <input type="text" id="video-id-input" class="video-id-input" placeholder="Auto-detected or enter manually">
+                            <button id="video-id-action" class="video-id-action" type="button" title="Copy ID and open YouTube">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="extract-button-container">
+                        <button id="extract-questions" class="modern-btn extract-btn" type="button">Extract Questions from Current Page</button>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Extract Button - Centered -->
-            <div class="extract-button-container">
-                <button id="extract-questions" class="modern-btn extract-btn" type="button">Extract Questions from Current Page</button>
             </div>
             
             <div id="extraction-status" class="status-message"></div>
