@@ -36,6 +36,10 @@
             <span class="tab-text-short">V</span>
             <span class="tab-text-full">Video</span>
         </button>
+        <button class="tab-button" data-tab="programming" type="button">
+            <span class="tab-text-short">PE</span>
+            <span class="tab-text-full">Programming Engineering</span>
+        </button>
     </div>
 
     <!-- Language Tab Content -->
@@ -119,34 +123,6 @@
             <button id="generate-korean" class="modern-btn" type="button">Build Contextual Prompt</button>
         </div>
 
-        <!-- Programming Section -->
-        <h2>Scott's Assistant for Programming</h2>
-        <div id="commit-tools" class="commit-tools-container">
-            <button class="commit-btn" data-command="1" type="button">Current Changes</button>
-            <button class="commit-btn" data-command="2" type="button">Staged Changes</button>
-            <button class="commit-btn" data-command="3" type="button">Range Changes</button>
-        </div>
-
-        <div id="development-routines" class="development-routines-container">
-            <!-- Left side: Branch Name Suggestion -->
-            <div class="dev-routine-section dev-routine-left">
-                <textarea id="branch-description" rows="4"
-                    placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
-                    class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
-                <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
-                    aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
-            </div>
-            
-            <!-- Right side: PR Command Generation (existing) -->
-            <div class="dev-routine-section dev-routine-right">
-                <textarea id="pr-description" rows="4"
-                    placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
-                    class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
-                <button id="generate-pr-command" class="dev-routine-btn" type="button"
-                    aria-label="Generate pull request command">Generate PR Command</button>
-            </div>
-        </div>
-
         <div class="tooltip">
             <span id="credits">Icon Credits</span>
             <div class="tooltiptext">
@@ -182,6 +158,36 @@
             </div>
             
             <div id="extraction-status" class="status-message"></div>
+        </div>
+    </div>
+
+    <!-- Programming Engineering Tab Content -->
+    <div id="programming-tab" class="tab-content">
+        <h2>Scott's Assistant for Programming</h2>
+        <div id="commit-tools" class="commit-tools-container">
+            <button class="commit-btn" data-command="1" type="button">Current Changes</button>
+            <button class="commit-btn" data-command="2" type="button">Staged Changes</button>
+            <button class="commit-btn" data-command="3" type="button">Range Changes</button>
+        </div>
+
+        <div id="development-routines" class="development-routines-container">
+            <!-- Left side: Branch Name Suggestion -->
+            <div class="dev-routine-section dev-routine-left">
+                <textarea id="branch-description" rows="4"
+                    placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
+                    class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
+                <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
+                    aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
+            </div>
+            
+            <!-- Right side: PR Command Generation (existing) -->
+            <div class="dev-routine-section dev-routine-right">
+                <textarea id="pr-description" rows="4"
+                    placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
+                    class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
+                <button id="generate-pr-command" class="dev-routine-btn" type="button"
+                    aria-label="Generate pull request command">Generate PR Command</button>
+            </div>
         </div>
     </div>
     <script type="module" src="popup.js"></script>
