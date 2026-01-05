@@ -1,7 +1,5 @@
-import { initializeUI } from './ui.js';
-import { showNotification } from './utils.js';
-import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction } from './video-extractor.js';
-import { handleQuizGeneratorClick } from './youtube-quiz-generator.js';
+import { initializeUI, showNotification } from './modules/core/index.js';
+import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction, handleQuizGeneratorClick } from './modules/video/index.js';
 
 
 /**

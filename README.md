@@ -287,10 +287,48 @@ flowchart LR
 - **Main extension files**: Located in `asking-expert/` directory
 - **Popup interface**: `popup.html`, `popup.js` (main bootstrap)
 - **Content scripts**: `content.js` (page interaction)
-- **Modular components**: `ui.js`, `translation.js`, `session.js`, `utils.js`, `etymology.js`, `youtube-quiz-generator.js`
+- **Modular components**: Organized into feature-based modules:
+  - **Video Module** (`modules/video/`): `video-extractor.js`, `youtube-quiz-generator.js`
+  - **Language Module** (`modules/language/`): `translation.js`, `session.js`, `etymology.js`
+  - **Core Module** (`modules/core/`): `ui.js`, `utils.js`, `content.js`
 - **Styling**: Modular CSS files in `asking-expert/styles/` directory
 - **Programming tools**: Integrated commit, PR, and branch naming functionality
 - **YouTube tools**: Quiz generator for educational content creation
+
+#### Module Organization
+
+The JavaScript codebase is organized into feature-based modules for better maintainability:
+
+```
+asking-expert/
+├── modules/
+│   ├── video/           # Video-related functionality
+│   │   ├── index.js     # Module entry point
+│   │   ├── video-extractor.js      # DeepSRT question extraction
+│   │   └── youtube-quiz-generator.js # YouTube quiz generation
+│   ├── language/        # Language learning functionality
+│   │   ├── index.js     # Module entry point
+│   │   ├── translation.js   # Translation and prompt generation
+│   │   ├── etymology.js     # Etymology fetching
+│   │   └── session.js       # Learning session management
+│   └── core/           # Core utilities and UI
+│       ├── index.js    # Module entry point
+│       ├── ui.js       # UI initialization and management
+│       ├── utils.js    # Utility functions and constants
+│       └── content.js  # Content script for page interaction
+├── popup.js (main entry point)
+├── popup.html
+├── manifest.json
+├── images/
+└── styles/
+```
+
+**Benefits of Module Organization:**
+- **Better Organization**: Related functionality is grouped together
+- **Cleaner Imports**: Module index files reduce import complexity
+- **Easier Maintenance**: Clear separation of concerns
+- **Scalability**: Easy to add new features to appropriate modules
+- **Future-Proof**: Structure supports additional categories
 
 ### Contributor Onboarding
 

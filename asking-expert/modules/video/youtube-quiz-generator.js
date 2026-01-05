@@ -3,7 +3,7 @@
  * Extracts YouTube video metadata and generates formatted quiz prompts
  */
 
-import { showNotification } from './utils.js';
+import { showNotification } from '../core/utils.js';
 
 /**
  * Orchestrates the YouTube metadata extraction process

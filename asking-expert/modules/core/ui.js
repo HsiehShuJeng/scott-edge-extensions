@@ -1,7 +1,6 @@
-import { generateTranslationPrompt, generateOutput, getSentenceContent } from './translation.js';
-import { handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from './session.js';
+import { generateTranslationPrompt, generateOutput, getSentenceContent, handleStartEnglishSession, handleEndEnglishSession, handleStartKoreanSession, handleEndKoreanSession } from '../language/index.js';
 import { $, showNotification, ID_KOREAN_WORD, handleResultClick, ID_WORDS, ID_SENTENCE } from './utils.js';
-import { autoResize } from './popup.js'; // Import autoResize
+import { autoResize } from '../../popup.js'; // Import autoResize
 
 export function calculateMaxHeight() {
     const sections = document.querySelectorAll('#english-section, #korean-section');

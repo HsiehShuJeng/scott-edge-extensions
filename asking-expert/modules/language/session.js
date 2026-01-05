@@ -1,4 +1,4 @@
-import { ID_RESULT_ENGLISH, ID_RESULT_KOREAN, ID_LOCALITY_DROPDOWN, ID_LOCALITY_DROPDOWN_KOREAN, $, copyToClipboard } from './utils.js';
+import { ID_RESULT_ENGLISH, ID_RESULT_KOREAN, ID_LOCALITY_DROPDOWN, ID_LOCALITY_DROPDOWN_KOREAN, $, copyToClipboard } from '../core/utils.js';
 
 let startTime = null;
 
