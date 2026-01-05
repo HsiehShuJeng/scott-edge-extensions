@@ -4,6 +4,7 @@ This browser extension provides comprehensive assistance for language learners (
 
 ## Table of Contents
 - [Language Learning Features](#language-learning-features)
+- [YouTube Quiz Generator](#youtube-quiz-generator)
 - [Programming Features](#programming-features)
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
@@ -38,6 +39,28 @@ This browser extension provides comprehensive assistance for language learners (
 - **Korean sentence input** with contextual prompt generation
 - **Multi-line text support** for complex Korean content
 - **Integrated learning session management**
+
+## YouTube Quiz Generator
+
+### Educational Content Creation
+- **YouTube Video Metadata Extraction**  
+  Automatically extracts video URL and title from YouTube video pages using content scripts
+- **Structured Quiz Prompt Generation**  
+  Creates formatted 10-question multiple-choice quiz templates based on video content
+- **Clipboard Integration**  
+  Copies generated quiz prompts directly to clipboard for immediate use
+- **Comprehensive Error Handling**  
+  Validates YouTube page context and provides clear feedback for unsupported pages
+- **Educational Focus**  
+  Generates prompts that encourage analytical thinking and comprehension testing
+
+#### Quiz Prompt Template Features
+The generated quiz prompts include:
+- **Structured Format**: Numbered questions with 4 multiple-choice options (A, B, C, D)
+- **Educational Requirements**: Instructions for correct answers and explanations
+- **Difficulty Variation**: Mix of basic recall and analytical thinking questions
+- **Content Analysis**: Prompts for video transcript analysis and key concept identification
+- **Engagement Focus**: Questions designed to test viewer understanding and retention
 
 ## Programming Features
 
@@ -112,11 +135,12 @@ Creates structured prompts for LLM-assisted branch naming with development conte
 
 ## UI Features
 - **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation
+- **YouTube Quiz Generator**: Dedicated functionality in the Video tab for creating educational quiz content from YouTube videos
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Multi-language Support**: Dedicated sections for English and Korean learning in the Language tab
 - **Programming Tools**: Comprehensive development tools in the PE tab including commit analysis, PR creation, and branch naming
-- **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages
+- **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages and generating YouTube quiz content
 - **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
 - **Accessibility**: Proper ARIA labels and keyboard navigation support
@@ -139,6 +163,7 @@ flowchart TD
     CommitTools["Enhanced Commit Tools"]
     PRTools["PR Creation Tools"]
     BranchTools["Branch Naming Tools"]
+    YouTubeQuiz["YouTube Quiz Generator (youtube-quiz-generator.js)"]
 
     UI -- interacts with --> PopupJS
     PopupJS -- initializes --> UI
@@ -148,6 +173,7 @@ flowchart TD
     UI -- uses --> CommitTools
     UI -- uses --> PRTools
     UI -- uses --> BranchTools
+    UI -- uses --> YouTubeQuiz
     Translation -- uses --> Etymology
     Translation -- fetches from --> ContentScript
     Session -- uses --> Utils
@@ -155,6 +181,8 @@ flowchart TD
     CommitTools -- generates --> Utils
     PRTools -- generates --> Utils
     BranchTools -- generates --> Utils
+    YouTubeQuiz -- extracts metadata --> ContentScript
+    YouTubeQuiz -- generates prompts --> Utils
     UI -- user actions --> UI
 ```
 
@@ -259,9 +287,10 @@ flowchart LR
 - **Main extension files**: Located in `asking-expert/` directory
 - **Popup interface**: `popup.html`, `popup.js` (main bootstrap)
 - **Content scripts**: `content.js` (page interaction)
-- **Modular components**: `ui.js`, `translation.js`, `session.js`, `utils.js`, `etymology.js`
+- **Modular components**: `ui.js`, `translation.js`, `session.js`, `utils.js`, `etymology.js`, `youtube-quiz-generator.js`
 - **Styling**: Modular CSS files in `asking-expert/styles/` directory
 - **Programming tools**: Integrated commit, PR, and branch naming functionality
+- **YouTube tools**: Quiz generator for educational content creation
 
 ### Contributor Onboarding
 
