@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.18.0](///compare/v2.17.5...v2.18.0) (2026-01-05)
+
+
+### Features
+
+* **ui:** add Programming Engineering (PE) tab 3559fc1
+
 ### [2.17.5](///compare/v2.17.4...v2.17.5) (2026-01-05)
 
 
