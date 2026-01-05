@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Asking Expert",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "description": "An assistant for language learning (English and Korean), programming assistance, and quiz generation from YouTube videos, generating LLM prompts and commit messages.",
   "icons": {
     "48": "images/icon48.png"
