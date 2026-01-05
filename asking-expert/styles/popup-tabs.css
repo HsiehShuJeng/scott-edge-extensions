@@ -108,26 +108,77 @@
 
 /* Video Grid Layout */
 .video-grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4px;
     margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.video-grid-item {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0; /* Prevent overflow */
 }
 
 .video-grid-item {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 15px;
+    align-items: stretch; /* Make children fill width */
+    justify-content: space-between; /* Push button to bottom */
+    padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: var(--input-bg);
+    min-height: 120px; /* Ensure consistent height */
+}
+
+/* Video ID Section Styles */
+.video-id-section {
+    margin-bottom: auto; /* Push button to bottom */
+}
+
+.video-id-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.video-id-input {
+    flex: 1;
+    min-width: 0; /* Allow shrinking */
+}
+
+.video-id-action {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--highlight-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
 }
 
 /* Quiz Generator Styles */
 .quiz-generator-container {
     display: flex;
     justify-content: center;
+    margin-top: auto; /* Push to bottom */
+}
+
+/* Override any responsive behavior that might stack vertically */
+@media (max-width: 600px) {
+    .video-grid-container {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 3px;
+    }
+}
     width: 100%;
 }
 

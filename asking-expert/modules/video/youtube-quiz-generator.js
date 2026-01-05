@@ -117,21 +117,71 @@ export function generateQuizPrompt(url, title) {
     }
     
     // Generate the complete quiz prompt template
-    const prompt = `Please create 10 multiple-choice questions based on the following YouTube video:
+    const prompt = `You are a quiz generator.
 
-Video Title: ${title}
-Video URL: ${url}
+INPUT:
+1) A YouTube video transcript WITH timestamps (may be partial).
+2) ${url}
+3) ${title}
 
-Requirements:
-1. Generate exactly 10 questions that test comprehension of the video content
-2. Each question should have 4 options (A, B, C, D)
-3. Provide the correct answer for each question
-4. Include a brief explanation for why the answer is correct
-5. Questions should cover key concepts, facts, and insights from the video
-6. Vary the difficulty level from basic recall to analytical thinking
-7. Format the output as a clean, numbered list
+GOAL:
+Create MCQs that test understanding of what the speaker MEANS (claims, reasoning, comparisons, examples),
+NOT trivia recall. Every answer must be verifiable DIRECTLY from a specific transcript segment.
 
-Please analyze the video transcript and create engaging, educational questions that would help viewers test their understanding of the content.`;
+HARD CONSTRAINTS (NON-NEGOTIABLE):
+- Generate EXACTLY 10 MCQs.
+- Each question must be answerable from the transcript ONLY (no outside knowledge, no guessing).
+- Exactly ONE option is correct (A/B/C/D).
+- Options must be plausible, mutually exclusive, and based on transcript language/style.
+- NO duplicates: no repeated stems, no repeated "same-fact" questions, no copy-paste.
+- If the transcript is too short to create 10 high-quality questions under these rules, output exactly:
+TRANSCRIPT_TOO_SHORT_TO_GENERATE_10
+
+ANTI-TRIVIA RULE (VERY IMPORTANT):
+- At most 2 questions may be pure "fact recall" (e.g., birthplace, date, name, location).
+- At least 6 questions must be "meaning/comprehension" that still has an explicit anchor in the transcript:
+(a) cause → effect stated by speaker
+(b) comparison/contrast between two things
+(c) definition/explanation ("X means…", "the point is…")
+(d) example → claim linkage ("the example is used to show…")
+(e) reasoning or motivation ("why does the speaker say/do this?")
+- Avoid questions whose correct answer is a single noun/number unless it is essential to a claim.
+
+REQUIRED QUESTION TYPE MIX (to force depth & variety):
+- At least 2 Cause–Effect questions
+- At least 2 Comparison/Contrast questions
+- At least 2 Definition/Explanation questions
+- At least 2 Example→Point questions
+- Remaining 2 can be any type, but must not be trivia unless within the max-2 limit.
+
+BILINGUAL REQUIREMENT (English + Traditional Chinese, native-natural):
+- Each Question must be bilingual in ONE field as:
+"<EN sentence> / <繁中句子>"
+- Each option must also be bilingual in ONE field as:
+"<EN option> / <繁中選項>"
+- The Correct Answer Text must EXACTLY match one of the options (character-for-character).
+
+COVERAGE:
+- Cover early/mid/late segments if transcript allows:
+at least 2 questions from each third (by timestamp range).
+- Prefer questions tied to key claims, transitions, and examples (not intro fluff only).
+
+TIMESTAMP RULE:
+- For each question, pick the most relevant timestamp (seconds) where the answer is stated.
+- Output URL as: <base_url>&t=<seconds>s
+- Use the FIRST second where the decisive phrase begins.
+
+OUTPUT FORMAT (NO EXTRA COMMENTARY):
+- First line exactly:
+Video Title: <title>
+- Then EXACTLY 10 lines. Each line is one record in TSV-like format using " | " as delimiter:
+<Video Title> | <Question> | <Correct Answer Text> | <Option A> | <Option B> | <Option C> | <Option D> | <Reason (1-2 sentences citing transcript)> | <Related URL with Timestamp>
+
+QUALITY CHECK BEFORE FINAL (DO THIS SILENTLY):
+- Count: exactly 10 question lines.
+- Correct answer text == exactly one option.
+- Reasons explicitly cite what is said (no inference beyond transcript).
+- No duplicate stems, no "same-answer" repeats, no near-rephrases.`;
 
     return prompt;
 }

@@ -1,6 +1,6 @@
 /* popup-development-routines.css: Development routines section styles */
 
-#development-routines.development-routines-container {
+.development-routines-container {
   display: flex !important;
   flex-direction: row !important;
   background: var(--commit-tools-bg);
@@ -20,7 +20,7 @@
   flex-wrap: nowrap !important;
 }
 
-.dark-theme #development-routines.development-routines-container {
+.dark-theme .development-routines-container {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
@@ -137,7 +137,7 @@
 }
 
 /* Responsive adjustments - only stack vertically on very small screens */
-@media (max-width: 250px) {
+@media (max-width: 180px) {
   #development-routines.development-routines-container {
     flex-direction: column !important;
     gap: 4px;
