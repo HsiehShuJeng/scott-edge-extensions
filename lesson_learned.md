@@ -21,3 +21,13 @@
   Enhanced notification system that adapts to light/dark themes using CSS variables for consistent user experience.
 - **Accessibility Enhancements:**  
   Added proper ARIA labels and keyboard navigation support across all interactive elements.
+
+## 4. Tab-Based UI Organization (v2.17.5)
+- **Three-Tab Architecture:**  
+  Reorganized the extension into three dedicated tabs (Language, Video, Programming Engineering) to improve feature discoverability and reduce interface clutter.
+- **Programming Engineering (PE) Tab:**  
+  Moved all programming tools (commit analysis, PR creation, branch naming) from the Language tab into a dedicated PE tab, creating better separation of concerns.
+- **Tab Navigation Implementation:**  
+  Leveraged existing tab navigation system with `data-tab` attributes, ensuring consistent behavior across all tabs with hover and click interactions.
+- **Content Organization Benefits:**  
+  The new structure allows users to focus on specific workflows without distraction from unrelated features, improving overall user experience.

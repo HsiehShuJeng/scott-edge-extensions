@@ -111,10 +111,12 @@ Creates structured prompts for LLM-assisted branch naming with development conte
 ---
 
 ## UI Features
+- **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
-- **Multi-language Support**: Dedicated sections for English and Korean learning
-- **Programming Tools**: Three-tier commit message generation, PR creation commands, and branch naming assistance
+- **Multi-language Support**: Dedicated sections for English and Korean learning in the Language tab
+- **Programming Tools**: Comprehensive development tools in the PE tab including commit analysis, PR creation, and branch naming
+- **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages
 - **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
 - **Accessibility**: Proper ARIA labels and keyboard navigation support
