@@ -176,12 +176,20 @@ function extractQuestionsAndPageInfo() {
     try {
         const questions = [];
         
-        // Extract video title from the page
-        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
-        const videoTitle = videoThumbnail ? videoThumbnail.alt : 'AWS re:Invent 2025 - [NEW LAUNCH] Kiro powers: Empower agents with specialized expertise (DVT343)';
+        // Extract video title from the page - prioritize .video-title div
+        let videoTitle = '';
+        const videoTitleDiv = document.querySelector('.video-title');
+        if (videoTitleDiv) {
+            videoTitle = videoTitleDiv.textContent.trim();
+        } else {
+            // Fallback to img alt attribute
+            const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
+            videoTitle = videoThumbnail ? videoThumbnail.alt : 'Video Title Not Found';
+        }
         
         // Extract video URL - try to get YouTube URL from the page
         let videoUrl = '';
+        const videoThumbnail = document.querySelector('img[src*="youtube.com"]');
         if (videoThumbnail) {
             const src = videoThumbnail.src;
             const videoIdMatch = src.match(/\/vi\/([^\/]+)\//);
@@ -295,6 +303,9 @@ function extractQuestionsAndPageInfo() {
 function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
     const videoUrl = videoId ? `https://www.youtube.com/watch?v=${videoId}` : '';
     
+    // Include video title at the top
+    let output = '';
+    
     // Process each question into simple numbered format
     const questionsList = questions.map((question, index) => {
         // Clean text by removing line breaks and normalizing spaces
@@ -306,27 +317,35 @@ function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
         const optionC = cleanText(question.options.C || '');
         
         // Format as simple numbered list
-        let formattedQuestion = `${index + 1}. ${questionText}\n`;
-        formattedQuestion += `\tA. ${optionA}\n`;
-        formattedQuestion += `\tB. ${optionB}\n`;
-        formattedQuestion += `\tC. ${optionC}`;
+        let formattedQuestion = `${index + 1}. ${questionText}`;
+        formattedQuestion += `\nA. ${optionA}`;
+        formattedQuestion += `\nB. ${optionB}`;
+        formattedQuestion += `\nC. ${optionC}`;
         
         return formattedQuestion;
     }).join('\n\n');
     
-    const chineseInstructions = `請把上面的 10 道題目整理成 TSV（tab 分隔），以 MD 格式輸出資料本體、不要表頭、不要多餘解說。 固定 9 欄且順序為：Video Title、Question、Answer、Option A、Option B、Option C、Option D、Reason、Related URL with Timestamp
+    output += questionsList;
+    
+    const chineseInstructions = `
+
+*提取了 ${questions.length} 道題目*
+*生成時間：${new Date().toLocaleString()}*
+
+請把上面的 ${questions.length} 道題目整理成 TSV（tab 分隔），以 MD 格式輸出資料本體、不要表頭、不要多餘解說。 固定 9 欄且順序為：Video Title、Question、Answer、Option A、Option B、Option C、Option D、Reason、Related URL with Timestamp
 
 規則：
-1. 只用 TAB 分隔；每題一列，正好 10 列。
+1. 只用 TAB 分隔；每題一列，正好 ${questions.length} 列。
 2. 若題目只有 A/B/C，Option D 一律填「無」。
 3. Answer 請填正確「選項文字」（不是 A/B/C/D）。
 4. Reason 僅一句話依據。
 5. 連結要加時間錨點 &t={秒}s。
 6. 題目或選項若有換行，改成單行（可用空白或 / 串接）。
 
+影片標題：${videoTitle}
 影片轉錄內容請參考上方影片 URL：${videoUrl}`;
     
-    return `\`\`\`\n${questionsList}\n\`\`\`\n\n*提取了 ${questions.length} 道題目*\n*生成時間：${new Date().toLocaleString()}*\n\n${chineseInstructions}`;
+    return output + chineseInstructions;
 }
 
 /**
@@ -351,12 +370,13 @@ export async function handleExtractQuestions() {
     try {
         const tsvOutput = await extractQuestionsFromPage();
         
-        // Success state
+        // Success state - smooth transition to "Extracted"
+        extractBtn.textContent = 'Extracted';
         statusEl.className = 'status-message success';
-        statusEl.textContent = `Successfully extracted and copied TSV format to clipboard!`;
+        statusEl.textContent = `Successfully extracted and copied to clipboard!`;
         
         // Show notification
-        showNotification('Questions extracted as TSV and copied to clipboard!', false, 'Video Extractor');
+        showNotification('Questions extracted and copied to clipboard!', false, 'Video Extractor');
         
         // Reset button after delay
         setTimeout(() => {
