@@ -168,6 +168,8 @@
     font-size: 14px;
     font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .video-id-input:focus {
@@ -252,6 +254,8 @@
     
     .video-id-input {
         padding: 10px 35px 10px 12px;
+        overflow-x: auto;
+        white-space: nowrap;
     }
     
     .video-id-action {
