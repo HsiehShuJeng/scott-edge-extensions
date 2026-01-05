@@ -1,5 +1,5 @@
-import { ID_SENTENCE, ID_WORDS, ID_KOREAN_WORD, copyToClipboard, $, showNotification } from './utils.js';
-import { autoResize } from './popup.js';
+import { ID_SENTENCE, ID_WORDS, ID_KOREAN_WORD, copyToClipboard, $, showNotification } from '../core/utils.js';
+import { autoResize } from '../../popup.js';
 import { fetchEtymologyExplanation } from './etymology.js';
 
 export async function generateTranslationPrompt(language) {

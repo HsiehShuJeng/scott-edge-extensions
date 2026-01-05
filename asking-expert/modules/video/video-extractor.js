@@ -3,7 +3,7 @@
  * Extracts questions and options from DeepSRT challenge pages
  */
 
-import { showNotification } from './utils.js';
+import { showNotification } from '../core/utils.js';
 
 /**
  * Auto-detects video ID from DeepSRT page and populates the input field

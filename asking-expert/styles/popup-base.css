@@ -201,3 +201,53 @@ select.dropdown {
 .button-container .modern-btn {
   font-size: clamp(0.9rem, 4vw, 1.2rem);
 }
+
+/* Grid Layout System for Video Tab */
+.video-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 16px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.video-grid-item {
+  background-color: var(--input-bg);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.video-grid-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-color: var(--highlight-color);
+}
+
+.dark-theme .video-grid-item {
+  border-color: #555;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .video-grid-item:hover {
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+  border-color: var(--highlight-color);
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 600px) {
+  .video-grid-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px 0;
+  }
+  
+  .video-grid-item {
+    padding: 12px;
+  }
+}
