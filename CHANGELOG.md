@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.19.0](///compare/v2.18.0...v2.19.0) (2026-01-05)
+
+
+### Features
+
+* **video-extractor:** enhance question extraction with video title and smooth UI transitions 3039e98
+
 ## [2.18.0](///compare/v2.17.5...v2.18.0) (2026-01-05)
 
 
