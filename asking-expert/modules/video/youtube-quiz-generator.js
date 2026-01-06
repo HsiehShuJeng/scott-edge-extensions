@@ -125,63 +125,117 @@ INPUT:
 3) ${title}
 
 GOAL:
-Create MCQs that test understanding of what the speaker MEANS (claims, reasoning, comparisons, examples),
-NOT trivia recall. Every answer must be verifiable DIRECTLY from a specific transcript segment.
+Create multiple-choice questions (MCQs) that test understanding of what is being CLAIMED or ARGUED
+(reasoning, comparisons, explanations, examples),
+NOT trivial fact recall.
 
-HARD CONSTRAINTS (NON-NEGOTIABLE):
+Every correct answer must be verifiable DIRECTLY from a specific segment of the provided transcript.
+
+────────────────────────
+HARD CONSTRAINTS (NON-NEGOTIABLE)
+────────────────────────
 - Generate EXACTLY 10 MCQs.
-- Each question must be answerable from the transcript ONLY (no outside knowledge, no guessing).
+- Each question must be answerable from the provided transcript ONLY.
 - Exactly ONE option is correct (A/B/C/D).
-- Options must be plausible, mutually exclusive, and based on transcript language/style.
-- NO duplicates: no repeated stems, no repeated "same-fact" questions, no copy-paste.
-- If the transcript is too short to create 10 high-quality questions under these rules, output exactly:
-TRANSCRIPT_TOO_SHORT_TO_GENERATE_10
+- Options must be plausible, mutually exclusive, and grounded in the video’s language and logic.
+- NO duplicates: no repeated question intent, no rephrased repeats, no copy-paste patterns.
+- If the transcript is too short to generate 10 high-quality questions under these rules, output EXACTLY:
+  TRANSCRIPT_TOO_SHORT_TO_GENERATE_10
 
-ANTI-TRIVIA RULE (VERY IMPORTANT):
-- At most 2 questions may be pure "fact recall" (e.g., birthplace, date, name, location).
-- At least 6 questions must be "meaning/comprehension" that still has an explicit anchor in the transcript:
-(a) cause → effect stated by speaker
-(b) comparison/contrast between two things
-(c) definition/explanation ("X means…", "the point is…")
-(d) example → claim linkage ("the example is used to show…")
-(e) reasoning or motivation ("why does the speaker say/do this?")
-- Avoid questions whose correct answer is a single noun/number unless it is essential to a claim.
+────────────────────────
+ANTI-TRIVIA RULE (VERY IMPORTANT)
+────────────────────────
+- At most 2 questions may be pure fact recall (names, dates, locations).
+- At least 6 questions must test meaning or comprehension with an explicit anchor in the video:
+  (a) Cause → effect
+  (b) Comparison / contrast
+  (c) Definition / explanation
+  (d) Example → point being made
+  (e) Reasoning or motivation
+- Avoid questions whose correct answer is just a single noun or number unless essential to a claim.
 
-REQUIRED QUESTION TYPE MIX (to force depth & variety):
-- At least 2 Cause–Effect questions
-- At least 2 Comparison/Contrast questions
-- At least 2 Definition/Explanation questions
-- At least 2 Example→Point questions
-- Remaining 2 can be any type, but must not be trivia unless within the max-2 limit.
+────────────────────────
+REQUIRED QUESTION TYPE MIX
+────────────────────────
+- ≥ 2 Cause–Effect questions
+- ≥ 2 Comparison / Contrast questions
+- ≥ 2 Definition / Explanation questions
+- ≥ 2 Example → Point questions
+- Remaining 2 may be any type, but must respect the anti-trivia rule
 
-BILINGUAL REQUIREMENT (English + Traditional Chinese, native-natural):
-- Each Question must be bilingual in ONE field as:
-"<EN sentence> / <繁中句子>"
-- Each option must also be bilingual in ONE field as:
-"<EN option> / <繁中選項>"
-- The Correct Answer Text must EXACTLY match one of the options (character-for-character).
+────────────────────────
+GENERAL ATTRIBUTION & STYLE RULES (NON-NEGOTIABLE)
+────────────────────────
+- Do NOT overuse generic labels like “the speaker” / 「講者」.
+- Attribute claims using the most accurate role:
+  EN: the narrator, the host, the interviewer, the guest, the quoted person, the expert, the report, the video
+  ZH-TW: 旁白、主持人、訪談者、來賓、受訪者、被引用的人、專家、報導、影片中
+- If a specific person is explicitly named in the video (e.g., Parker, Xi Jinping), use that name.
+- If the video is a narrated script with no interviews, default to:
+  EN: “the narrator”
+  ZH-TW: 「旁白」
+- Clearly separate:
+  who is speaking vs who is being described or quoted.
+- Maintain a neutral, descriptive tone. Do NOT endorse or refute claims.
 
-COVERAGE:
-- Cover early/mid/late segments if transcript allows:
-at least 2 questions from each third (by timestamp range).
-- Prefer questions tied to key claims, transitions, and examples (not intro fluff only).
+────────────────────────
+PROHIBITED WORDING
+────────────────────────
+- Do NOT use the word “transcript” or 「逐字稿」 anywhere in questions, options, or reasons.
 
-TIMESTAMP RULE:
-- For each question, pick the most relevant timestamp (seconds) where the answer is stated.
-- Output URL as: <base_url>&t=<seconds>s
-- Use the FIRST second where the decisive phrase begins.
+────────────────────────
+REASON FORMAT (STRICT)
+────────────────────────
+- Each Reason must be 1–2 sentences.
+- Use this exact structure:
+  EN: "At <mm:ss>, the narrator/host states that …"
+  ZH-TW: 「在 <mm:ss>，旁白／主持人提到…」
+- Cite only what is explicitly said in the video.
 
-OUTPUT FORMAT (NO EXTRA COMMENTARY):
-- First line exactly:
-Video Title: <title>
-- Then EXACTLY 10 lines. Each line is one record in TSV-like format using " | " as delimiter:
-<Video Title> | <Question> | <Correct Answer Text> | <Option A> | <Option B> | <Option C> | <Option D> | <Reason (1-2 sentences citing transcript)> | <Related URL with Timestamp>
+────────────────────────
+COVERAGE RULE
+────────────────────────
+- If the provided transcript covers early, middle, and late portions of the video,
+  select questions across these ranges as evenly as possible.
+- If the transcript is partial, still distribute questions across the available timestamps.
 
-QUALITY CHECK BEFORE FINAL (DO THIS SILENTLY):
-- Count: exactly 10 question lines.
-- Correct answer text == exactly one option.
-- Reasons explicitly cite what is said (no inference beyond transcript).
-- No duplicate stems, no "same-answer" repeats, no near-rephrases.`;
+────────────────────────
+TIMESTAMP RULE
+────────────────────────
+- For each question, choose the FIRST second where the decisive statement begins.
+- Output URLs in this exact format:
+  <base_url>&t=<seconds>s
+- Use seconds in the URL; use mm:ss only inside the Reason text.
+
+────────────────────────
+LANGUAGE OUTPUT REQUIREMENT (NON-NEGOTIABLE)
+────────────────────────
+- Output TWO TSV blocks in Markdown, in this exact order:
+  1) English block: exactly 10 rows, all fields in English.
+  2) Traditional Chinese (zh-Hant) block: exactly 10 rows, all fields in Traditional Chinese.
+- The two blocks must align 1-to-1:
+  same question intent, same correct option meaning, same timestamp URL.
+- Do NOT mix languages within a single field.
+- Wrap each TSV block in its own Markdown code fence using \`\`\`tsv.
+
+────────────────────────
+OUTPUT FORMAT (NO EXTRA COMMENTARY)
+────────────────────────
+- First line EXACTLY:
+  Video Title: <title>
+- Then TWO TSV blocks.
+
+Each TSV row must use " | " as the delimiter, in this exact order:
+<Video Title> | <Question> | <Correct Answer Text> | <Option A> | <Option B> | <Option C> | <Option D> | <Reason> | <Related URL with Timestamp>
+
+────────────────────────
+QUALITY CHECK (DO SILENTLY)
+────────────────────────
+- Exactly 10 questions per block.
+- Each correct answer matches EXACTLY one option (character-for-character).
+- No duplicated intent or recycled facts.
+- Reasons are explicitly grounded in the video.
+`;
 
     return prompt;
 }

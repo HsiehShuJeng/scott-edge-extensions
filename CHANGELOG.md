@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.21.1](///compare/v2.21.0...v2.21.1) (2026-01-06)
+
+## [2.21.0](///compare/v2.20.0...v2.21.0) (2026-01-06)
+
+
+### Features
+
+* **video:** enhance YouTube quiz generator with bilingual support and improved UI 31dc704
+* **video:** tighten quiz prompt and TSV formatting 6e720f2
+
 ### [2.20.1](///compare/v2.20.0...v2.20.1) (2026-01-05)
 
 ## [2.20.0](///compare/v2.19.0...v2.20.0) (2026-01-05)

@@ -318,9 +318,9 @@ function formatQuestionsAsTSV(questions, videoTitle = '', videoId = '') {
         
         // Format as simple numbered list
         let formattedQuestion = `${index + 1}. ${questionText}`;
-        formattedQuestion += `\nA. ${optionA}`;
-        formattedQuestion += `\nB. ${optionB}`;
-        formattedQuestion += `\nC. ${optionC}`;
+        formattedQuestion += `\n\tA. ${optionA}`;
+        formattedQuestion += `\n\tB. ${optionB}`;
+        formattedQuestion += `\n\tC. ${optionC}`;
         
         return formattedQuestion;
     }).join('\n\n');
