@@ -18,8 +18,8 @@ This implementation plan covers swapping video grid item descriptions and enhanc
   - Test that existing button functionality is preserved
   - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 2. Enhance YouTube title extraction logic
-  - [ ] 2.1 Create title cleaning utility functions
+- [-] 2. Enhance YouTube title extraction logic
+  - [x] 2.1 Create title cleaning utility functions
     - Implement function to remove YouTube suffixes like " - YouTube"
     - Implement function to handle numeric prefixes like "(14) "
     - Implement function to validate non-empty titles after cleaning

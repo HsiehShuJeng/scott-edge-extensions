@@ -6,6 +6,71 @@
 import { showNotification } from '../core/utils.js';
 
 /**
+ * Title Cleaning Utility Functions
+ * These functions clean and validate YouTube video titles extracted from document.title
+ */
+
+/**
+ * Removes YouTube-specific suffixes from video titles
+ * @param {string} title - The title to clean
+ * @returns {string} The title with YouTube suffixes removed
+ */
+export function removeYouTubeSuffix(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    // Remove " - YouTube" suffix (case-insensitive)
+    return title.replace(/\s*-\s*YouTube\s*$/i, '').trim();
+}
+
+/**
+ * Handles numeric prefixes in YouTube titles like "(14) " or "[5] "
+ * @param {string} title - The title to clean
+ * @returns {string} The title with numeric prefixes removed
+ */
+export function removeNumericPrefix(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    // Remove patterns like "(14) " or "[5] " from the beginning
+    return title.replace(/^[\(\[]?\d+[\)\]]?\s+/, '').trim();
+}
+
+/**
+ * Validates that a title is not empty after cleaning
+ * @param {string} title - The title to validate
+ * @returns {boolean} True if title is valid (non-empty after trimming), false otherwise
+ */
+export function validateNonEmptyTitle(title) {
+    if (typeof title !== 'string') {
+        return false;
+    }
+    
+    return title.trim().length > 0;
+}
+
+/**
+ * Comprehensive title cleaning function that applies all cleaning rules
+ * @param {string} title - The raw title to clean
+ * @returns {string} The cleaned title
+ */
+export function cleanTitle(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    let cleaned = title;
+    
+    // Apply all cleaning functions in sequence
+    cleaned = removeYouTubeSuffix(cleaned);
+    cleaned = removeNumericPrefix(cleaned);
+    
+    return cleaned.trim();
+}
+
+/**
  * Orchestrates the YouTube metadata extraction process
  * @returns {Promise<Object>} Object containing url and title properties
  * @throws {Error} When metadata extraction fails or user is not on YouTube page
