@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.22.0](///compare/v2.21.1...v2.22.0) (2026-01-09)
+
+
+### Features
+
+* **automation:** add Kiro hooks and video UI spec 8cd9225
+* **video:** add YouTube title cleaning utilities edb8673
+* **video:** implement fallback title extraction with cleaning 637a1f7
+* **video:** swap video grid descriptions and update deps 13d1129
+
 ### [2.21.1](///compare/v2.21.0...v2.21.1) (2026-01-06)
 
 ## [2.21.0](///compare/v2.20.0...v2.21.0) (2026-01-06)
