@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.22.1](///compare/v2.22.0...v2.22.1) (2026-01-09)
+
+
+### Bug Fixes
+
+* **video:** correct TSV delimiter format in quiz prompt 0ace6c4
+
 ## [2.22.0](///compare/v2.21.1...v2.22.0) (2026-01-09)
 
 
