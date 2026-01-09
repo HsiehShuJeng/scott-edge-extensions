@@ -1,10 +1,11 @@
 {
   "name": "scott-edge-extensions",
-  "version": "2.21.1",
+  "version": "2.22.2",
   "description": "This extension is for interacting with [ChatGPT](https://openai.com/blog/chatgpt) for learning English. There are 3 scenarios supported so far.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "preversion": "node scripts/sync-version.js",
     "commit": "npx cz",
     "release": "standard-version"
@@ -14,12 +15,15 @@
   "license": "ISC",
   "devDependencies": {
     "commitizen": "^4.3.1",
+    "fast-check": "^4.5.3",
     "htmlhint": "^1.2.0",
+    "jsdom": "^27.4.0",
     "postcss-html": "^1.8.0",
     "standard-version": "^9.5.0",
     "stylelint": "^16.20.0",
     "stylelint-config-recommended": "^16.0.0",
     "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
-    "stylelint-no-unsupported-browser-features": "^8.0.4"
+    "stylelint-no-unsupported-browser-features": "^8.0.5",
+    "vitest": "^4.0.16"
   }
 }

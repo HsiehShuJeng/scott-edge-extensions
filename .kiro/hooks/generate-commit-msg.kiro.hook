@@ -1,0 +1,15 @@
+{
+  "enabled": true,
+  "name": "Generate Commit Message",
+  "description": "Generate conventional commit message following workflow.md rules",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Generate a conventional commit message following the rules in conductor/workflow.md.\n\nFirst, check the repository status:\n- Run: git status --porcelain\n\nFor STAGED changes:\n1. Check for new files (lines starting with 'A ' or 'A  ' in git status):\n   - Run: git diff --cached --name-status (to identify new vs modified files)\n   - For new files: read the file content directly to understand what was added\n2. For modified files:\n   - Run: git diff --cached --word-diff --stat\n   - Run: git diff --cached --word-diff\n\nFor UNSTAGED changes:\n1. Check for untracked files (lines starting with '??' in git status):\n   - Read the untracked file content directly\n2. For modified unstaged files:\n   - Run: git diff --word-diff --stat\n   - Run: git diff --word-diff\n\nFollow these commit guidelines:\n- Format: <type>(<scope>): <description>\n- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert\n- Subject line: imperative mood, no period, under 50 chars\n- Body: wrap at 72 characters, use present tense\n- Include 'BREAKING CHANGE:' in footer if applicable\n- Reference issues with 'Closes #123' or 'Fixes #456' if the info of an issue is discovered.\n\nPresent the generated commit message for my review before committing if I ask, otherwsie, commit directly."
+  },
+  "workspaceFolderName": "sheets-rename-and-one-time-credential",
+  "shortName": "generate-commit-msg"
+}

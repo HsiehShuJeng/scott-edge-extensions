@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Generate Pull Request",
+  "description": "Generate and create PR with auto-detected GitHub account",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Generate and create a Pull Request following conventional commit guidelines.\n\nSTEP 1: Analyze branch changes\n- Run: git diff main..HEAD --stat -- . ':(exclude)**/yarn.lock' ':(exclude)**/package-lock.json'\n- Run: git diff main..HEAD --word-diff -- . ':(exclude)**/yarn.lock' ':(exclude)**/package-lock.json'\n\nSTEP 2: Extract repository info\n- Run: git config --get remote.origin.url\n- Owner: extract from URL (e.g., '104corp' from github.com/104corp/repo)\n- Repo: extract from URL\n- Head branch: Run: git symbolic-ref --short HEAD\n- Base branch: Run: git remote show origin | awk '/HEAD branch/ {print $NF}'\n\nSTEP 3: Generate PR title and body\n- Title: <type>[scope]: <description> (under 50 chars, imperative mood, no period)\n- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert\n- Body: Summary of changes wrapped at 72 chars, present tense\n- References to issues if applicable\n- Include 'BREAKING CHANGE:' in footer if applicable\n\nSTEP 4: Auto-detect GitHub MCP tool based on remote URL\n- If remote URL contains 'github.com/104corp': use work account\n  - Try 'github_work' first, fall back to 'github'\n- Otherwise: use personal account\n  - Try 'github_personal' first, fall back to 'github'\n\nSTEP 5: Create PR using mcp_github_create_pull_request\n- Use the detected tool (github, github_personal, or github_work)\n- Parameters: owner, repo, title, body, head (current branch), base (default branch)\n\nExecute all steps and create the PR directly."
+  }
+}

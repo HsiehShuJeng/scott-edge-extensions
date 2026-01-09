@@ -6,6 +6,71 @@
 import { showNotification } from '../core/utils.js';
 
 /**
+ * Title Cleaning Utility Functions
+ * These functions clean and validate YouTube video titles extracted from document.title
+ */
+
+/**
+ * Removes YouTube-specific suffixes from video titles
+ * @param {string} title - The title to clean
+ * @returns {string} The title with YouTube suffixes removed
+ */
+export function removeYouTubeSuffix(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    // Remove " - YouTube" suffix (case-insensitive)
+    return title.replace(/\s*-\s*YouTube\s*$/i, '').trim();
+}
+
+/**
+ * Handles numeric prefixes in YouTube titles like "(14) " or "[5] "
+ * @param {string} title - The title to clean
+ * @returns {string} The title with numeric prefixes removed
+ */
+export function removeNumericPrefix(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    // Remove patterns like "(14) " or "[5] " from the beginning
+    return title.replace(/^[\(\[]?\d+[\)\]]?\s+/, '').trim();
+}
+
+/**
+ * Validates that a title is not empty after cleaning
+ * @param {string} title - The title to validate
+ * @returns {boolean} True if title is valid (non-empty after trimming), false otherwise
+ */
+export function validateNonEmptyTitle(title) {
+    if (typeof title !== 'string') {
+        return false;
+    }
+    
+    return title.trim().length > 0;
+}
+
+/**
+ * Comprehensive title cleaning function that applies all cleaning rules
+ * @param {string} title - The raw title to clean
+ * @returns {string} The cleaned title
+ */
+export function cleanTitle(title) {
+    if (typeof title !== 'string') {
+        return '';
+    }
+    
+    let cleaned = title;
+    
+    // Apply all cleaning functions in sequence
+    cleaned = removeYouTubeSuffix(cleaned);
+    cleaned = removeNumericPrefix(cleaned);
+    
+    return cleaned.trim();
+}
+
+/**
  * Orchestrates the YouTube metadata extraction process
  * @returns {Promise<Object>} Object containing url and title properties
  * @throws {Error} When metadata extraction fails or user is not on YouTube page
@@ -68,29 +133,47 @@ function extractMetadataFromPage() {
         
         const url = canonicalLink.href;
         
-        // Extract video title from meta element with name="title"
+        // Primary: Extract video title from meta element with name="title"
         const titleMeta = document.querySelector('meta[name="title"]');
-        if (!titleMeta || !titleMeta.content) {
-            return {
-                success: false,
-                error: 'Could not find video title on this page'
-            };
-        }
+        let title = '';
+        let source = null;
         
-        const title = titleMeta.content.trim();
+        if (titleMeta && titleMeta.content && titleMeta.content.trim()) {
+            title = titleMeta.content.trim();
+            source = 'meta';
+        } else {
+            // Fallback: Extract title from document.title and apply cleaning
+            if (document.title && document.title.trim()) {
+                // Apply title cleaning functions
+                let cleanedTitle = document.title.trim();
+                
+                // Remove YouTube-specific suffixes
+                cleanedTitle = cleanedTitle.replace(/\s*-\s*YouTube\s*$/i, '').trim();
+                
+                // Remove numeric prefixes like "(14) " or "[5] "
+                cleanedTitle = cleanedTitle.replace(/^[\(\[]?\d+[\)\]]?\s+/, '').trim();
+                
+                // Validate that cleaned title is not empty
+                if (cleanedTitle.length > 0) {
+                    title = cleanedTitle;
+                    source = 'title';
+                }
+            }
+        }
         
         // Validate that we have both URL and title
         if (!url || !title) {
             return {
                 success: false,
-                error: 'Incomplete metadata extracted from page'
+                error: 'Could not extract video title from this page'
             };
         }
 
         return {
             success: true,
             url: url,
-            title: title
+            title: title,
+            source: source
         };
     } catch (error) {
         return {
@@ -225,8 +308,8 @@ OUTPUT FORMAT (NO EXTRA COMMENTARY)
   Video Title: <title>
 - Then TWO TSV blocks.
 
-Each TSV row must use " | " as the delimiter, in this exact order:
-<Video Title> | <Question> | <Correct Answer Text> | <Option A> | <Option B> | <Option C> | <Option D> | <Reason> | <Related URL with Timestamp>
+Each TSV row must use "\t" as the delimiter, in this exact order:
+<Video Title>\t<Question>\t<Correct Answer Text>\t<Option A>\t<Option B> | <Option C> | <Option D> | <Reason> | <Related URL with Timestamp>
 
 ────────────────────────
 QUALITY CHECK (DO SILENTLY)
