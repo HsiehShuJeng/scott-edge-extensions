@@ -133,29 +133,47 @@ function extractMetadataFromPage() {
         
         const url = canonicalLink.href;
         
-        // Extract video title from meta element with name="title"
+        // Primary: Extract video title from meta element with name="title"
         const titleMeta = document.querySelector('meta[name="title"]');
-        if (!titleMeta || !titleMeta.content) {
-            return {
-                success: false,
-                error: 'Could not find video title on this page'
-            };
-        }
+        let title = '';
+        let source = null;
         
-        const title = titleMeta.content.trim();
+        if (titleMeta && titleMeta.content && titleMeta.content.trim()) {
+            title = titleMeta.content.trim();
+            source = 'meta';
+        } else {
+            // Fallback: Extract title from document.title and apply cleaning
+            if (document.title && document.title.trim()) {
+                // Apply title cleaning functions
+                let cleanedTitle = document.title.trim();
+                
+                // Remove YouTube-specific suffixes
+                cleanedTitle = cleanedTitle.replace(/\s*-\s*YouTube\s*$/i, '').trim();
+                
+                // Remove numeric prefixes like "(14) " or "[5] "
+                cleanedTitle = cleanedTitle.replace(/^[\(\[]?\d+[\)\]]?\s+/, '').trim();
+                
+                // Validate that cleaned title is not empty
+                if (cleanedTitle.length > 0) {
+                    title = cleanedTitle;
+                    source = 'title';
+                }
+            }
+        }
         
         // Validate that we have both URL and title
         if (!url || !title) {
             return {
                 success: false,
-                error: 'Incomplete metadata extracted from page'
+                error: 'Could not extract video title from this page'
             };
         }
 
         return {
             success: true,
             url: url,
-            title: title
+            title: title,
+            source: source
         };
     } catch (error) {
         return {

@@ -37,8 +37,8 @@ This implementation plan covers swapping video grid item descriptions and enhanc
     - **Property 3: Non-empty Title Validation**
     - **Validates: Requirements 2.5**
 
-- [ ] 3. Update extractMetadataFromPage function
-  - [ ] 3.1 Implement fallback title extraction logic
+- [-] 3. Update extractMetadataFromPage function
+  - [x] 3.1 Implement fallback title extraction logic
     - Modify extractMetadataFromPage to try meta element first
     - Add fallback to document.title when meta element fails
     - Apply title cleaning to document.title results
