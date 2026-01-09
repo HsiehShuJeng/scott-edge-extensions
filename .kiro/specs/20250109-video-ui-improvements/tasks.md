@@ -12,7 +12,7 @@ This implementation plan covers swapping video grid item descriptions and enhanc
   - Ensure second grid item shows "Generate quiz from YouTube video pages"
   - _Requirements: 1.1, 1.2_
 
-- [ ]* 1.1 Write unit tests for HTML content verification
+- [x] 1.1 Write unit tests for HTML content verification
   - Test that first grid item contains correct DeepSRT description
   - Test that second grid item contains correct YouTube description
   - Test that existing button functionality is preserved
@@ -51,7 +51,7 @@ This implementation plan covers swapping video grid item descriptions and enhanc
     - Test error handling when both methods fail
     - _Requirements: 2.1, 2.2, 2.6_
 
-- [ ] 4. Checkpoint - Ensure all tests pass
+- [x] 4. Checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
