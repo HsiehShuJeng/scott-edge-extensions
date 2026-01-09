@@ -6,7 +6,7 @@ This implementation plan covers swapping video grid item descriptions and enhanc
 
 ## Tasks
 
-- [ ] 1. Update HTML video grid descriptions
+- [x] 1. Update HTML video grid descriptions
   - Swap the instruction text content for the two video grid items in popup.html
   - Ensure first grid item shows "Extract questions and options from DeepSRT challenge pages"
   - Ensure second grid item shows "Generate quiz from YouTube video pages"
