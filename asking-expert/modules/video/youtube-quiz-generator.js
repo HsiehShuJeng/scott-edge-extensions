@@ -308,8 +308,8 @@ OUTPUT FORMAT (NO EXTRA COMMENTARY)
   Video Title: <title>
 - Then TWO TSV blocks.
 
-Each TSV row must use " | " as the delimiter, in this exact order:
-<Video Title> | <Question> | <Correct Answer Text> | <Option A> | <Option B> | <Option C> | <Option D> | <Reason> | <Related URL with Timestamp>
+Each TSV row must use "\t" as the delimiter, in this exact order:
+<Video Title>\t<Question>\t<Correct Answer Text>\t<Option A> | <Option B> | <Option C> | <Option D> | <Reason> | <Related URL with Timestamp>
 
 ────────────────────────
 QUALITY CHECK (DO SILENTLY)
