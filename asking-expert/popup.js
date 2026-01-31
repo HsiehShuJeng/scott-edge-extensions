@@ -81,7 +81,7 @@ function setupTabNavigation() {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             switchToTab(targetTab);
-        }, { passive: true });
+        });
 
         // Hover event for preview switching with throttling
         let hoverTimeout;
