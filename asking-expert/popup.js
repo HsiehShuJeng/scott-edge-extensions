@@ -546,6 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // === Infographic Prompt Generator Logic ===
     const designDropdown = document.getElementById('design-style-dropdown');
+    const inspirationDropdown = document.getElementById('design-inspiration-dropdown');
     const designInput = document.getElementById('design-input');
     const generateDesignBtn = document.getElementById('generate-design-prompt');
     const previewImage = document.getElementById('style-preview-image');
@@ -584,8 +585,9 @@ document.addEventListener('DOMContentLoaded', () => {
         generateDesignBtn.addEventListener('click', () => {
             const styleKey = designDropdown.value;
             const text = designInput.value.trim(); // Can be empty now
+            const inspiration = inspirationDropdown ? inspirationDropdown.value : null;
 
-            const prompt = generatePrompt(styleKey, text);
+            const prompt = generatePrompt(styleKey, text, inspiration);
             navigator.clipboard.writeText(prompt).then(() => {
                 showNotification('Infographic prompt copied!', false, 'Design Tool');
             }).catch(err => {

@@ -12,10 +12,11 @@ export const styles = {
 * Glow rule: **No glow on text; micro-glow only on accent lines/icons**`,
     },
     frosted_glass: {
-        label: "Frosted Glass (Ghost in the Shell)",
+        label: "Frosted Glass",
         previewColors: ["#ECEFF3", "#22252B", "#39B5E0", "#7C6EE6"],
-        prompt: `* UI style inspired by *Ghost in the Shell* HUD: flat, sharp, disciplined, less fantasy ornament and more modern interface design.
-* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+        // Prompt template with placeholder or split parts could be used, 
+        // but here we will handle the dynamic first line in generatePrompt
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
   * Overall theme: **Frosted Glass**
   * Background: **mist gray (#ECEFF3)**
@@ -30,6 +31,7 @@ export const styles = {
 
 **Iconography and typography:**
 * Use simple, glyph-like icons`,
+        baseDescription: "flat, sharp, disciplined, less fantasy ornament and more modern interface design."
     },
     warm_cream: {
         label: "Warm Cream",
@@ -91,21 +93,39 @@ const LANGUAGE_REQUIREMENT = `
  * Generates a prompt string based on the selected style and user input.
  * @param {string} styleKey - The key of the selected style.
  * @param {string} userText - The text content provided by the user.
+ * @param {string} [artReference] - Optional artistic reference (e.g., "Ghost in the Shell").
  * @returns {string} The formatted prompt string.
  */
-export function generatePrompt(styleKey, userText) {
+export function generatePrompt(styleKey, userText, artReference) {
     const selectedStyle = styles[styleKey];
-
-    // Default text if userText is empty.
-    const contentDescription = userText || "a generic topic (e.g., Annual Report, Quarterly Goals, Project Timeline)";
 
     if (!selectedStyle) {
         return userText;
     }
 
-    return `Create a clean, minimalist, enterprise-grade infographic about: "${contentDescription}".
+    let styleDescription = selectedStyle.prompt;
 
-${selectedStyle.prompt}
+    // Special handling for Frosted Glass dynamic header
+    if (styleKey === 'frosted_glass' && selectedStyle.baseDescription) {
+        let referencePart = "";
+        if (artReference && artReference !== "none") {
+            referencePart = ` inspired by *${artReference}* HUD`;
+        }
+
+        const header = `* UI style${referencePart}: ${selectedStyle.baseDescription}`;
+        styleDescription = `${header}\n${styleDescription}`;
+    }
+
+    let promptIntro = "";
+    if (userText && userText.trim().length > 0) {
+        promptIntro = `${userText.trim()}\n\nCreate a clean, minimalist, enterprise-grade infographic about the above information.`;
+    } else {
+        promptIntro = "Create a clean, minimalist, enterprise-grade infographic.";
+    }
+
+    return `${promptIntro}
+
+${styleDescription}
 
 ${LANGUAGE_REQUIREMENT}`;
 }
