@@ -62,6 +62,21 @@ The generated quiz prompts include:
 - **Content Analysis**: Prompts for video transcript analysis and key concept identification
 - **Engagement Focus**: Questions designed to test viewer understanding and retention
 
+## Infographic Prompt Generator
+
+### Professional Visual Design
+- **6 Distinct Styles**:
+  Select from professionally curated styles: Bright Enterprise, Frosted Glass, Warm Cream, Clean Tech Aqua, Luxury Noir, and Twilight Violet.
+- **Global Artistic Inspiration**:
+  Apply sophisticated artistic directions (e.g., "Ghost in the Shell" Cyberpunk HUD, "Final Fantasy VIII" JRPG UI) to *any* of the base styles for unique combinations.
+- **Visual Previews**:
+  Interactive preview images update instantly to show the aesthetic of the selected style.
+- **Smart Prompt Engineering**:
+  - **Context-Aware**: Generates generic templates if no topic is provided, or specific content-based prompts if a topic is entered.
+  - **Auto-Localization**: Automatically appends requirements for Traditional Chinese text output suitable for the Taiwan market.
+
+
+
 ## Programming Features
 
 ### Enhanced Commit Message Generation
@@ -134,7 +149,8 @@ Creates structured prompts for LLM-assisted branch naming with development conte
 ---
 
 ## UI Features
-- **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation
+- **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation (plus dedicated Infographic tool)
+- **Infographic Generator**: Specialized interface for creating professional design prompts with visual style previews
 - **YouTube Quiz Generator**: Dedicated functionality in the Video tab for creating educational quiz content from YouTube videos
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions

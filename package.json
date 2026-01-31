@@ -8,7 +8,11 @@
     "test:watch": "vitest",
     "preversion": "node scripts/sync-version.js",
     "commit": "npx cz",
-    "release": "standard-version"
+    "release": "standard-version",
+    "lint:js": "node scripts/check-syntax.js",
+    "lint:css": "stylelint \"asking-expert/**/*.css\"",
+    "lint:html": "htmlhint \"asking-expert/**/*.html\"",
+    "lint": "npm run lint:js && npm run lint:css && npm run lint:html"
   },
   "keywords": [],
   "author": "",
