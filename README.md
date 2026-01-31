@@ -415,12 +415,22 @@ This project uses a unified versioning system where:
 1. Commit your changes with conventional commit messages
 2. Run the release workflow:
    ```bash
-   git commit -m "your message"
+   # 1. Automatic version bump, changelog generation, and tagging
    npm run release
+
+   # 2. Sync manifest.json with the new package.json version
    node scripts/sync-version.js
-   git add .
-   git commit -m "chore: bump version to X.X.X"  # X.X.X is dynamic
-   git push --follow-tags
+
+   # 3. Amend the release commit to include the manifest update
+   git add asking-expert/manifest.json
+   git commit --amend --no-edit
+
+   # 4. Update the tag to point to the amended commit
+   # (Replace vX.X.X with the actual new version, e.g., v2.23.0)
+   git tag -f vX.X.X
+
+   # 5. Push commits and tags
+   git push --follow-tags origin <branch-name>
    ```
 
 #### Important Note About Version Sync Timing
