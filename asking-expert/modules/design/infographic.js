@@ -91,6 +91,52 @@ export const styles = {
   * Borders & grid: **light mauve-gray (#CFC3DA)**
   * Glow rule: **No glow on text; accent glow only on icons**`,
     },
+    neon_cyberpunk: {
+        label: "Neon Cyberpunk",
+        previewColors: ["#0B0C15", "#00F3FF", "#FF00AA", "#FAFF00"],
+        prompt: `* Aesthetic: high-contrast, futuristic, gritty yet polished; think "Blade Runner 2049" meets high-end UI design.
+* Color palette:
+  * Overall theme: **Neon Cyberpunk**
+  * Background: **deep void black (#0B0C15)**
+  * Panels: **semi-transparent dark glass (#1A1B2E)** with neon borders
+  * Primary text: **electric white (#FFFFFF)** with slight glow
+  * Accent 1: **cyan laser (#00F3FF)**
+  * Accent 2: **hot pink (#FF00AA)**
+  * Accent 3: **acid yellow (#FAFF00)** for warnings/highlights
+  * Typography: **Monospaced headers** paired with clean sans-serif body
+  * Glow rule: **Strong bloom/glow on all accent elements and charts**`,
+    },
+    minimalist_swiss: {
+        label: "Minimalist Swiss",
+        previewColors: ["#FFFFFF", "#000000", "#FF4040", "#F0F0F0"],
+        prompt: `* Aesthetic: International Typographic Style; grid-based, asymmetric layouts, prioritizing negative space and bold typography.
+* Color palette:
+  * Overall theme: **Minimalist Swiss**
+  * Background: **pure matte white (#FFFFFF)**
+  * Panels: **none** (use whitespace and heavy dividers to separate content)
+  * Primary text: **stark black (#000000)**
+  * Accent 1: **Swiss red (#FF4040)** for key emphasis only
+  * Accent 2: **concrete gray (#F0F0F0)** for subtle structure
+  * Borders & grid: **thick black lines** for structural definition
+  * Typography: **Helvetica/grotesque fonts**, massive headers, tight kerning
+  * Glow rule: **Zero glow, flat design only**`,
+    },
+    cinematic_nature: {
+        label: "Cinematic Nature",
+        previewColors: ["#2C3632", "#E8F1F2", "#D4A373", "#606C38"],
+        prompt: `* Aesthetic: organic, calm, and grounded; inspired by National Geographic photography and high-end travel journals.
+* Color palette:
+  * Overall theme: **Cinematic Nature**
+  * Background: **deep slate green (#2C3632)**
+  * Panels: **translucent parchment (#E8F1F2)** with 90% opacity
+  * Primary text: **charcoal (#1F2421)**
+  * Secondary text: **slate gray (#4A5568)**
+  * Accent 1: **sandstone gold (#D4A373)**
+  * Accent 2: **moss green (#606C38)**
+  * Accent 3: **mist blue (#A3B8C2)**
+  * Typography: **Elegant serif headers** paired with humanist sans-serif
+  * Glow rule: **Soft, diffused shadows only; no harsh neon**`,
+    },
 };
 
 const LANGUAGE_REQUIREMENT = `

@@ -67,8 +67,8 @@ The generated quiz prompts include:
 ## Infographic Prompt Generator
 
 ### Professional Visual Design
-- **6 Distinct Styles**:
-  Select from professionally curated styles: Bright Enterprise, Frosted Glass, Warm Cream, Clean Tech Aqua, Luxury Noir, and Twilight Violet.
+- **9 Distinct Styles**:
+  Select from professionally curated styles including Bright Enterprise, Frosted Glass, Neon Cyberpunk, Minimalist Swiss, and Cinematic Nature.
 - **Global Artistic Inspiration**:
   Apply sophisticated artistic directions (e.g., "Ghost in the Shell" Cyberpunk HUD, "Final Fantasy VIII" JRPG UI) to *any* of the base styles for unique combinations.
 - **Visual Previews**:
