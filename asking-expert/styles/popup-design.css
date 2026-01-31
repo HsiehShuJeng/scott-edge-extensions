@@ -72,8 +72,11 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
+
+    /* Light Theme Default */
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1a1d21;
+
     font-size: 12px;
     padding: 8px 12px;
     margin: 0;
@@ -87,8 +90,15 @@
     /* Let clicks pass through if needed */
 }
 
+/* Dark Theme Override */
+body.dark-theme .style-description {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+}
+
 .style-preview-container:hover .style-description {
-    opacity: 0.9;
+    opacity: 1;
+    /* Fully visible on hover, transparency handled by background-color rgba */
 }
 
 .primary-action-btn {
