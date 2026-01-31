@@ -96,6 +96,24 @@ const LANGUAGE_REQUIREMENT = `
  * @param {string} [artReference] - Optional artistic reference (e.g., "Ghost in the Shell").
  * @returns {string} The formatted prompt string.
  */
+const INSPIRATION_DATA = {
+    "Ghost in the Shell": {
+        introContext: "modern Cyberpunk UI and HUD design",
+        uiStyleLine: "* UI style inspired by *Ghost in the Shell* HUD: flat, sharp, disciplined, less fantasy ornament and more modern interface design."
+    },
+    "Final Fantasy VIII": {
+        introContext: "modern JRPG UI and HUD design",
+        uiStyleLine: "* UI style inspired by *Final Fantasy VIII* HUD: flat, sharp, disciplined, less fantasy ornament and more modern interface design."
+    }
+};
+
+/**
+ * Generates a prompt string based on the selected style and user input.
+ * @param {string} styleKey - The key of the selected style.
+ * @param {string} userText - The text content provided by the user.
+ * @param {string} [artReference] - Optional artistic reference (e.g., "Ghost in the Shell").
+ * @returns {string} The formatted prompt string.
+ */
 export function generatePrompt(styleKey, userText, artReference) {
     const selectedStyle = styles[styleKey];
 
@@ -104,23 +122,47 @@ export function generatePrompt(styleKey, userText, artReference) {
     }
 
     let styleDescription = selectedStyle.prompt;
+    const inspirationConfig = INSPIRATION_DATA[artReference];
 
-    // Special handling for Frosted Glass dynamic header
-    if (styleKey === 'frosted_glass' && selectedStyle.baseDescription) {
-        let referencePart = "";
-        if (artReference && artReference !== "none") {
-            referencePart = ` inspired by *${artReference}* HUD`;
-        }
-
-        const header = `* UI style${referencePart}: ${selectedStyle.baseDescription}`;
-        styleDescription = `${header}\n${styleDescription}`;
+    // 1. Handle UI Style Line injection
+    if (inspirationConfig) {
+        // Global injection: Prepend the inspired UI style line to ANY style
+        styleDescription = `${inspirationConfig.uiStyleLine}\n${styleDescription}`;
+    } else if (styleKey === 'frosted_glass' && selectedStyle.baseDescription) {
+        // Fallback for Frosted Glass when NO inspiration is selected
+        // It needs its default header to make sense
+        styleDescription = `* UI style: ${selectedStyle.baseDescription}\n${styleDescription}`;
     }
 
+    // 2. Handle Intro Text
     let promptIntro = "";
-    if (userText && userText.trim().length > 0) {
-        promptIntro = `${userText.trim()}\n\nCreate a clean, minimalist, enterprise-grade infographic about the above information.`;
+
+    if (inspirationConfig) {
+        // Rich Intro with Inspiration
+        const introContext = inspirationConfig.introContext;
+        const refName = artReference; // Use the exact dropdown value
+
+        let contextPrefix = "";
+        if (userText && userText.trim().length > 0) {
+            contextPrefix = `${userText.trim()}\n\n`;
+            promptIntro = `${contextPrefix}Create a clean, minimalist, enterprise-grade infographic inspired by ${introContext}, similar to '${refName}'. The overall look should feel aesthetic, embodying modernization: visually simple at first glance, but with careful, elegant detail that reflects a professional designer’s touch.`;
+        } else {
+            // Empty user text case (still uses Rich Intro structure)
+            promptIntro = `Create a clean, minimalist, enterprise-grade infographic inspired by ${introContext}, similar to '${refName}'. The overall look should feel aesthetic, embodying modernization: visually simple at first glance, but with careful, elegant detail that reflects a professional designer’s touch.`;
+        }
+
+        // Add "about the above information" if context exists
+        if (contextPrefix) {
+            promptIntro = promptIntro.replace("infographic inspired", "infographic about the above information, inspired");
+        }
+
     } else {
-        promptIntro = "Create a clean, minimalist, enterprise-grade infographic.";
+        // Standard Intro (No Inspiration)
+        if (userText && userText.trim().length > 0) {
+            promptIntro = `${userText.trim()}\n\nCreate a clean, minimalist, enterprise-grade infographic about the above information.`;
+        } else {
+            promptIntro = "Create a clean, minimalist, enterprise-grade infographic.";
+        }
     }
 
     return `${promptIntro}
