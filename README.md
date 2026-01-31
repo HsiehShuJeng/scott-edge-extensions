@@ -20,6 +20,7 @@ This browser extension provides comprehensive assistance for language learners (
   - [Loading into Edge](#loading-into-edge)
   - [Development](#development)
   - [Contributor Onboarding](#contributor-onboarding)
+  - [Release Process](#release-process)
 - [Modular CSS & UI Consistency](#modular-css--ui-consistency)
 - [Linting & Code Quality](#linting--code-quality)
 - [Limitations & Notifications](#limitations--notifications)
