@@ -1,6 +1,7 @@
 export const styles = {
     bright_enterprise: {
         label: "Bright Enterprise",
+        description: "Clean, professional aesthetic with high contrast and plenty of whitespace. Ideal for corporate presentations and data-heavy reports.",
         previewColors: ["#F6F4EF", "#1A1D21", "#2F6FED", "#16A3A5"],
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
@@ -15,7 +16,8 @@ export const styles = {
     },
     frosted_glass: {
         label: "Frosted Glass",
-        previewColors: ["#ECEFF3", "#22252B", "#39B5E0", "#7C6EE6"],
+        description: "Modern translucent layers with background blur effects. Adds depth and sophistication to any topic.",
+        previewColors: ["#000000", "#1A1A1A", "#FFFFFF", "#333333"],
         // Prompt template with placeholder or split parts could be used, 
         // but here we will handle the dynamic first line in generatePrompt
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
@@ -37,7 +39,8 @@ export const styles = {
     },
     warm_cream: {
         label: "Warm Cream",
-        previewColors: ["#F3EFE6", "#2A221C", "#D77A2B", "#6FA37A"],
+        description: "Cozy, minimal, and inviting. Features soft beige tones and simple typography, perfect for lifestyle or educational content.",
+        previewColors: ["#FAFAF5", "#37352F", "#EBECED", "#E3E2E0"],
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
   * Overall theme: **Warm Cream**
@@ -51,7 +54,8 @@ export const styles = {
     },
     clean_tech_aqua: {
         label: "Clean Tech Aqua",
-        previewColors: ["#EAF7F7", "#0B1F33", "#00A6A6", "#2D7FF9"],
+        description: "Fresh and innovative. Uses crisp whites and vibrant aqua accents to convey modernity and technological advancement.",
+        previewColors: ["#FFFFFF", "#0F172A", "#06B6D4", "#E2E8F0"],
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
   * Overall theme: **Clean Tech Aqua**
@@ -65,7 +69,8 @@ export const styles = {
     },
     luxury_noir: {
         label: "Luxury Noir",
-        previewColors: ["#0B0D12", "#F2F4F7", "#D6B25E", "#67D7E5"],
+        description: "Elegant dark mode with gold accents. Exudes exclusivity and premium quality, suitable for high-end products.",
+        previewColors: ["#121212", "#E0E0E0", "#D4AF37", "#1E1E1E"],
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
   * Overall theme: **Luxury Noir**
@@ -79,6 +84,7 @@ export const styles = {
     },
     twilight_violet: {
         label: "Twilight Violet",
+        description: "Dreamy and creative. Combines soft lavender layouts with vibrant violet accents for a unique, artistic vibe.",
         previewColors: ["#EEEAF6", "#221828", "#6D4AFF", "#E255A1"],
         prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
 * Color palette:
@@ -93,6 +99,7 @@ export const styles = {
     },
     neon_cyberpunk: {
         label: "Neon Cyberpunk",
+        description: "High-contrast dark mode with glowing accents. Perfect for futuristic, tech-heavy, or nightlife themes.",
         previewColors: ["#0B0C15", "#00F3FF", "#FF00AA", "#FAFF00"],
         prompt: `* Aesthetic: high-contrast, futuristic, gritty yet polished; think "Blade Runner 2049" meets high-end UI design.
 * Color palette:
@@ -108,6 +115,7 @@ export const styles = {
     },
     minimalist_swiss: {
         label: "Minimalist Swiss",
+        description: "Bold typography and grid-based layout. Focuses on clarity, negative space, and objective information.",
         previewColors: ["#FFFFFF", "#000000", "#FF4040", "#F0F0F0"],
         prompt: `* Aesthetic: International Typographic Style; grid-based, asymmetric layouts, prioritizing negative space and bold typography.
 * Color palette:
@@ -123,6 +131,7 @@ export const styles = {
     },
     cinematic_nature: {
         label: "Cinematic Nature",
+        description: "Earthy tones and organic textures. Inspired by high-end travel photography and nature documentaries.",
         previewColors: ["#2C3632", "#E8F1F2", "#D4A373", "#606C38"],
         prompt: `* Aesthetic: organic, calm, and grounded; inspired by National Geographic photography and high-end travel journals.
 * Color palette:
@@ -160,6 +169,26 @@ const INSPIRATION_DATA = {
     "Final Fantasy VIII": {
         introContext: "modern JRPG UI and HUD design",
         uiStyleLine: "* UI style inspired by *Final Fantasy VIII* HUD: flat, sharp, disciplined, less fantasy ornament and more modern interface design."
+    },
+    "Neon Genesis Evangelion": {
+        introContext: "retro-futuristic industrial UI",
+        uiStyleLine: "* UI style inspired by *Neon Genesis Evangelion* MAGI System: high-contrast black/amber/orange palette, hexagonal patterns, bold Mincho typography, scanning lines, warning stripes, and brutalist data density."
+    },
+    "Studio Ghibli": {
+        introContext: "hand-painted artistic presentation",
+        uiStyleLine: "* Visual style inspired by *Studio Ghibli* backgrounds: soft watercolor textures, lush natural palettes, hand-painted aesthetic, organic shapes, and warm, inviting lighting. Less digital, more artisanal."
+    },
+    "Persona 5": {
+        introContext: "rebellious punk-pop UI",
+        uiStyleLine: "* UI style inspired by *Persona 5*: high-speed, chaotic yet stylish, jagged edges, heavy black/red/white contrast, comic-book aesthetic, dynamic angles, and ransom-note typography."
+    },
+    "Akira": {
+        introContext: "gritty neo-Tokyo cyberpunk",
+        uiStyleLine: "* UI style inspired by *Akira*: analog data screens, light trails, gritty CRT effects, clinical green/red readouts, mechanical schematics, and detailed motor-function displays."
+    },
+    "Demon Slayer": {
+        introContext: "Taisho-era Japanese traditional pattern",
+        uiStyleLine: "* Visual style inspired by *Demon Slayer (Kimetsu no Yaiba)*: traditional Japanese patterns (Wagara), ink wash effects (Sumi-e), bold calligraphy, and distinct elemental color motifs (checkers, waves, flames)."
     }
 };
 

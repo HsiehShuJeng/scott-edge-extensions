@@ -65,6 +65,16 @@
     transition: opacity 0.3s ease;
 }
 
+.style-description {
+    font-size: 13px;
+    color: var(--text-muted, #666);
+    margin: 8px 0 0 0;
+    line-height: 1.4;
+    font-style: italic;
+    min-height: 38px;
+    /* Prevent layout shift */
+}
+
 .primary-action-btn {
     margin-top: 8px;
     width: 100%;

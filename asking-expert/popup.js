@@ -553,13 +553,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (designDropdown && designInput && generateDesignBtn) {
 
-        // Helper to update preview image
+        // Helper to update preview image and description
         const updatePreview = (styleKey) => {
             if (!previewImage) return;
             // Map style keys to filenames
             const filename = `images/design_previews/${styleKey}.png`;
             previewImage.src = filename;
             previewImage.alt = styles[styleKey]?.label || "Style Preview";
+
+            // Update description
+            const descriptionEl = document.getElementById('style-description');
+            if (descriptionEl) {
+                descriptionEl.textContent = styles[styleKey]?.description || "";
+            }
         };
 
         // Populate dropdown
