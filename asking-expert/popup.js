@@ -62,6 +62,17 @@ function setupTabNavigation() {
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
 
+            // Auto-select random style when entering Design tab
+            if (targetTab === 'design') {
+                const designDropdown = document.getElementById('design-style-dropdown');
+                if (designDropdown && designDropdown.options.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * designDropdown.options.length);
+                    designDropdown.selectedIndex = randomIndex;
+                    // Trigger change event to update preview and description
+                    designDropdown.dispatchEvent(new Event('change'));
+                }
+            }
+
             // Add active class to target button and corresponding content
             const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
             const targetContent = document.getElementById(`${targetTab}-tab`);
