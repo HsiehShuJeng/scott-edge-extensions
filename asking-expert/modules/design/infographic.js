@@ -2,14 +2,16 @@ export const styles = {
     bright_enterprise: {
         label: "Bright Enterprise",
         previewColors: ["#F6F4EF", "#1A1D21", "#2F6FED", "#16A3A5"],
-        prompt: `* Overall theme: **Bright Enterprise**
-* Background: **warm off-white (#F6F4EF)**
-* Panels: **soft light gray (#FFFFFF / #F1F2F4)** with **8–14%** translucency
-* Primary text: **near-black (#1A1D21)**, Secondary text: **cool gray (#5B6472)**
-* Accent 1: **azure blue (#2F6FED)**
-* Accent 2: **teal (#16A3A5)**
-* Borders & grid: **light graphite (#C9CED6)**
-* Glow rule: **No glow on text; micro-glow only on accent lines/icons**`,
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+* Color palette:
+  * Overall theme: **Bright Enterprise**
+  * Background: **warm off-white (#F6F4EF)**
+  * Panels: **soft light gray (#FFFFFF / #F1F2F4)** with **8–14%** translucency
+  * Primary text: **near-black (#1A1D21)**, Secondary text: **cool gray (#5B6472)**
+  * Accent 1: **azure blue (#2F6FED)**
+  * Accent 2: **teal (#16A3A5)**
+  * Borders & grid: **light graphite (#C9CED6)**
+  * Glow rule: **No glow on text; micro-glow only on accent lines/icons**`,
     },
     frosted_glass: {
         label: "Frosted Glass",
@@ -36,50 +38,58 @@ export const styles = {
     warm_cream: {
         label: "Warm Cream",
         previewColors: ["#F3EFE6", "#2A221C", "#D77A2B", "#6FA37A"],
-        prompt: `* Overall theme: **Warm Cream**
-* Background: **cream (#F3EFE6)**
-* Panels: **ivory (#FFF9EF)** with **10–16%** translucency
-* Primary text: **espresso (#2A221C)**, Secondary text: **warm gray (#6E625A)**
-* Accent 1: **burnt orange (#D77A2B)**
-* Accent 2: **sage green (#6FA37A)**
-* Borders & grid: **linen gray (#CFC6B8)**
-* Glow rule: **No neon; use subtle highlight strokes instead**`,
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+* Color palette:
+  * Overall theme: **Warm Cream**
+  * Background: **cream (#F3EFE6)**
+  * Panels: **ivory (#FFF9EF)** with **10–16%** translucency
+  * Primary text: **espresso (#2A221C)**, Secondary text: **warm gray (#6E625A)**
+  * Accent 1: **burnt orange (#D77A2B)**
+  * Accent 2: **sage green (#6FA37A)**
+  * Borders & grid: **linen gray (#CFC6B8)**
+  * Glow rule: **No neon; use subtle highlight strokes instead**`,
     },
     clean_tech_aqua: {
         label: "Clean Tech Aqua",
         previewColors: ["#EAF7F7", "#0B1F33", "#00A6A6", "#2D7FF9"],
-        prompt: `* Overall theme: **Clean Tech Aqua**
-* Background: **very light aqua (#EAF7F7)**
-* Panels: **white (#FFFFFF)** with **8–12%** translucency
-* Primary text: **deep navy (#0B1F33)**, Secondary text: **steel (#4F6272)**
-* Accent 1: **aqua (#00A6A6)**
-* Accent 2: **electric blue (#2D7FF9)**
-* Borders & grid: **pale blue-gray (#BFD4DA)**
-* Glow rule: **Tiny glow on accent icons only; keep lines crisp**`,
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+* Color palette:
+  * Overall theme: **Clean Tech Aqua**
+  * Background: **very light aqua (#EAF7F7)**
+  * Panels: **white (#FFFFFF)** with **8–12%** translucency
+  * Primary text: **deep navy (#0B1F33)**, Secondary text: **steel (#4F6272)**
+  * Accent 1: **aqua (#00A6A6)**
+  * Accent 2: **electric blue (#2D7FF9)**
+  * Borders & grid: **pale blue-gray (#BFD4DA)**
+  * Glow rule: **Tiny glow on accent icons only; keep lines crisp**`,
     },
     luxury_noir: {
         label: "Luxury Noir",
         previewColors: ["#0B0D12", "#F2F4F7", "#D6B25E", "#67D7E5"],
-        prompt: `* Overall theme: **Luxury Noir**
-* Background: **deep ink (#0B0D12)** with subtle gradient
-* Panels: **charcoal glass (#151A22)** with **12–18%** translucency
-* Primary text: **off-white (#F2F4F7)**, Secondary text: **cool gray (#A7B0BE)**
-* Accent 1: **champagne gold (#D6B25E)**
-* Accent 2: **icy cyan (#67D7E5)**
-* Borders & grid: **graphite (#2B3442)**
-* Glow rule: **Gold glow only on title + one focal connector**`,
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+* Color palette:
+  * Overall theme: **Luxury Noir**
+  * Background: **deep ink (#0B0D12)** with subtle gradient
+  * Panels: **charcoal glass (#151A22)** with **12–18%** translucency
+  * Primary text: **off-white (#F2F4F7)**, Secondary text: **cool gray (#A7B0BE)**
+  * Accent 1: **champagne gold (#D6B25E)**
+  * Accent 2: **icy cyan (#67D7E5)**
+  * Borders & grid: **graphite (#2B3442)**
+  * Glow rule: **Gold glow only on title + one focal connector**`,
     },
     twilight_violet: {
         label: "Twilight Violet",
         previewColors: ["#EEEAF6", "#221828", "#6D4AFF", "#E255A1"],
-        prompt: `* Overall theme: **Twilight Violet**
-* Background: **soft lavender-gray (#EEEAF6)**
-* Panels: **white (#FFFFFF)** with **12–20%** translucency
-* Primary text: **dark plum (#221828)**, Secondary text: **muted purple-gray (#6A5F74)**
-* Accent 1: **violet (#6D4AFF)**
-* Accent 2: **rose (#E255A1)**
-* Borders & grid: **light mauve-gray (#CFC3DA)**
-* Glow rule: **No glow on text; accent glow only on icons**`,
+        prompt: `* Aesthetic: frugal and uncluttered; no visual noise, every element must feel intentional and functional.
+* Color palette:
+  * Overall theme: **Twilight Violet**
+  * Background: **soft lavender-gray (#EEEAF6)**
+  * Panels: **white (#FFFFFF)** with **12–20%** translucency
+  * Primary text: **dark plum (#221828)**, Secondary text: **muted purple-gray (#6A5F74)**
+  * Accent 1: **violet (#6D4AFF)**
+  * Accent 2: **rose (#E255A1)**
+  * Borders & grid: **light mauve-gray (#CFC3DA)**
+  * Glow rule: **No glow on text; accent glow only on icons**`,
     },
 };
 
