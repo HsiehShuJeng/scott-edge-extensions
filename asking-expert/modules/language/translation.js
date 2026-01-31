@@ -81,9 +81,12 @@ export async function getSentenceContent() {
             const tab = tabs[0];
             const url = tab?.url || '';
             if (
+                !url ||
                 url.startsWith('chrome://') ||
                 url.startsWith('edge://') ||
-                url.startsWith('extension://')
+                url.startsWith('extension://') ||
+                url.startsWith('chrome-extension://') ||
+                url.startsWith('about:')
             ) {
                 showNotification('This extension cannot be used on internal browser pages. Please switch to a regular website.', true);
                 resolve(null);

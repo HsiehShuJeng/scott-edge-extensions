@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.25.0](///compare/v2.24.1...v2.25.0) (2026-01-31)
+
+
+### Features
+
+* **ui:** implement random style selection on tab switch 0b4e546
+
+### [2.24.1](///compare/v2.24.0...v2.24.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* **ui:** remove passive option from click listener to allow preventDefault ff45145
+
+## [2.24.0](///compare/v2.23.0...v2.24.0) (2026-01-31)
+
+
+### Features
+
+* expand infographic styles and update manifest 960686b
+* **ui:** add style descriptions and bilingual inspiration options 0934cd5
+* **workflow:** add release workflow definition 718a7a3
+
+## [2.23.0](///compare/v2.22.2...v2.23.0) (2026-01-31)
+
+
+### Features
+
+* **infographic:** add prompt generator with image previews c4255e4
+* **infographic:** apply artistic reference logic globally f39323b
+* **infographic:** implement dynamic artistic reference and refine prompt logic 92e4b91
+
+
+### Bug Fixes
+
+* **infographic:** resolve syntax error in styles definition 8c463f5
+
 ### [2.22.2](///compare/v2.22.1...v2.22.2) (2026-01-09)
 
 
