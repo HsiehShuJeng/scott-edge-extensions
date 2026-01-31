@@ -2,19 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [2.23.0] (2026-02-01)
+## [2.23.0](///compare/v2.22.2...v2.23.0) (2026-01-31)
+
 
 ### Features
 
-* **infographic:** apply artistic reference logic globally to all styles
-* **infographic:** add "Artistic Reference" dropdown and Rich Intro support
-* **infographic:** standardize all styles with "Aesthetic" and "Color palette" structure
-* **docs:** update README with Infographic Prompt Generator details
+* **infographic:** add prompt generator with image previews c4255e4
+* **infographic:** apply artistic reference logic globally f39323b
+* **infographic:** implement dynamic artistic reference and refine prompt logic 92e4b91
+
 
 ### Bug Fixes
 
-* **infographic:** resolve syntax error in styles definition
-* **ui:** fix dropdown CSS background glitch
+* **infographic:** resolve syntax error in styles definition 8c463f5
 
 ### [2.22.2](///compare/v2.22.1...v2.22.2) (2026-01-09)
 
