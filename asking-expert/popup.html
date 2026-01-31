@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles/popup-commit.css">
     <link rel="stylesheet" href="styles/popup-development-routines.css">
     <link rel="stylesheet" href="styles/popup-tabs.css">
+    <link rel="stylesheet" href="styles/popup-design.css">
 </head>
 
 <body>
@@ -39,6 +40,10 @@
         <button class="tab-button" data-tab="programming" type="button">
             <span class="tab-text-short">PE</span>
             <span class="tab-text-full">Programming Engineering</span>
+        </button>
+        <button class="tab-button" data-tab="design" type="button">
+            <span class="tab-text-short">I</span>
+            <span class="tab-text-full">Infographic</span>
         </button>
         <button class="tab-button" data-tab="tools" type="button">
             <span class="tab-text-short">T</span>
@@ -227,6 +232,50 @@
                 <p>Drag and drop image to remove watermarks.</p>
                 <button id="launch-watermark" class="modern-btn">Open Tool</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Infographic Design Tab Content -->
+    <div id="design-tab" class="tab-content">
+        <h2>Infographic Prompt Generator</h2>
+
+        <div class="design-controls-container">
+            <!-- Inspiration Selection -->
+            <div class="input-group">
+                <label for="design-inspiration-dropdown" class="input-label">Inspiration (Optional)</label>
+                <select id="design-inspiration-dropdown" class="dropdown design-dropdown">
+                    <option value="none">None</option>
+                    <option value="Ghost in the Shell">Ghost in the Shell / 攻殻機動隊</option>
+                    <option value="Final Fantasy VIII">Final Fantasy VIII / FF8</option>
+                    <option value="Neon Genesis Evangelion">Neon Genesis Evangelion / 新世紀エヴァンゲリオン</option>
+                    <option value="Studio Ghibli">Studio Ghibli / スタジオジブリ</option>
+                    <option value="Persona 5">Persona 5 / ペルソナ5</option>
+                    <option value="Akira">Akira / アキラ</option>
+                    <option value="Demon Slayer">Demon Slayer / 鬼滅の刃</option>
+                </select>
+            </div>
+
+            <div class="style-selection-group">
+                <label for="design-style-dropdown" class="input-label">Select Style</label>
+                <select id="design-style-dropdown" aria-label="Select design style" class="dropdown design-dropdown">
+                    <!-- Options will be populated by JS -->
+                </select>
+                <!-- Image Preview Container -->
+                <div id="style-preview-container" class="style-preview-container">
+                    <img id="style-preview-image" class="style-preview-image" src="" alt="Style Preview">
+                    <!-- Style Description (Overlay) -->
+                    <p id="style-description" class="style-description"></p>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="design-input" class="input-label">Topic (Optional)</label>
+                <textarea id="design-input" rows="4" placeholder="E.g., Q3 Financial Results, AI Roadmap..."
+                    class="input-control design-textarea"></textarea>
+            </div>
+
+            <button id="generate-design-prompt" class="modern-btn primary-action-btn" type="button">Generate & Copy
+                Prompt</button>
         </div>
     </div>
     <script type="module" src="popup.js"></script>

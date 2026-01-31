@@ -5,6 +5,7 @@ This browser extension provides comprehensive assistance for language learners (
 ## Table of Contents
 - [Language Learning Features](#language-learning-features)
 - [YouTube Quiz Generator](#youtube-quiz-generator)
+- [Infographic Prompt Generator](#infographic-prompt-generator)
 - [Programming Features](#programming-features)
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
@@ -19,6 +20,7 @@ This browser extension provides comprehensive assistance for language learners (
   - [Loading into Edge](#loading-into-edge)
   - [Development](#development)
   - [Contributor Onboarding](#contributor-onboarding)
+  - [Release Process](#release-process)
 - [Modular CSS & UI Consistency](#modular-css--ui-consistency)
 - [Linting & Code Quality](#linting--code-quality)
 - [Limitations & Notifications](#limitations--notifications)
@@ -61,6 +63,21 @@ The generated quiz prompts include:
 - **Difficulty Variation**: Mix of basic recall and analytical thinking questions
 - **Content Analysis**: Prompts for video transcript analysis and key concept identification
 - **Engagement Focus**: Questions designed to test viewer understanding and retention
+
+## Infographic Prompt Generator
+
+### Professional Visual Design
+- **9 Distinct Styles**:
+  Select from professionally curated styles including Bright Enterprise, Frosted Glass, Neon Cyberpunk, Minimalist Swiss, and Cinematic Nature.
+- **Global Artistic Inspiration**:
+  Apply sophisticated artistic directions (e.g., "Ghost in the Shell" Cyberpunk HUD, "Final Fantasy VIII" JRPG UI) to *any* of the base styles for unique combinations.
+- **Visual Previews**:
+  Interactive preview images update instantly to show the aesthetic of the selected style.
+- **Smart Prompt Engineering**:
+  - **Context-Aware**: Generates generic templates if no topic is provided, or specific content-based prompts if a topic is entered.
+  - **Auto-Localization**: Automatically appends requirements for Traditional Chinese text output suitable for the Taiwan market.
+
+
 
 ## Programming Features
 
@@ -134,7 +151,8 @@ Creates structured prompts for LLM-assisted branch naming with development conte
 ---
 
 ## UI Features
-- **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation
+- **Three-Tab Interface**: Organized into Language, Video, and Programming Engineering (PE) tabs for better feature separation (plus dedicated Infographic tool)
+- **Infographic Generator**: Specialized interface for creating professional design prompts with visual style previews
 - **YouTube Quiz Generator**: Dedicated functionality in the Video tab for creating educational quiz content from YouTube videos
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
@@ -398,12 +416,22 @@ This project uses a unified versioning system where:
 1. Commit your changes with conventional commit messages
 2. Run the release workflow:
    ```bash
-   git commit -m "your message"
+   # 1. Automatic version bump, changelog generation, and tagging
    npm run release
+
+   # 2. Sync manifest.json with the new package.json version
    node scripts/sync-version.js
-   git add .
-   git commit -m "chore: bump version to X.X.X"  # X.X.X is dynamic
-   git push --follow-tags
+
+   # 3. Amend the release commit to include the manifest update
+   git add asking-expert/manifest.json
+   git commit --amend --no-edit
+
+   # 4. Update the tag to point to the amended commit
+   # (Replace vX.X.X with the actual new version, e.g., v2.23.0)
+   git tag -f vX.X.X
+
+   # 5. Push commits and tags
+   git push --follow-tags origin <branch-name>
    ```
 
 #### Important Note About Version Sync Timing

@@ -1,5 +1,6 @@
 import { initializeUI, showNotification } from './modules/core/index.js';
 import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction, handleQuizGeneratorClick } from './modules/video/index.js';
+import { styles, generatePrompt } from './modules/design/infographic.js';
 
 
 /**
@@ -61,6 +62,16 @@ function setupTabNavigation() {
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
 
+            // Auto-select random style when entering Design tab
+            if (targetTab === 'design') {
+                const designDropdown = document.getElementById('design-style-dropdown');
+                if (designDropdown && designDropdown.options.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * designDropdown.options.length);
+                    designDropdown.selectedIndex = randomIndex;
+                    // Trigger change event to update preview and description
+                    designDropdown.dispatchEvent(new Event('change'));
+                }
+            }
             // Add active class to target button and corresponding content
             const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
             const targetContent = document.getElementById(`${targetTab}-tab`);
@@ -80,7 +91,7 @@ function setupTabNavigation() {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             switchToTab(targetTab);
-        }, { passive: true });
+        });
 
         // Hover event for preview switching with throttling
         let hoverTimeout;
@@ -547,6 +558,65 @@ document.addEventListener('DOMContentLoaded', () => {
     if (launchWatermarkBtn) {
         launchWatermarkBtn.addEventListener('click', () => {
             chrome.tabs.create({ url: 'watermark.html' });
+        });
+    }
+
+    // === Infographic Prompt Generator Logic ===
+    const designDropdown = document.getElementById('design-style-dropdown');
+    const inspirationDropdown = document.getElementById('design-inspiration-dropdown');
+    const designInput = document.getElementById('design-input');
+    const generateDesignBtn = document.getElementById('generate-design-prompt');
+    const previewImage = document.getElementById('style-preview-image');
+
+    if (designDropdown && designInput && generateDesignBtn) {
+
+        // Helper to update preview image and description
+        const updatePreview = (styleKey) => {
+            if (!previewImage) return;
+            // Map style keys to filenames
+            const filename = `images/design_previews/${styleKey}.png`;
+            previewImage.src = filename;
+            previewImage.alt = styles[styleKey]?.label || "Style Preview";
+
+            // Update description
+            const descriptionEl = document.getElementById('style-description');
+            if (descriptionEl) {
+                descriptionEl.textContent = styles[styleKey]?.description || "";
+            }
+        };
+
+        // Populate dropdown
+        const styleKeys = Object.keys(styles);
+        styleKeys.forEach(key => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = styles[key].label;
+            designDropdown.appendChild(option);
+        });
+
+        // Initialize preview with first item or default selection
+        if (styleKeys.length > 0) {
+            updatePreview(styleKeys[0]);
+        }
+
+        // Listen for changes
+        designDropdown.addEventListener('change', (e) => {
+            updatePreview(e.target.value);
+        });
+
+        // Handle generation
+        generateDesignBtn.addEventListener('click', () => {
+            const styleKey = designDropdown.value;
+            const text = designInput.value.trim(); // Can be empty now
+            const inspiration = inspirationDropdown ? inspirationDropdown.value : null;
+
+            const prompt = generatePrompt(styleKey, text, inspiration);
+            navigator.clipboard.writeText(prompt).then(() => {
+                showNotification('Infographic prompt copied!', false, 'Design Tool');
+            }).catch(err => {
+                console.error('Clipboard error:', err);
+                showNotification('Failed to copy prompt', true);
+            });
         });
     }
 });
