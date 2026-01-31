@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.24.0](///compare/v2.23.0...v2.24.0) (2026-01-31)
+
+
+### Features
+
+* expand infographic styles and update manifest 960686b
+* **ui:** add style descriptions and bilingual inspiration options 0934cd5
+* **workflow:** add release workflow definition 718a7a3
+
 ## [2.23.0](///compare/v2.22.2...v2.23.0) (2026-01-31)
 
 
