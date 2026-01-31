@@ -5,6 +5,7 @@ This browser extension provides comprehensive assistance for language learners (
 ## Table of Contents
 - [Language Learning Features](#language-learning-features)
 - [YouTube Quiz Generator](#youtube-quiz-generator)
+- [Infographic Prompt Generator](#infographic-prompt-generator)
 - [Programming Features](#programming-features)
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
