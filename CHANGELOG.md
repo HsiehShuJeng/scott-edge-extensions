@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.25.0](///compare/v2.24.1...v2.25.0) (2026-01-31)
+
+
+### Features
+
+* **ui:** implement random style selection on tab switch 0b4e546
+
 ### [2.24.1](///compare/v2.24.0...v2.24.1) (2026-01-31)
 
 
