@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.24.1](///compare/v2.24.0...v2.24.1) (2026-01-31)
+
+
+### Bug Fixes
+
+* **ui:** remove passive option from click listener to allow preventDefault ff45145
+
 ## [2.24.0](///compare/v2.23.0...v2.24.0) (2026-01-31)
 
 
