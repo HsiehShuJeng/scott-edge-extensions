@@ -60,11 +60,11 @@ function setupTabNavigation() {
             // Remove active class from all buttons and contents
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
-            
+
             // Add active class to target button and corresponding content
             const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
             const targetContent = document.getElementById(`${targetTab}-tab`);
-            
+
             if (targetButton && targetContent) {
                 targetButton.classList.add('active');
                 targetContent.classList.add('active');
@@ -75,13 +75,13 @@ function setupTabNavigation() {
     // Use event delegation for better performance
     tabButtons.forEach(button => {
         const { targetTab } = tabMap.get(button);
-        
+
         // Click event for explicit selection
         button.addEventListener('click', (e) => {
             e.preventDefault();
             switchToTab(targetTab);
         }, { passive: true });
-        
+
         // Hover event for preview switching with throttling
         let hoverTimeout;
         button.addEventListener('mouseenter', () => {
@@ -90,7 +90,7 @@ function setupTabNavigation() {
                 switchToTab(targetTab);
             }, 50); // Small delay to prevent excessive switching
         }, { passive: true });
-        
+
         button.addEventListener('mouseleave', () => {
             clearTimeout(hoverTimeout);
         }, { passive: true });
@@ -107,19 +107,19 @@ function setupVideoExtractor() {
     const videoIdActionBtn = document.getElementById('video-id-action');
     const videoIdInput = document.getElementById('video-id-input');
     const quizGeneratorBtn = document.getElementById('quiz-generator');
-    
+
     if (extractBtn) {
         extractBtn.addEventListener('click', handleExtractQuestions);
     }
-    
+
     if (videoIdActionBtn) {
         videoIdActionBtn.addEventListener('click', handleVideoIdAction);
     }
-    
+
     if (quizGeneratorBtn) {
         quizGeneratorBtn.addEventListener('click', handleQuizGeneratorClick);
     }
-    
+
     // Auto-detect video ID when the popup opens if on a DeepSRT page
     if (videoIdInput) {
         autoDetectVideoId().then(videoId => {
@@ -285,9 +285,9 @@ function generateBranchPrompt(featureText) {
     if (!trimmedText) {
         return null;
     }
-    
+
     const prompt = `${trimmedText}\n\nBased on the above requirement(s), please suggest branch names for brainstorming and references. As development effort will be made based on the requirement.`;
-    
+
     return prompt;
 }
 
@@ -300,20 +300,20 @@ function validateBranchInput(text) {
     if (!text) {
         return { isValid: false, error: 'Please enter a feature description or bug report' };
     }
-    
+
     const trimmedText = text.trim();
     if (trimmedText.length === 0) {
         return { isValid: false, error: 'Feature description cannot be empty or just whitespace' };
     }
-    
+
     if (trimmedText.length < 3) {
         return { isValid: false, error: 'Feature description is too short (minimum 3 characters)' };
     }
-    
+
     if (trimmedText.length > 2000) {
         return { isValid: false, error: 'Feature description is too long (maximum 2000 characters)' };
     }
-    
+
     return { isValid: true, error: null };
 }
 
@@ -324,14 +324,14 @@ function validateBranchInput(text) {
  */
 function handleBranchPromptGeneration() {
     const textarea = document.getElementById('branch-description');
-    
+
     // Check if textarea element exists
     if (!textarea) {
         console.error('Branch description textarea not found');
         showNotification('Internal error: Branch input field not found', true);
         return;
     }
-    
+
     const featureText = textarea.value;
 
     // Validate input with detailed error messages
@@ -346,7 +346,7 @@ function handleBranchPromptGeneration() {
     try {
         // Generate the prompt string
         const prompt = generateBranchPrompt(featureText);
-        
+
         // Verify prompt was generated
         if (!prompt || prompt.trim().length === 0) {
             throw new Error('Generated prompt is empty');
@@ -399,20 +399,20 @@ function validatePRInput(text) {
     if (!text) {
         return { isValid: false, error: 'Please enter PR title and description' };
     }
-    
+
     const trimmedText = text.trim();
     if (trimmedText.length === 0) {
         return { isValid: false, error: 'PR description cannot be empty or just whitespace' };
     }
-    
+
     if (trimmedText.length < 3) {
         return { isValid: false, error: 'PR description is too short (minimum 3 characters)' };
     }
-    
+
     if (trimmedText.length > 5000) {
         return { isValid: false, error: 'PR description is too long (maximum 5000 characters)' };
     }
-    
+
     return { isValid: true, error: null };
 }
 
@@ -423,14 +423,14 @@ function validatePRInput(text) {
  */
 function handlePRGeneration() {
     const textarea = document.getElementById('pr-description');
-    
+
     // Check if textarea element exists
     if (!textarea) {
         console.error('PR description textarea not found');
         showNotification('Internal error: PR input field not found', true);
         return;
     }
-    
+
     const prText = textarea.value;
 
     // Validate input with detailed error messages
@@ -445,7 +445,7 @@ function handlePRGeneration() {
     try {
         // Generate the command string
         const command = generatePRCommand(prText);
-        
+
         // Verify command was generated
         if (!command || command.trim().length === 0) {
             throw new Error('Generated command is empty');
@@ -540,6 +540,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     sentenceTextarea.readOnly = false;
                 }, 4000);
             }
+        });
+    }
+    // === Watermark Launcher Logic ===
+    const launchWatermarkBtn = document.getElementById('launch-watermark');
+    if (launchWatermarkBtn) {
+        launchWatermarkBtn.addEventListener('click', () => {
+            chrome.tabs.create({ url: 'watermark.html' });
         });
     }
 });

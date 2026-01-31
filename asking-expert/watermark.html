@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scott's Watermark Remover</title>
+    <link rel="stylesheet" href="styles/watermark.css">
+</head>
+<body>
+    <h1>Gemini Watermark Remover</h1>
+    
+    <div class="container">
+        <div id="drop-zone">
+            <p>Drag & Drop your Gemini Image here</p>
+            <p><small>or click to select file</small></p>
+            <input type="file" id="file-input" accept="image/*" style="display: none;">
+        </div>
+
+        <div class="controls">
+            <span id="status-message">Initializing...</span>
+            <button id="download-btn" disabled>Download Clean Image</button>
+        </div>
+
+        <div class="preview-area">
+            <div class="preview-box">
+                <h3>Original</h3>
+                <div id="original-preview" class="image-container">
+                    <!-- Original image will be shown here -->
+                </div>
+            </div>
+            <div class="preview-box">
+                <h3>Watermark Removed</h3>
+                <div id="processed-preview" class="image-container">
+                    <!-- Processed image will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="watermark.js"></script>
+</body>
+</html>

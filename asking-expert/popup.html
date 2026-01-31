@@ -40,6 +40,10 @@
             <span class="tab-text-short">PE</span>
             <span class="tab-text-full">Programming Engineering</span>
         </button>
+        <button class="tab-button" data-tab="tools" type="button">
+            <span class="tab-text-short">T</span>
+            <span class="tab-text-full">Tools</span>
+        </button>
     </div>
 
     <!-- Language Tab Content -->
@@ -59,8 +63,10 @@
             <div class="activity-controls">
                 <!-- Accessible button labels -->
                 <div class="button-container-vertical">
-                    <button id="start-english" class="modern-btn" aria-label="Start English Session" type="button">Start</button>
-                    <button id="end-english" class="modern-btn" aria-label="End English Session" type="button">Finish</button>
+                    <button id="start-english" class="modern-btn" aria-label="Start English Session"
+                        type="button">Start</button>
+                    <button id="end-english" class="modern-btn" aria-label="End English Session"
+                        type="button">Finish</button>
                 </div>
 
                 <!-- Label for dropdown -->
@@ -97,8 +103,10 @@
             <div class="activity-controls">
                 <!-- Accessible button labels -->
                 <div class="button-container-vertical">
-                    <button id="start-korean" class="modern-btn" aria-label="Start Korean Session" type="button">Start</button>
-                    <button id="end-korean" class="modern-btn" aria-label="End Korean Session" type="button">Finish</button>
+                    <button id="start-korean" class="modern-btn" aria-label="Start Korean Session"
+                        type="button">Start</button>
+                    <button id="end-korean" class="modern-btn" aria-label="End Korean Session"
+                        type="button">Finish</button>
                 </div>
 
                 <!-- Label for dropdown -->
@@ -137,7 +145,7 @@
     <div id="video-tab" class="tab-content">
         <h2>Video Question Extractor</h2>
         <div class="video-section">
-            
+
             <!-- Grid Layout Container -->
             <div class="video-grid-container">
                 <!-- Main Extraction Tool Grid Item -->
@@ -146,29 +154,34 @@
                     <div class="video-id-section">
                         <label for="video-id-input" class="video-id-label">Video ID:</label>
                         <div class="video-id-container">
-                            <input type="text" id="video-id-input" class="video-id-input" placeholder="Auto-detected or enter manually">
-                            <button id="video-id-action" class="video-id-action" type="button" title="Copy ID and open YouTube">
+                            <input type="text" id="video-id-input" class="video-id-input"
+                                placeholder="Auto-detected or enter manually">
+                            <button id="video-id-action" class="video-id-action" type="button"
+                                title="Copy ID and open YouTube">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                                    <path
+                                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="extract-button-container">
-                        <button id="extract-questions" class="modern-btn extract-btn" type="button">Extract Questions</button>
+                        <button id="extract-questions" class="modern-btn extract-btn" type="button">Extract
+                            Questions</button>
                     </div>
                 </div>
-                
+
                 <!-- Quiz Generator Grid Item -->
                 <div class="video-grid-item">
                     <p class="instruction-text">Generate quiz from YouTube video pages</p>
                     <div class="quiz-generator-container">
-                        <button id="quiz-generator" class="modern-btn quiz-generator-btn" type="button">Generate Quiz</button>
+                        <button id="quiz-generator" class="modern-btn quiz-generator-btn" type="button">Generate
+                            Quiz</button>
                     </div>
                 </div>
             </div>
-            
+
             <div id="extraction-status" class="status-message"></div>
         </div>
     </div>
@@ -187,18 +200,32 @@
             <div class="dev-routine-section dev-routine-left">
                 <textarea id="branch-description" rows="4"
                     placeholder="Feature to implement or bug to fix&#10;&#10;Example:&#10;Add user authentication with email validation&#10;Fix memory leak in image processing module"
-                    class="input-control dev-routine-textarea" aria-label="Feature description or bug report"></textarea>
+                    class="input-control dev-routine-textarea"
+                    aria-label="Feature description or bug report"></textarea>
                 <button id="generate-branch-prompt" class="dev-routine-btn" type="button"
                     aria-label="Generate branch naming prompt">Generate Branch Prompt</button>
             </div>
-            
+
             <!-- Right side: PR Command Generation (existing) -->
             <div class="dev-routine-section dev-routine-right">
                 <textarea id="pr-description" rows="4"
                     placeholder="PR Title and Description&#10;&#10;Example:&#10;feat(auth): add user login validation&#10;&#10;- Add email validation&#10;- Implement password strength check&#10;- Update login form UI"
-                    class="input-control dev-routine-textarea" aria-label="Pull request title and description"></textarea>
+                    class="input-control dev-routine-textarea"
+                    aria-label="Pull request title and description"></textarea>
                 <button id="generate-pr-command" class="dev-routine-btn" type="button"
                     aria-label="Generate pull request command">Generate PR Command</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools Tab Content -->
+    <div id="tools-tab" class="tab-content">
+        <h2>Extension Tools</h2>
+        <div class="tools-container">
+            <div class="tool-item">
+                <h3>Gemini Watermark Remover</h3>
+                <p>Drag and drop image to remove watermarks.</p>
+                <button id="launch-watermark" class="modern-btn">Open Tool</button>
             </div>
         </div>
     </div>
