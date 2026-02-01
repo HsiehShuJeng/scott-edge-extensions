@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.26.1](///compare/v2.26.0...v2.26.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* correct image asset paths in watermarkEngine cbd047c
+
 ## [2.26.0](///compare/v2.25.0...v2.26.0) (2026-02-01)
 
 
