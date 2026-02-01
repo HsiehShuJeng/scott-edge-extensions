@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.1](///compare/v2.28.0...v2.28.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** improve tab bar layout and dark mode consistency c5272e6
+* **ui:** remove dangling css lines 7703ae9
+
 ## [2.28.0](///compare/v2.27.1...v2.28.0) (2026-02-01)
 
 
