@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scott's Watermark Remover</title>
     <link rel="stylesheet" href="styles/watermark.css">
 </head>
+
 <body>
     <h1>Gemini Watermark Remover</h1>
-    
+
     <div class="container">
         <div id="drop-zone">
             <p>Drag & Drop your Gemini Image here</p>
@@ -17,7 +19,16 @@
         </div>
 
         <div class="controls">
-            <span id="status-message">Initializing...</span>
+            <div class="settings-group">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" id="resize-checkbox" checked>
+                    <span class="checkbox-label">Scale to 1920px width</span>
+                </label>
+                <p class="setting-description">Resizes the image proportionally to 1920px width for standard HD display.
+                </p>
+            </div>
+
+            <div id="status-message">Ready to process images.</div>
             <button id="download-btn" disabled>Download Clean Image</button>
         </div>
 
@@ -39,4 +50,5 @@
 
     <script type="module" src="watermark.js"></script>
 </body>
+
 </html>

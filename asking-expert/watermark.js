@@ -3,18 +3,26 @@
  */
 import { WatermarkEngine } from './modules/watermark/watermarkEngine.js';
 
+// Global state
 let watermarkEngine;
+let currentOriginalFile = null;
+let currentProcessedCanvas = null;
 
 // Initialize the engine
 async function initEngine() {
     try {
         watermarkEngine = await WatermarkEngine.create();
         console.log('Watermark Engine initialized');
-        document.getElementById('status-message').textContent = 'Ready to process images.';
+        updateStatus('Ready to process images.');
     } catch (error) {
         console.error('Failed to initialize engine:', error);
-        document.getElementById('status-message').textContent = 'Error initializing engine.';
+        updateStatus('Error initializing engine.');
     }
+}
+
+function updateStatus(msg) {
+    const el = document.getElementById('status-message');
+    if (el) el.textContent = msg;
 }
 
 // Handle file selection
@@ -59,6 +67,8 @@ function processFile(file) {
         return;
     }
 
+    currentOriginalFile = file;
+
     const reader = new FileReader();
     reader.onload = (e) => {
         const img = new Image();
@@ -82,35 +92,82 @@ async function removeWatermark(img) {
         await initEngine();
     }
 
-    document.getElementById('status-message').textContent = 'Processing...';
+    updateStatus('Processing...');
 
     try {
         const startTime = performance.now();
-        const processedCanvas = await watermarkEngine.removeWatermarkFromImage(img);
+        // Always process the full resolution image first
+        const fullCanvas = await watermarkEngine.removeWatermarkFromImage(img);
+
+        // Handle Resizing
+        let finalCanvas = fullCanvas;
+        const shouldResize = document.getElementById('resize-checkbox').checked;
+
+        if (shouldResize) {
+            const targetWidth = 1920;
+            // Scale if width is different (usually only if larger or specific requirement, user said "scale to")
+            if (fullCanvas.width !== targetWidth) {
+                const scaleFactor = targetWidth / fullCanvas.width;
+                const targetHeight = Math.round(fullCanvas.height * scaleFactor);
+
+                const resizeCanvas = document.createElement('canvas');
+                resizeCanvas.width = targetWidth;
+                resizeCanvas.height = targetHeight;
+                const ctx = resizeCanvas.getContext('2d');
+
+                // Use better interpolation if scaling down
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(fullCanvas, 0, 0, targetWidth, targetHeight);
+
+                finalCanvas = resizeCanvas;
+            }
+        }
+
         const endTime = performance.now();
+        currentProcessedCanvas = finalCanvas;
 
         // Display processed image
         const processedContainer = document.getElementById('processed-preview');
         processedContainer.innerHTML = '';
-        processedCanvas.style.maxWidth = '100%';
-        processedContainer.appendChild(processedCanvas);
+        finalCanvas.style.maxWidth = '100%';
+        processedContainer.appendChild(finalCanvas);
 
-        document.getElementById('status-message').textContent = `Processed in ${(endTime - startTime).toFixed(0)}ms.`;
+        updateStatus(`Processed in ${(endTime - startTime).toFixed(0)}ms.`);
 
         // Setup download button
-        const downloadBtn = document.getElementById('download-btn');
-        downloadBtn.onclick = () => {
-            const link = document.createElement('a');
-            link.download = 'clean_image.png';
-            link.href = processedCanvas.toDataURL();
-            link.click();
-        };
-        downloadBtn.disabled = false;
+        setupDownloadButton(finalCanvas);
 
     } catch (error) {
         console.error('Error removing watermark:', error);
-        document.getElementById('status-message').textContent = 'Error processing image.';
+        updateStatus('Error processing image.');
     }
+}
+
+function setupDownloadButton(canvas) {
+    const downloadBtn = document.getElementById('download-btn');
+
+    // Generate filename: original_name (Unwatermarked).ext
+    let confirmName = 'cleaned_image.png';
+    if (currentOriginalFile && currentOriginalFile.name) {
+        const originalName = currentOriginalFile.name;
+        const lastDotIndex = originalName.lastIndexOf('.');
+        if (lastDotIndex !== -1) {
+            const name = originalName.substring(0, lastDotIndex);
+            const ext = originalName.substring(lastDotIndex); // includes dot
+            confirmName = `${name} (Unwatermarked)${ext}`;
+        } else {
+            confirmName = `${originalName} (Unwatermarked).png`;
+        }
+    }
+
+    downloadBtn.onclick = () => {
+        const link = document.createElement('a');
+        link.download = confirmName;
+        link.href = canvas.toDataURL(); // Defaults to PNG
+        link.click();
+    };
+    downloadBtn.disabled = false;
 }
 
 // Event Listeners
@@ -127,4 +184,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Allow clicking drop zone to select file
     dropZone.addEventListener('click', () => fileInput.click());
+
+    // Checkbox change listener
+    const resizeCheckbox = document.getElementById('resize-checkbox');
+    if (resizeCheckbox) {
+        resizeCheckbox.addEventListener('change', () => {
+            // If we have an original file loaded, re-process it
+            // We need to re-read the file or keep the img object. 
+            // processFile creates a new img object. 
+            // Let's store the last img object to avoid re-reading file? 
+            // Or just trigger processFile(currentOriginalFile) if exists.
+            if (currentOriginalFile) {
+                processFile(currentOriginalFile);
+            }
+        });
+    }
 });
