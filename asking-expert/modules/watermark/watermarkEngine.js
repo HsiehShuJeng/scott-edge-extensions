@@ -124,8 +124,8 @@ export class WatermarkEngine {
     async removeWatermarkFromImage(image) {
         // Create canvas to process image
         const canvas = document.createElement('canvas');
-        canvas.width = image.width;
-        canvas.height = image.height;
+        canvas.width = image.naturalWidth || image.width;
+        canvas.height = image.naturalHeight || image.height;
         const ctx = canvas.getContext('2d');
 
         // Draw original image onto canvas
