@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.26.2](///compare/v2.26.1...v2.26.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* use natural image dimensions to prevent cropping a33ea86
+
 ### [2.26.1](///compare/v2.26.0...v2.26.1) (2026-02-01)
 
 
