@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.30.0](///compare/v2.29.0...v2.30.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** enhance UI with sliders, color pickers and font fix e9dddc4
+
+## [2.29.0](///compare/v2.28.6...v2.29.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** add signature watermark functionality with custom settings 86186ea
+
 ### [2.28.6](///compare/v2.28.5...v2.28.6) (2026-02-01)
 
 

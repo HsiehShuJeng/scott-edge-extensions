@@ -19,23 +19,91 @@
         </div>
 
         <div class="controls">
-            <div class="settings-group">
-                <label class="checkbox-wrapper">
-                    <input type="checkbox" id="resize-checkbox" checked>
-                    <span class="checkbox-label">Scale to 1920px width</span>
-                </label>
-                <p class="setting-description">Resizes the image proportionally to 1920px width for standard HD display.
-                </p>
-            </div>
+            <div class="controls-grid">
+                <!-- Left Column: Existing Controls -->
+                <div class="controls-column">
+                    <h3>General Settings</h3>
+                    <div class="settings-group">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="resize-checkbox" checked>
+                            <span class="checkbox-label">Scale to 1920px width</span>
+                        </label>
+                        <p class="setting-description">Resizes the image proportionally to 1920px width.</p>
+                    </div>
 
-            <div class="settings-group">
-                <label for="format-select" class="select-label">Output Format:</label>
-                <select id="format-select" class="format-select">
-                    <option value="image/webp" selected>WebP (Efficient)</option>
-                    <option value="image/png">PNG (Lossless)</option>
-                    <option value="image/jpeg">JPEG (Photo)</option>
-                </select>
-                <p class="setting-description">WebP offers significantly smaller file sizes with high quality.</p>
+                    <div class="settings-group">
+                        <label for="format-select" class="select-label">Output Format:</label>
+                        <select id="format-select" class="format-select">
+                            <option value="image/webp" selected>WebP (Efficient)</option>
+                            <option value="image/png">PNG (Lossless)</option>
+                            <option value="image/jpeg">JPEG (Photo)</option>
+                        </select>
+                        <p class="setting-description">WebP offers significantly smaller file sizes.</p>
+                    </div>
+                </div>
+
+                <!-- Right Column: New Watermark Controls -->
+                <div class="controls-column">
+                    <h3>
+                        <label class="checkbox-wrapper-header">
+                            <input type="checkbox" id="add-watermark-checkbox" checked>
+                            <span>Add Signature Watermark</span>
+                        </label>
+                    </h3>
+
+                    <div id="watermark-settings" class="watermark-settings">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="wm-opacity">Opacity</label>
+                                <div class="dual-input">
+                                    <input type="range" id="wm-opacity-range" min="0" max="100" value="7">
+                                    <input type="text" id="wm-opacity" value="7%" title="e.g. 7%, 0.07">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="wm-color">Color</label>
+                                <div class="dual-input">
+                                    <input type="color" id="wm-color-picker" value="#ffffff">
+                                    <input type="text" id="wm-color" value="white" title="white, #FFFFFF, or R,G,B">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="wm-angle">Angle (Deg)</label>
+                                <div class="dual-input">
+                                    <input type="range" id="wm-angle-range" min="-180" max="180" step="1" value="45">
+                                    <input type="number" id="wm-angle" value="45" step="5">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="wm-size-ratio">Size Ratio</label>
+                                <div class="dual-input">
+                                    <input type="range" id="wm-size-range" min="1" max="25" step="1" value="6">
+                                    <input type="number" id="wm-size-ratio" value="0.06" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="wm-stroke-color">Stroke Color</label>
+                                <div class="dual-input">
+                                    <input type="color" id="wm-stroke-color-picker" value="#000000">
+                                    <input type="text" id="wm-stroke-color" value="black">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="wm-stroke-opacity">Stroke Opacity</label>
+                                <div class="dual-input">
+                                    <input type="range" id="wm-stroke-opacity-range" min="0" max="100" value="20">
+                                    <input type="text" id="wm-stroke-opacity" value="20%">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="status-message">Ready to process images.</div>
