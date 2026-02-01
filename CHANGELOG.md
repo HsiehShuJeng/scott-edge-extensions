@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.28.0](///compare/v2.27.1...v2.28.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** add output format selection with WebP default c43e0de
+
 ### [2.27.1](///compare/v2.27.0...v2.27.1) (2026-02-01)
 
 ## [2.27.0](///compare/v2.26.2...v2.27.0) (2026-02-01)
