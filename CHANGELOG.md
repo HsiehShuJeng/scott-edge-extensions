@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.6](///compare/v2.28.5...v2.28.6) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** unconstrain marquee width and preserve whitespace e354329
+
 ### [2.28.5](///compare/v2.28.4...v2.28.5) (2026-02-01)
 
 
