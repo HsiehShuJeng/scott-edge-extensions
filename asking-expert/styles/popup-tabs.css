@@ -104,7 +104,8 @@
     /* Only apply to the long programming tab */
     display: inline-block;
     /* Explicitly show here */
-    max-width: 100%;
+    max-width: none;
+    white-space: pre;
     animation: marquee-scroll 2.5s linear infinite;
     /* Faster */
     mask-image: none;
