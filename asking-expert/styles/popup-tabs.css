@@ -4,11 +4,14 @@
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    padding-right: 70px;
+    /* Space for theme toggle */
     z-index: 10;
     background: none;
     border: none;
     margin: 0;
-    padding: 0;
+    padding-left: 0;
 }
 
 .tab-button {
@@ -51,6 +54,13 @@
     padding: 8px 16px;
 }
 
+/* Enforce dark mode background context */
+.dark-theme .tab-button:not(.active) {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
 /* Tab text - show abbreviated by default, full on hover/active */
 .tab-button .tab-text-short {
     display: inline;
@@ -74,7 +84,8 @@
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
-    margin-top: 40px; /* Space for top-positioned tabs */
+    margin-top: 40px;
+    /* Space for top-positioned tabs */
     padding-top: 10px;
 }
 
@@ -87,6 +98,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -119,24 +131,29 @@
 .video-grid-item {
     width: 100%;
     box-sizing: border-box;
-    min-width: 0; /* Prevent overflow */
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 .video-grid-item {
     display: flex;
     flex-direction: column;
-    align-items: stretch; /* Make children fill width */
-    justify-content: space-between; /* Push button to bottom */
+    align-items: stretch;
+    /* Make children fill width */
+    justify-content: space-between;
+    /* Push button to bottom */
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: var(--input-bg);
-    min-height: 120px; /* Ensure consistent height */
+    min-height: 120px;
+    /* Ensure consistent height */
 }
 
 /* Video ID Section Styles */
 .video-id-section {
-    margin-bottom: auto; /* Push button to bottom */
+    margin-bottom: auto;
+    /* Push button to bottom */
 }
 
 .video-id-container {
@@ -148,7 +165,8 @@
 
 .video-id-input {
     flex: 1;
-    min-width: 0; /* Allow shrinking */
+    min-width: 0;
+    /* Allow shrinking */
 }
 
 .video-id-action {
@@ -169,7 +187,8 @@
 .quiz-generator-container {
     display: flex;
     justify-content: center;
-    margin-top: auto; /* Push to bottom */
+    margin-top: auto;
+    /* Push to bottom */
 }
 
 /* Override any responsive behavior that might stack vertically */
@@ -179,7 +198,8 @@
         gap: 3px;
     }
 }
-    width: 100%;
+
+width: 100%;
 }
 
 .quiz-generator-btn {
@@ -214,7 +234,8 @@
     text-align: center;
     min-height: 20px;
     transition: all 0.3s ease;
-    grid-column: 1 / -1; /* Span across all grid columns */
+    grid-column: 1 / -1;
+    /* Span across all grid columns */
 }
 
 .status-message.success {
@@ -338,47 +359,47 @@
         font-size: 12px;
         padding: 10px 12px;
     }
-    
+
     .instruction-text {
         font-size: 13px;
     }
-    
+
     .video-grid-container {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .video-grid-item {
         padding: 12px;
     }
-    
+
     .video-id-section {
         margin: 0;
         padding: 0;
     }
-    
+
     .video-id-container {
         flex-direction: row;
         gap: 0;
     }
-    
+
     .video-id-input {
         padding: 10px 35px 10px 12px;
         overflow-x: auto;
         white-space: nowrap;
     }
-    
+
     .video-id-action {
         right: 6px;
         width: 24px;
         height: 24px;
     }
-    
+
     .video-id-action svg {
         width: 12px;
         height: 12px;
     }
-    
+
     .extract-btn,
     .quiz-generator-btn {
         min-width: auto;
