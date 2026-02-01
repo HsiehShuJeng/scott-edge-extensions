@@ -296,16 +296,19 @@ flowchart LR
 
 ## Watermark Remover (Gemini)
 
-A client-side tool to remove watermarks from Google Gemini generated images.
+A client-side tool to manipulate watermarks on images.
 
-- **Client-Side Only**: 100% privacy-focused, no data leaves your browser.
-- **Reverse Alpha Blending**: Uses advanced algorithm to restore original pixels.
-- **Smart Features**: Auto-resizes to 1920px (optional) and preserves filenames.
-
+### Features
+- **Watermark Removal**: Uses advanced reverse alpha blending to remove Google Gemini generated watermarks.
+- **Watermark Addition**: Adds a customizable "signature" watermark with Traditional Chinese date and calligraphy font.
+    - **Customizable**: Adjust opacity, color, angle, size, and stroke.
+    - **Real-time Preview**: See changes instantly as you adjust sliders.
+- **Privacy Focused**: 100% client-side processing.
 
 ## Technical Documentation
 
 - [Gemini Watermark Removal Logic](doc/gemini-watermark-removal.md)
+- [Watermark Addition & Font Handling](doc/watermark-addition.md)
 - [UI Resolution: Marquee Text Cutoff](doc/marquee_fix.md)
 
 
