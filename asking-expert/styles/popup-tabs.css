@@ -55,10 +55,14 @@
 }
 
 /* Enforce dark mode background context */
+/* Enforce dark mode background context */
 .dark-theme .tab-button:not(.active) {
     background-color: var(--background-color);
-    color: var(--text-color);
-    border-color: var(--border-color);
+    color: #ffffff;
+    /* Max contrast */
+    border-color: #666;
+    /* More visible border */
+    opacity: 0.9;
 }
 
 /* Tab text - show abbreviated by default, full on hover/active */
@@ -87,27 +91,42 @@
 }
 
 /* Marquee effect for long text on hover/active */
+/* Marquee behaviors */
+.tab-button[data-tab="programming"] .tab-text-full {
+    display: inline-block;
+    padding-left: 0;
+    will-change: transform;
+}
+
 .tab-button[data-tab="programming"]:hover .tab-text-full,
 .tab-button[data-tab="programming"].active .tab-text-full {
     /* Only apply to the long programming tab */
-    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    animation: scroll-text 5s linear infinite;
+    max-width: 100%;
+    animation: marquee-scroll 4s linear infinite;
+    /* Remove mask during hover to ensure visibility */
+    mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
 }
 
-/* Ensure the span behaves like a block for transform */
 .tab-button[data-tab="programming"] .tab-text-full::after {
-    content: "Programming Engineering";
-    /* Duplicate content for seamless scroll if needed, simpler is to just scroll */
+    content: "   Programming Engineering";
+    /* Add spacing and duplicate for loop */
+    white-space: pre;
 }
 
-@keyframes scroll-text {
+@keyframes marquee-scroll {
     0% {
-        text-indent: 100%;
+        transform: translateX(0);
+    }
+
+    15% {
+        transform: translateX(0);
+        /* Pause at start */
     }
 
     100% {
-        text-indent: -150%;
+        transform: translateX(-50%);
+        /* Move half way (original + duplicate) */
     }
 }
 
