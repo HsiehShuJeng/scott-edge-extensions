@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.27.0](///compare/v2.26.2...v2.27.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** add resize option and smart filename preservation a2b0eee
+
 ### [2.26.2](///compare/v2.26.1...v2.26.2) (2026-02-01)
 
 
