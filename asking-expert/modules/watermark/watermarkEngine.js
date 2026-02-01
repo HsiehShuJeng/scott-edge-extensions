@@ -72,12 +72,12 @@ export class WatermarkEngine {
             new Promise((resolve, reject) => {
                 bg48.onload = resolve;
                 bg48.onerror = reject;
-                bg48.src = chrome.runtime.getURL('asking-expert/images/bg_48.png');
+                bg48.src = chrome.runtime.getURL('images/bg_48.png');
             }),
             new Promise((resolve, reject) => {
                 bg96.onload = resolve;
                 bg96.onerror = reject;
-                bg96.src = chrome.runtime.getURL('asking-expert/images/bg_96.png');
+                bg96.src = chrome.runtime.getURL('images/bg_96.png');
             })
         ]);
 
