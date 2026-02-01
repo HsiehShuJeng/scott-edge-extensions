@@ -25,7 +25,7 @@ async function initEngine() {
         watermarkEngine = await WatermarkEngine.create();
         console.log('Watermark Engine initialized');
         updateStatus('Ready to process images.');
-        
+
         // Ensure font is loaded
         document.fonts.load('16px "UKai"').then(() => {
             console.log('UKai font loaded');
@@ -205,10 +205,10 @@ function parseColor(colorStr, opacityStr) {
     } else {
         alpha = parseFloat(op);
     }
-    
+
     // Clamp
     alpha = Math.max(0, Math.min(1, alpha));
-    
+
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
@@ -219,14 +219,14 @@ async function addWatermark(inputCanvas) {
     canvas.width = inputCanvas.width;
     canvas.height = inputCanvas.height;
     const ctx = canvas.getContext('2d');
-    
+
     // Draw the base image
     ctx.drawImage(inputCanvas, 0, 0);
 
     const settings = getWatermarkSettings();
     const width = canvas.width;
     const height = canvas.height;
-    
+
     // 1. Build Text
     const now = new Date();
     const weekDays = ["日", "一", "二", "三", "四", "五", "六"]; // JS Date.day is 0=Sun
@@ -234,7 +234,7 @@ async function addWatermark(inputCanvas) {
     // "考特製作於\n{dt.year} 年 {dt.month} 月 {dt.day} 日（{weekday}）"
     const line1 = "考特製作於";
     const line2 = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日（${dayStr}）`;
-    
+
     // 2. Configure Font
     const fontSize = Math.max(12, Math.min(width, height) * settings.sizeRatio);
     // Use UKai font, fallback to sans-serif
@@ -246,23 +246,23 @@ async function addWatermark(inputCanvas) {
     const metrics1 = ctx.measureText(line1);
     const metrics2 = ctx.measureText(line2);
     // Approximate height since metric.actualBoundingBoxAscent can be strict
-    const textHeight = fontSize; 
+    const textHeight = fontSize;
     const lineSpacing = fontSize * 0.35; // default ratio 0.35
-    
+
     const blockWidth = Math.max(metrics1.width, metrics2.width);
     const blockHeight = (textHeight * 2) + lineSpacing;
 
     // 4. Create an offscreen canvas for the text block to handle rotation cleanly
     // Make it large enough to hold the rotated text
-    const diagonal = Math.sqrt(blockWidth*blockWidth + blockHeight*blockHeight);
+    const diagonal = Math.sqrt(blockWidth * blockWidth + blockHeight * blockHeight);
     const textCanvas = document.createElement('canvas');
     textCanvas.width = diagonal * 1.5; // padding
     textCanvas.height = diagonal * 1.5;
     const tCtx = textCanvas.getContext('2d');
-    
+
     tCtx.translate(textCanvas.width / 2, textCanvas.height / 2);
     tCtx.rotate((settings.angle * Math.PI) / 180);
-    
+
     tCtx.font = `${fontSize}px "UKai", sans-serif`;
     tCtx.textAlign = 'center';
     tCtx.textBaseline = 'middle';
@@ -274,18 +274,18 @@ async function addWatermark(inputCanvas) {
     tCtx.lineJoin = 'round';
     tCtx.miterLimit = 2;
     tCtx.strokeStyle = parseColor(settings.strokeColor, settings.strokeOpacity);
-    tCtx.strokeText(line1, 0, -(blockHeight/2) + (textHeight/2));
-    tCtx.strokeText(line2, 0, (blockHeight/2) - (textHeight/2));
+    tCtx.strokeText(line1, 0, -(blockHeight / 2) + (textHeight / 2));
+    tCtx.strokeText(line2, 0, (blockHeight / 2) - (textHeight / 2));
 
     // 6. Draw Fill
     tCtx.fillStyle = parseColor(settings.color, settings.opacity);
-    tCtx.fillText(line1, 0, -(blockHeight/2) + (textHeight/2));
-    tCtx.fillText(line2, 0, (blockHeight/2) - (textHeight/2));
+    tCtx.fillText(line1, 0, -(blockHeight / 2) + (textHeight / 2));
+    tCtx.fillText(line2, 0, (blockHeight / 2) - (textHeight / 2));
 
     // 7. Paste onto main canvas (centered)
     // Draw the rotated text canvas onto the center of the main image
-    ctx.drawImage(textCanvas, 
-        (width - textCanvas.width) / 2, 
+    ctx.drawImage(textCanvas,
+        (width - textCanvas.width) / 2,
         (height - textCanvas.height) / 2
     );
 
@@ -322,12 +322,12 @@ function setupDownloadButton(canvas) {
         // Remove old listener
         const newBtn = downloadBtn.cloneNode(true);
         downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-        
+
         newBtn.onclick = () => {
-             const link = document.createElement('a');
-             link.download = confirmName;
-             link.href = canvas.toDataURL(format, quality);
-             link.click();
+            const link = document.createElement('a');
+            link.download = confirmName;
+            link.href = canvas.toDataURL(format, quality);
+            link.click();
         };
         newBtn.disabled = false;
     };
@@ -360,15 +360,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }, 500);
 
-    // Watch all inputs
+    // Watch all inputs for direct changes
     const inputs = [
-        'resize-checkbox', 
+        'resize-checkbox',
         'add-watermark-checkbox',
-        'wm-opacity', 
-        'wm-color', 
-        'wm-angle', 
-        'wm-size-ratio', 
-        'wm-stroke-color', 
+        'wm-opacity',
+        'wm-color',
+        'wm-angle',
+        'wm-size-ratio',
+        'wm-stroke-color',
         'wm-stroke-opacity'
     ];
 
@@ -380,10 +380,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Helper to sync Range <-> Text/Number
+    function syncRange(rangeId, textId, transformToText, transformToRange) {
+        const range = document.getElementById(rangeId);
+        const text = document.getElementById(textId);
+        if (!range || !text) return;
+
+        range.addEventListener('input', () => {
+            text.value = transformToText(range.value);
+            reprocess();
+        });
+
+        text.addEventListener('input', () => {
+            // simplified: only update range if valid
+            // let val = transformToRange(text.value);
+            // if (!isNaN(val)) range.value = val;
+            // reprocess(); // handled by general input watcher
+        });
+
+        // Update range when text changes (e.g. user types)
+        text.addEventListener('change', () => {
+            const val = transformToRange(text.value);
+            if (!isNaN(val)) {
+                range.value = val;
+            }
+        });
+    }
+
+    // Helper to sync Color Picker <-> Text
+    function syncColor(pickerId, textId) {
+        const picker = document.getElementById(pickerId);
+        const text = document.getElementById(textId);
+        if (!picker || !text) return;
+
+        picker.addEventListener('input', () => {
+            text.value = picker.value;
+            reprocess();
+        });
+
+        text.addEventListener('change', () => {
+            // Check if valid hex
+            if (/^#[0-9A-F]{6}$/i.test(text.value)) {
+                picker.value = text.value;
+            }
+        });
+    }
+
+    // Setup Syncs
+    syncRange('wm-opacity-range', 'wm-opacity', v => `${v}%`, v => parseFloat(v));
+    syncRange('wm-angle-range', 'wm-angle', v => v, v => parseFloat(v));
+    syncRange('wm-size-range', 'wm-size-ratio', v => (v / 100).toFixed(2), v => parseFloat(v) * 100);
+    syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => `${v}%`, v => parseFloat(v));
+
+    syncColor('wm-color-picker', 'wm-color');
+    syncColor('wm-stroke-color-picker', 'wm-stroke-color');
+
+
     // Toggle Watermark Group UI
     const wmCheckbox = document.getElementById('add-watermark-checkbox');
     const wmSettings = document.getElementById('watermark-settings');
-    
+
     const toggleWmSettings = () => {
         if (wmCheckbox.checked) {
             wmSettings.classList.remove('disabled');

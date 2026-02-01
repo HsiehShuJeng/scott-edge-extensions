@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: 'UKai';
-    src: url('../fonts/ukai.ttc');
+    src: url('../fonts/ukai.ttf');
 }
 
 body {
@@ -23,6 +23,33 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
+}
+
+/* Dual Input Styles */
+.dual-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dual-input input[type="range"] {
+    flex: 2;
+    width: 60%;
+}
+
+.dual-input input[type="text"],
+.dual-input input[type="number"] {
+    flex: 1;
+    min-width: 60px;
+}
+
+.dual-input input[type="color"] {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
 h1 {
@@ -51,7 +78,8 @@ h1 {
     background-color: #fafafa;
 }
 
-#drop-zone:hover, #drop-zone.drag-over {
+#drop-zone:hover,
+#drop-zone.drag-over {
     border-color: var(--primary-color);
     background-color: rgba(66, 133, 244, 0.04);
 }
@@ -90,7 +118,8 @@ h1 {
     margin-bottom: 15px;
 }
 
-.checkbox-wrapper, .checkbox-wrapper-header {
+.checkbox-wrapper,
+.checkbox-wrapper-header {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -198,7 +227,7 @@ h1 {
 
 #download-btn:hover:not(:disabled) {
     background-color: #3367d6;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .preview-area {
@@ -221,7 +250,7 @@ h1 {
 }
 
 .image-container {
-    background: 
+    background:
         linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%),
         linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%);
     background-size: 20px 20px;
@@ -235,7 +264,8 @@ h1 {
     overflow: hidden;
 }
 
-.image-container img, .image-container canvas {
+.image-container img,
+.image-container canvas {
     max-width: 100%;
     height: auto;
     display: block;
