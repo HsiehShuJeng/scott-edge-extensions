@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.3](///compare/v2.28.2...v2.28.3) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** improve marquee animation and dark mode contrast 1bafc47
+
 ### [2.28.2](///compare/v2.28.1...v2.28.2) (2026-02-01)
 
 
