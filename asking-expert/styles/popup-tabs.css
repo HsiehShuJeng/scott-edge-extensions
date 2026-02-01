@@ -77,7 +77,38 @@
 
 .tab-button:hover .tab-text-full,
 .tab-button.active .tab-text-full {
-    display: inline;
+    display: inline-block;
+    max-width: 120px;
+    vertical-align: bottom;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Marquee effect for long text on hover/active */
+.tab-button[data-tab="programming"]:hover .tab-text-full,
+.tab-button[data-tab="programming"].active .tab-text-full {
+    /* Only apply to the long programming tab */
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    animation: scroll-text 5s linear infinite;
+}
+
+/* Ensure the span behaves like a block for transform */
+.tab-button[data-tab="programming"] .tab-text-full::after {
+    content: "Programming Engineering";
+    /* Duplicate content for seamless scroll if needed, simpler is to just scroll */
+}
+
+@keyframes scroll-text {
+    0% {
+        text-indent: 100%;
+    }
+
+    100% {
+        text-indent: -150%;
+    }
 }
 
 /* Tab Content Styles */
