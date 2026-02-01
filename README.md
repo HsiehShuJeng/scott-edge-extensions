@@ -26,7 +26,6 @@ This browser extension provides comprehensive assistance for language learners (
   - [Linting & Code Quality](#linting--code-quality)
 - [Limitations & Notifications](#limitations--notifications)
 - [Lessons Learned](#lessons-learned)
-- [Lessons Learned](#lessons-learned)
 
 ---
 
