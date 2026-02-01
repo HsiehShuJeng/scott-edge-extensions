@@ -60,6 +60,7 @@ This browser extension provides comprehensive assistance for language learners (
 
 #### Quiz Prompt Template Features
 The generated quiz prompts include:
+
 - **Structured Format**: Numbered questions with 4 multiple-choice options (A, B, C, D)
 - **Educational Requirements**: Instructions for correct answers and explanations
 - **Difficulty Variation**: Mix of basic recall and analytical thinking questions
