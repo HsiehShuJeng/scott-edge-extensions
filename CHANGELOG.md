@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.5](///compare/v2.28.4...v2.28.5) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** increase popup min-width to prevent tab cutoff 1c5c255
+
 ### [2.28.4](///compare/v2.28.3...v2.28.4) (2026-02-01)
 
 
