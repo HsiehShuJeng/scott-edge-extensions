@@ -300,7 +300,12 @@ A client-side tool to remove watermarks from Google Gemini generated images.
 - **Reverse Alpha Blending**: Uses advanced algorithm to restore original pixels.
 - **Smart Features**: Auto-resizes to 1920px (optional) and preserves filenames.
 
-[Read about how the Watermark Removal Works](docs/gemini-watermark-removal.md)
+
+## Technical Documentation
+
+- [Gemini Watermark Removal Logic](doc/gemini-watermark-removal.md)
+- [UI Resolution: Marquee Text Cutoff](doc/marquee_fix.md)
+
 
 ## Development & Contribution
 
