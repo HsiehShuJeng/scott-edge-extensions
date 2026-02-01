@@ -113,6 +113,29 @@ h1 {
     color: #718096;
 }
 
+.format-select {
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #4a5568;
+    background-color: white;
+    font-size: 0.9em;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.format-select:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.select-label {
+    margin-right: 10px;
+    font-weight: 500;
+    color: #2d3748;
+}
+
 .action-row {
     display: flex;
     gap: 15px;

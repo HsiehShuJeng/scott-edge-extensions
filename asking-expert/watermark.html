@@ -28,6 +28,16 @@
                 </p>
             </div>
 
+            <div class="settings-group">
+                <label for="format-select" class="select-label">Output Format:</label>
+                <select id="format-select" class="format-select">
+                    <option value="image/webp" selected>WebP (Efficient)</option>
+                    <option value="image/png">PNG (Lossless)</option>
+                    <option value="image/jpeg">JPEG (Photo)</option>
+                </select>
+                <p class="setting-description">WebP offers significantly smaller file sizes with high quality.</p>
+            </div>
+
             <div id="status-message">Ready to process images.</div>
             <button id="download-btn" disabled>Download Clean Image</button>
         </div>

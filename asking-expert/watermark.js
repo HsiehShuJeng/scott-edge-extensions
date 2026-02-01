@@ -146,27 +146,44 @@ async function removeWatermark(img) {
 
 function setupDownloadButton(canvas) {
     const downloadBtn = document.getElementById('download-btn');
+    const formatSelect = document.getElementById('format-select');
 
-    // Generate filename: original_name (Unwatermarked).ext
-    let confirmName = 'cleaned_image.png';
-    if (currentOriginalFile && currentOriginalFile.name) {
-        const originalName = currentOriginalFile.name;
-        const lastDotIndex = originalName.lastIndexOf('.');
-        if (lastDotIndex !== -1) {
-            const name = originalName.substring(0, lastDotIndex);
-            const ext = originalName.substring(lastDotIndex); // includes dot
+    const updateDownloadLink = () => {
+        const format = formatSelect.value;
+        const quality = 0.92; // High quality for WebP/JPEG
+
+        // Determine extension
+        let ext = '.png';
+        if (format === 'image/webp') ext = '.webp';
+        if (format === 'image/jpeg') ext = '.jpg';
+
+        // Generate filename: original_name (Unwatermarked).ext
+        let confirmName = `cleaned_image${ext}`;
+        if (currentOriginalFile && currentOriginalFile.name) {
+            const originalName = currentOriginalFile.name;
+            const lastDotIndex = originalName.lastIndexOf('.');
+            let name = originalName;
+
+            if (lastDotIndex !== -1) {
+                name = originalName.substring(0, lastDotIndex);
+            }
             confirmName = `${name} (Unwatermarked)${ext}`;
-        } else {
-            confirmName = `${originalName} (Unwatermarked).png`;
         }
-    }
 
-    downloadBtn.onclick = () => {
-        const link = document.createElement('a');
-        link.download = confirmName;
-        link.href = canvas.toDataURL(); // Defaults to PNG
-        link.click();
+        downloadBtn.onclick = () => {
+            const link = document.createElement('a');
+            link.download = confirmName;
+            link.href = canvas.toDataURL(format, quality);
+            link.click();
+        };
     };
+
+    // Update initially
+    updateDownloadLink();
+
+    // Update when format changes
+    formatSelect.onchange = updateDownloadLink;
+
     downloadBtn.disabled = false;
 }
 
