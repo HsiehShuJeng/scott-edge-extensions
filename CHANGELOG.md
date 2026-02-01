@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.4](///compare/v2.28.3...v2.28.4) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** polish marquee animation and layout a057df7
+
 ### [2.28.3](///compare/v2.28.2...v2.28.3) (2026-02-01)
 
 
