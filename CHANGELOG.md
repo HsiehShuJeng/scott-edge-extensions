@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.26.0](///compare/v2.25.0...v2.26.0) (2026-02-01)
+
+
+### Features
+
+* implement watermark remover tool 1ff6d91
+
+
+### Bug Fixes
+
+* correct asset file structure b63f54d
+
 ## [2.25.0](///compare/v2.24.1...v2.25.0) (2026-01-31)
 
 
