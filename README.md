@@ -11,6 +11,7 @@ This browser extension provides comprehensive assistance for language learners (
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
   - [Branch Naming Tools](#branch-naming-tools)
+- [Technical Documentation](#technical-documentation)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
   - [Component Diagram](#component-diagram)
