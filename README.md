@@ -6,10 +6,12 @@ This browser extension provides comprehensive assistance for language learners (
 - [Language Learning Features](#language-learning-features)
 - [YouTube Quiz Generator](#youtube-quiz-generator)
 - [Infographic Prompt Generator](#infographic-prompt-generator)
+- [Watermark Remover (Gemini)](#watermark-remover-gemini)
 - [Programming Features](#programming-features)
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
   - [Branch Naming Tools](#branch-naming-tools)
+- [Technical Documentation](#technical-documentation)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
   - [Component Diagram](#component-diagram)
@@ -20,10 +22,10 @@ This browser extension provides comprehensive assistance for language learners (
   - [Loading into Edge](#loading-into-edge)
   - [Development](#development)
   - [Contributor Onboarding](#contributor-onboarding)
-  - [Release Process](#release-process)
-- [Modular CSS & UI Consistency](#modular-css--ui-consistency)
-- [Linting & Code Quality](#linting--code-quality)
+  - [Modular CSS & UI Consistency](#modular-css--ui-consistency)
+  - [Linting & Code Quality](#linting--code-quality)
 - [Limitations & Notifications](#limitations--notifications)
+- [Lessons Learned](#lessons-learned)
 - [Lessons Learned](#lessons-learned)
 
 ---
@@ -58,6 +60,7 @@ This browser extension provides comprehensive assistance for language learners (
 
 #### Quiz Prompt Template Features
 The generated quiz prompts include:
+
 - **Structured Format**: Numbered questions with 4 multiple-choice options (A, B, C, D)
 - **Educational Requirements**: Instructions for correct answers and explanations
 - **Difficulty Variation**: Mix of basic recall and analytical thinking questions
@@ -291,6 +294,21 @@ flowchart LR
 
 ---
 
+## Watermark Remover (Gemini)
+
+A client-side tool to remove watermarks from Google Gemini generated images.
+
+- **Client-Side Only**: 100% privacy-focused, no data leaves your browser.
+- **Reverse Alpha Blending**: Uses advanced algorithm to restore original pixels.
+- **Smart Features**: Auto-resizes to 1920px (optional) and preserves filenames.
+
+
+## Technical Documentation
+
+- [Gemini Watermark Removal Logic](doc/gemini-watermark-removal.md)
+- [UI Resolution: Marquee Text Cutoff](doc/marquee_fix.md)
+
+
 ## Development & Contribution
 
 ### Loading into Edge
@@ -309,6 +327,7 @@ flowchart LR
   - **Video Module** (`modules/video/`): `video-extractor.js`, `youtube-quiz-generator.js`
   - **Language Module** (`modules/language/`): `translation.js`, `session.js`, `etymology.js`
   - **Core Module** (`modules/core/`): `ui.js`, `utils.js`, `content.js`
+  - **Watermark Module** (`modules/watermark/`): `watermarkEngine.js`, `blendModes.js`, `alphaMap.js`
 - **Styling**: Modular CSS files in `asking-expert/styles/` directory
 - **Programming tools**: Integrated commit, PR, and branch naming functionality
 - **YouTube tools**: Quiz generator for educational content creation
@@ -321,32 +340,15 @@ The JavaScript codebase is organized into feature-based modules for better maint
 asking-expert/
 ├── modules/
 │   ├── video/           # Video-related functionality
-│   │   ├── index.js     # Module entry point
-│   │   ├── video-extractor.js      # DeepSRT question extraction
-│   │   └── youtube-quiz-generator.js # YouTube quiz generation
 │   ├── language/        # Language learning functionality
-│   │   ├── index.js     # Module entry point
-│   │   ├── translation.js   # Translation and prompt generation
-│   │   ├── etymology.js     # Etymology fetching
-│   │   └── session.js       # Learning session management
-│   └── core/           # Core utilities and UI
-│       ├── index.js    # Module entry point
-│       ├── ui.js       # UI initialization and management
-│       ├── utils.js    # Utility functions and constants
-│       └── content.js  # Content script for page interaction
+│   ├── watermark/       # Watermark removal logic
+│   └── core/            # Core utilities and UI
 ├── popup.js (main entry point)
 ├── popup.html
 ├── manifest.json
 ├── images/
 └── styles/
 ```
-
-**Benefits of Module Organization:**
-- **Better Organization**: Related functionality is grouped together
-- **Cleaner Imports**: Module index files reduce import complexity
-- **Easier Maintenance**: Clear separation of concerns
-- **Scalability**: Easy to add new features to appropriate modules
-- **Future-Proof**: Structure supports additional categories
 
 ### Contributor Onboarding
 
@@ -358,256 +360,43 @@ graph TD
     E["HOTFIX branch"] -->|"urgent fixes"| F["Critical bugs"]
 ```
 
-**Branch Types:**
-- **main**: Stable, production-ready code
-- **feature**: For developing new features
-- **hotfix**: For critical bug fixes
-
 **Feature Development Workflow:**
-1. Create feature branch from main:
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b feat/your-feature-name
-   ```
-2. Develop and test changes
-3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed:
-   - Update diagrams, scenario table, and contributor onboarding if the architecture, data flow, or supported scenarios change.
-   - Add new diagrams if new concepts are introduced (ask for permission if unsure).
-   - Note all implementation or conceptual changes in `lesson_learned.md`.
-4. Stage and commit changes:
-   ```bash
-   git add .
-   git commit -m "your message"
-   ```
-5. Push branch to repository:
-   ```bash
-   git push origin feat/your-feature-name
-   ```
-6. Create pull request for review
-7. Merge to main after approval
-
-**Note:**  
-If you see an unstaged change in `manifest.json` after switching or deleting branches, rerun `node scripts/sync-version.js` to resync the version. This is a known quirk due to version synchronization between `package.json` and `manifest.json`.
-
-#### Version Management
-This project uses a unified versioning system where:
-- `package.json` is the source of truth for the version
-- The extension version in `asking-expert/manifest.json` is automatically synchronized
-- Version updates are managed through `standard-version`
+1. Create feature branch from main.
+2. Develop and test changes.
+3. Review and update `README.md` and `lesson_learned.md`.
+4. Stage and commit changes.
+5. Push branch and create PR.
 
 #### Development Workflow
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Make code changes
-3. Before each commit, review and update `README.md` and `lesson_learned.md` as needed (see Contributor Onboarding).
-4. Stage changes:
-   ```bash
-   git add .
-   ```
-5. Commit changes:
-   ```bash
-   git commit -m "your message"
-   ```
+1. `npm install`
+2. Make code changes.
+3. `git add .`
+4. `git commit -m "your message"`
 
 #### Release Process
-1. Commit your changes with conventional commit messages
-2. Run the release workflow:
-   ```bash
-   # 1. Automatic version bump, changelog generation, and tagging
-   npm run release
+1. `npm run release`
+2. `node scripts/sync-version.js`
+3. `git add asking-expert/manifest.json`
+4. `git commit --amend --no-edit`
+5. `git tag -f vX.X.X`
+6. `git push --follow-tags origin <branch-name>`
 
-   # 2. Sync manifest.json with the new package.json version
-   node scripts/sync-version.js
+### Modular CSS & UI Consistency
 
-   # 3. Amend the release commit to include the manifest update
-   git add asking-expert/manifest.json
-   git commit --amend --no-edit
+- Use `gap` for flexbox spacing.
+- Use `em` units for scaling spacing.
+- Control overall popup spacing with `body { padding: ... }`.
 
-   # 4. Update the tag to point to the amended commit
-   # (Replace vX.X.X with the actual new version, e.g., v2.23.0)
-   git tag -f vX.X.X
+### Linting & Code Quality
 
-   # 5. Push commits and tags
-   git push --follow-tags origin <branch-name>
-   ```
-
-#### Important Note About Version Sync Timing
-```mermaid
-graph LR
-    A["npm run release"] --> B["preversion script"]
-    B --> C["Sync current version to manifest.json"]
-    C --> D["Bump package.json version"]
-    D --> E["Generate changelog"]
-```
-
-This means:
-1. The sync script runs BEFORE version bump
-2. manifest.json gets the current version (before bump)
-3. package.json gets bumped to the new version
-4. This ensures manifest.json always matches the version that was just released
-
-```mermaid
-sequenceDiagram
-    participant Dev as Developer
-    participant Git as Git
-    participant NPM as npm
-    participant GH as GitHub
-    participant Script as Sync Script
-
-    Dev->>NPM: Run npm run release
-    NPM->>Script: Execute preversion script
-    Script->>Git: Sync manifest.json version
-    NPM->>Git: Update package.json version
-    NPM->>Git: Update CHANGELOG.md
-    NPM->>Git: Commit changes
-    NPM->>Git: Create version tag
-    Dev->>Git: Run git push --follow-tags
-    Git->>GH: Push code and tags
-```
-
-## Supported Scenarios
-
-### 1. Standard Multiple-Choice (Context Sentence)
-- **Word:** Extracted from `<strong>` in `.sentence`.
-- **Sentence:** The full context sentence.
-
-### 2. Definition-Style Multiple-Choice
-- **Word:** Extracted from `<strong>` in `.instructions`.
-- **Sentence:** Formatted as:
-  ```
-  What does [word] mean?
-  1A [choice 1]
-  2B [choice 2]
-  ...
-  ```
-
-### 3. Synonym-Style Multiple-Choice
-- **Word:** Extracted from `<strong>` in `.instructions`.
-- **Sentence:** Formatted as:
-  ```
-  [word] has the same or almost the same meaning as:
-  1A [choice 1]
-  2B [choice 2]
-  ...
-  Please explain with the 2 words
-  ```
-
-### 4. Spelling Questions
-- **Word:** Extracted from `.correctspelling` if available, otherwise from `<strong>` in `.sentence.complete` or `.sentence.blanked`.
-- **Sentence:** The full sentence from `.sentence.complete` or `.sentence.blanked`.
-
-### 5. Question-Style Multiple-Choice
-- **Word:** Extracted from `<strong>` in `.sentence` in `.questionContent`.
-- **Sentence:** The question text followed by the formatted choices.
-
-### 6. Opposite-Style Multiple-Choice
-- **Word:** Extracted from `<strong>` in `.instructions`.
-- **Sentence:** The instructions text, followed by the choices, and ending with an explanation prompt.
-
-### 7. Manual Entry
-- If the "Word" field is filled manually, "Generate Prompt" will always generate and copy the prompt, regardless of page parsing.
-
----
-
-## Extraction Logic Flowchart
-
-```mermaid
-flowchart TD
-    Start(["Start"])
-    Start --> |"typeA"| Opposite
-    Start --> |"typeT"| Spelling
-    Start --> |"typeD"| Definition
-    Start --> |"typeS"| Synonym
-    Start --> |"typeP"| Question
-    Start --> |"else"| Fallback
-
-    Opposite --> End
-    Spelling --> End
-    Definition --> End
-    Synonym --> End
-    Question --> End
-    Fallback --> End
-    End(["Extract word & sentence"])
-```
-
----
-
-## Component Architecture Diagram
-
-```mermaid
-flowchart LR
-    subgraph "Browser_Tab[Active Vocabulary.com Tab]"
-        PageDOM["Page DOM<br/>(challenge-slide, question, etc.)"]
-        ContentScript["Content Script<br/>(content.js)"]
-    end
-    subgraph "Extension_Popup[Extension Popup]"
-        PopupUI["Popup UI<br/>(popup.html, ui.js)"]
-    end
-    PopupUI -- "chrome.scripting.executeScript + sendMessage" --> ContentScript
-    ContentScript -- "Extract word & sentence" --> PageDOM
-    ContentScript -- "Send result" --> PopupUI
-```
-
----
-
-## Scenario Table
-
-| Type   | Word Source                | Sentence Source/Format                                 |
-|--------|---------------------------|--------------------------------------------------------|
-| typeA  | .instructions strong      | Instructions text + choices + explanation              |
-| typeT  | .correctspelling or <strong> in .sentence.complete/.blanked | .sentence.complete or .sentence.blanked                |
-| typeD  | <strong> in .instructions | "What does [word] mean?" + choices                    |
-| typeS  | <strong> in .instructions | "[word] has the same or almost the same meaning as:" + choices + explanation |
-| typeP  | <strong> in .sentence     | Question text + choices                                |
-| else   | <strong> in .sentence     | .sentence                                              |
-
----
-
-## How It Works
-
-- The extension always targets the currently visible `.challenge-slide.selected` for extraction.
-- The popup event handler ensures that prompt generation is robust: it tries to parse the page if fields are empty, but always allows manual entry as a fallback.
-- Notifications are shown if parsing fails, guiding the user to enter missing content.
+- **HTML:** `npx htmlhint`
+- **CSS:** `npx stylelint "**/*.css"`
 
 ## Limitations & Notifications
 
-- **Restricted Pages:**  
-  The extension cannot be used on internal browser pages (such as `chrome://`, `edge://`, or `extension://` URLs) due to browser security restrictions. If you attempt to use the extension on these pages, a notification will appear for 2 seconds and then fade out, informing you to switch to a regular website.
-- **Notification UX:**  
-  All notifications (including errors and user feedback) are displayed for 2 seconds and then fade out smoothly, providing a clear and non-intrusive user experience.
+- **Restricted Pages:** Cannot run on `chrome://` or `edge://` pages.
+- **Notification UX:** Notifications fade out after 2 seconds.
 
 ## Lessons Learned
 
-See [`lesson_learned.md`](lesson_learned.md) for a concise summary of implementation strategies, key takeaways, and unique architectural decisions. Redundant scenario and workflow details have been consolidated for clarity.
-
----
-
-## Modular CSS & UI Consistency
-
-- When modularizing CSS, preserve selector order, specificity, and cascade to avoid regressions.
-- Use `gap` for flexbox spacing, and remove default margins from buttons for pixel-perfect control.
-- For theme-adaptive dropdown arrows, use CSS variables and set `background-image` on the correct selector.
-- Use `em` units for margin/padding when you want spacing to scale with font size.
-- Control overall popup spacing with `body { padding: ... }` and use `padding-top` for space above absolutely positioned elements.
-- Visually test after each modularization step in both light and dark themes.
-- Remove default browser margins from elements for precise control.
-- Document modularization and spacing strategies in the codebase for future contributors.
-
----
-
-## Linting & Code Quality
-
-- **HTML:**  
-  Run `npx htmlhint` to check HTML files using `.htmlhintrc`.
-- **CSS:**  
-  Run `npx stylelint "**/*.css"` to check CSS files using `.stylelintrc.json`.
-- **Editor Integration:**  
-  For best results, install the HTMLHint and Stylelint plugins in VSCode or your editor of choice.
-
-- **Note:**  
-  If you want to add JavaScript linting, consider adding ESLint and documenting it similarly.
-
----
+See [`lesson_learned.md`](lesson_learned.md) for implementation strategies and key takeaways.

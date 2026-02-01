@@ -72,7 +72,6 @@ function setupTabNavigation() {
                     designDropdown.dispatchEvent(new Event('change'));
                 }
             }
-
             // Add active class to target button and corresponding content
             const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
             const targetContent = document.getElementById(`${targetTab}-tab`);
@@ -552,6 +551,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     sentenceTextarea.readOnly = false;
                 }, 4000);
             }
+        });
+    }
+    // === Watermark Launcher Logic ===
+    const launchWatermarkBtn = document.getElementById('launch-watermark');
+    if (launchWatermarkBtn) {
+        launchWatermarkBtn.addEventListener('click', () => {
+            chrome.tabs.create({ url: 'watermark.html' });
         });
     }
 

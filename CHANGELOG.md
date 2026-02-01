@@ -2,6 +2,91 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.6](///compare/v2.28.5...v2.28.6) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** unconstrain marquee width and preserve whitespace e354329
+
+### [2.28.5](///compare/v2.28.4...v2.28.5) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** increase popup min-width to prevent tab cutoff 1c5c255
+
+### [2.28.4](///compare/v2.28.3...v2.28.4) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** polish marquee animation and layout a057df7
+
+### [2.28.3](///compare/v2.28.2...v2.28.3) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** improve marquee animation and dark mode contrast 1bafc47
+
+### [2.28.2](///compare/v2.28.1...v2.28.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** resolve theme toggle clickability and add marquee effect 323b53a
+
+### [2.28.1](///compare/v2.28.0...v2.28.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** improve tab bar layout and dark mode consistency c5272e6
+* **ui:** remove dangling css lines 7703ae9
+
+## [2.28.0](///compare/v2.27.1...v2.28.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** add output format selection with WebP default c43e0de
+
+### [2.27.1](///compare/v2.27.0...v2.27.1) (2026-02-01)
+
+## [2.27.0](///compare/v2.26.2...v2.27.0) (2026-02-01)
+
+
+### Features
+
+* **watermark:** add resize option and smart filename preservation a2b0eee
+
+### [2.26.2](///compare/v2.26.1...v2.26.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* use natural image dimensions to prevent cropping a33ea86
+
+### [2.26.1](///compare/v2.26.0...v2.26.1) (2026-02-01)
+
+
+### Bug Fixes
+
+* correct image asset paths in watermarkEngine cbd047c
+
+## [2.26.0](///compare/v2.25.0...v2.26.0) (2026-02-01)
+
+
+### Features
+
+* implement watermark remover tool 1ff6d91
+
+
+### Bug Fixes
+
+* correct asset file structure b63f54d
+
 ## [2.25.0](///compare/v2.24.1...v2.25.0) (2026-01-31)
 
 

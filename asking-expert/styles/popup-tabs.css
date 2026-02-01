@@ -4,11 +4,14 @@
     position: absolute;
     top: 0;
     left: 0;
+    right: 0;
+    padding-right: 80px;
+    /* Space for theme toggle */
     z-index: 10;
     background: none;
     border: none;
     margin: 0;
-    padding: 0;
+    padding-left: 0;
 }
 
 .tab-button {
@@ -51,6 +54,17 @@
     padding: 8px 16px;
 }
 
+/* Enforce dark mode background context */
+/* Enforce dark mode background context */
+.dark-theme .tab-button:not(.active) {
+    background-color: var(--background-color);
+    color: #ffffff;
+    /* Max contrast */
+    border-color: #666;
+    /* More visible border */
+    opacity: 0.9;
+}
+
 /* Tab text - show abbreviated by default, full on hover/active */
 .tab-button .tab-text-short {
     display: inline;
@@ -67,14 +81,66 @@
 
 .tab-button:hover .tab-text-full,
 .tab-button.active .tab-text-full {
-    display: inline;
+    display: inline-block;
+    max-width: 160px;
+    vertical-align: bottom;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Marquee effect for long text on hover/active */
+/* Marquee behaviors */
+/* Marquee behaviors */
+.tab-button[data-tab="programming"] .tab-text-full {
+    /* Rely on default display: none, only show on hover/active */
+    padding-left: 0;
+    will-change: transform;
+}
+
+.tab-button[data-tab="programming"]:hover .tab-text-full,
+.tab-button[data-tab="programming"].active .tab-text-full {
+    /* Only apply to the long programming tab */
+    display: inline-block;
+    /* Explicitly show here */
+    max-width: none;
+    white-space: pre;
+    animation: marquee-scroll 2.5s linear infinite;
+    /* Faster */
+    mask-image: none;
+    /* Ensure full visibility */
+    -webkit-mask-image: none;
+}
+
+.tab-button[data-tab="programming"] .tab-text-full::after {
+    content: "   Programming Engineering";
+    /* Add spacing and duplicate for loop */
+    white-space: pre;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    15% {
+        transform: translateX(0);
+        /* Pause at start */
+    }
+
+    100% {
+        transform: translateX(-50%);
+        /* Move half way (original + duplicate) */
+    }
 }
 
 /* Tab Content Styles */
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
-    margin-top: 40px; /* Space for top-positioned tabs */
+    margin-top: 40px;
+    /* Space for top-positioned tabs */
     padding-top: 10px;
 }
 
@@ -87,6 +153,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -119,24 +186,29 @@
 .video-grid-item {
     width: 100%;
     box-sizing: border-box;
-    min-width: 0; /* Prevent overflow */
+    min-width: 0;
+    /* Prevent overflow */
 }
 
 .video-grid-item {
     display: flex;
     flex-direction: column;
-    align-items: stretch; /* Make children fill width */
-    justify-content: space-between; /* Push button to bottom */
+    align-items: stretch;
+    /* Make children fill width */
+    justify-content: space-between;
+    /* Push button to bottom */
     padding: 12px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
     background-color: var(--input-bg);
-    min-height: 120px; /* Ensure consistent height */
+    min-height: 120px;
+    /* Ensure consistent height */
 }
 
 /* Video ID Section Styles */
 .video-id-section {
-    margin-bottom: auto; /* Push button to bottom */
+    margin-bottom: auto;
+    /* Push button to bottom */
 }
 
 .video-id-container {
@@ -148,7 +220,8 @@
 
 .video-id-input {
     flex: 1;
-    min-width: 0; /* Allow shrinking */
+    min-width: 0;
+    /* Allow shrinking */
 }
 
 .video-id-action {
@@ -169,7 +242,8 @@
 .quiz-generator-container {
     display: flex;
     justify-content: center;
-    margin-top: auto; /* Push to bottom */
+    margin-top: auto;
+    /* Push to bottom */
 }
 
 /* Override any responsive behavior that might stack vertically */
@@ -179,8 +253,8 @@
         gap: 3px;
     }
 }
-    width: 100%;
-}
+
+
 
 .quiz-generator-btn {
     min-width: 180px;
@@ -214,7 +288,8 @@
     text-align: center;
     min-height: 20px;
     transition: all 0.3s ease;
-    grid-column: 1 / -1; /* Span across all grid columns */
+    grid-column: 1 / -1;
+    /* Span across all grid columns */
 }
 
 .status-message.success {
@@ -338,47 +413,47 @@
         font-size: 12px;
         padding: 10px 12px;
     }
-    
+
     .instruction-text {
         font-size: 13px;
     }
-    
+
     .video-grid-container {
         grid-template-columns: 1fr;
         gap: 15px;
     }
-    
+
     .video-grid-item {
         padding: 12px;
     }
-    
+
     .video-id-section {
         margin: 0;
         padding: 0;
     }
-    
+
     .video-id-container {
         flex-direction: row;
         gap: 0;
     }
-    
+
     .video-id-input {
         padding: 10px 35px 10px 12px;
         overflow-x: auto;
         white-space: nowrap;
     }
-    
+
     .video-id-action {
         right: 6px;
         width: 24px;
         height: 24px;
     }
-    
+
     .video-id-action svg {
         width: 12px;
         height: 12px;
     }
-    
+
     .extract-btn,
     .quiz-generator-btn {
         min-width: auto;
