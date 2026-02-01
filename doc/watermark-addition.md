@@ -58,6 +58,8 @@ To provide a premium user experience, we implemented "Dual Inputs" for all numer
 
 ## References
 
-- **Google OpenType Sanitizer (OTS)**: [GitHub Repository](https://github.com/khaledhosny/ots) - Understanding why Chrome rejects certain fonts.
-- **OTS Parsing Error Discussion**: [StackOverflow: OTS parsing error: GPOS misaligned table](https://stackoverflow.com/questions/27643555/ots-parsing-error-gpos-misaligned-table)
-- **FontTools**: [Documentation](https://fonttools.readthedocs.io/en/latest/) - The library used to convert TTC to TTF.
+FontTools (no date) *fontTools Documentation*. Available at: https://fonttools.readthedocs.io/en/latest/ (Accessed: 1 February 2026).
+
+Hosny, K. (no date) *OTS (OpenType Sanitizer)*. GitHub. Available at: https://github.com/khaledhosny/ots (Accessed: 1 February 2026).
+
+Stack Overflow (2015) *OTS parsing error: GPOS misaligned table*. Available at: https://stackoverflow.com/questions/27643555/ots-parsing-error-gpos-misaligned-table (Accessed: 1 February 2026).
