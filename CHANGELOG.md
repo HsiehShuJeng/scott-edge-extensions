@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.28.2](///compare/v2.28.1...v2.28.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* **ui:** resolve theme toggle clickability and add marquee effect 323b53a
+
 ### [2.28.1](///compare/v2.28.0...v2.28.1) (2026-02-01)
 
 
