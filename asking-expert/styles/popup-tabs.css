@@ -5,7 +5,7 @@
     top: 0;
     left: 0;
     right: 0;
-    padding-right: 70px;
+    padding-right: 80px;
     /* Space for theme toggle */
     z-index: 10;
     background: none;
@@ -82,7 +82,7 @@
 .tab-button:hover .tab-text-full,
 .tab-button.active .tab-text-full {
     display: inline-block;
-    max-width: 120px;
+    max-width: 160px;
     vertical-align: bottom;
     white-space: nowrap;
     overflow: hidden;
@@ -92,8 +92,9 @@
 
 /* Marquee effect for long text on hover/active */
 /* Marquee behaviors */
+/* Marquee behaviors */
 .tab-button[data-tab="programming"] .tab-text-full {
-    display: inline-block;
+    /* Rely on default display: none, only show on hover/active */
     padding-left: 0;
     will-change: transform;
 }
@@ -101,11 +102,14 @@
 .tab-button[data-tab="programming"]:hover .tab-text-full,
 .tab-button[data-tab="programming"].active .tab-text-full {
     /* Only apply to the long programming tab */
+    display: inline-block;
+    /* Explicitly show here */
     max-width: 100%;
-    animation: marquee-scroll 4s linear infinite;
-    /* Remove mask during hover to ensure visibility */
-    mask-image: linear-gradient(to right, black 90%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+    animation: marquee-scroll 2.5s linear infinite;
+    /* Faster */
+    mask-image: none;
+    /* Ensure full visibility */
+    -webkit-mask-image: none;
 }
 
 .tab-button[data-tab="programming"] .tab-text-full::after {
