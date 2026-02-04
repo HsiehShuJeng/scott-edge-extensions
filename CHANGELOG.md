@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.31.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.31.0...v2.31.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* **watermark:** use pearson correlation for detection and update terminology ([9bbcb70](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/9bbcb7045b8d6df65c7c6b5fcc5327fd5c45584f))
+
 ## [2.31.0](///compare/v2.30.2...v2.31.0) (2026-02-04)
 
 
