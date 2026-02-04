@@ -501,24 +501,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial state
     toggleWmSettings();
 
-    // Angle Buttons
-    const btn45 = document.getElementById('wm-angle-45');
-    const btnNeg45 = document.getElementById('wm-angle-neg-45');
-
-    if (btn45) {
-        btn45.addEventListener('click', () => {
-            document.getElementById('wm-angle').value = 45;
-            document.getElementById('wm-angle-range').value = 45;
-            reprocess();
-        });
-    }
-
-    if (btnNeg45) {
-        btnNeg45.addEventListener('click', () => {
-            document.getElementById('wm-angle').value = -45;
-            document.getElementById('wm-angle-range').value = -45;
-            reprocess();
-        });
-    }
 });
 
