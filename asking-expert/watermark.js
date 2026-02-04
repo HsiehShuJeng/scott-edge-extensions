@@ -41,6 +41,31 @@ function updateStatus(msg) {
     if (el) el.textContent = msg;
 }
 
+// --- Theme Synchronization ---
+// --- Theme Synchronization ---
+function applyTheme() {
+    chrome.storage.local.get('theme', (data) => {
+        let theme = data.theme;
+        if (!theme) {
+            const hour = new Date().getHours();
+            if (hour >= 18 || hour < 6) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+        }
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-theme', isDark);
+    });
+}
+
+// Listen for theme changes from popup
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.theme) {
+        applyTheme();
+    }
+});
+
 // Handle file selection
 function handleFileSelect(event) {
     const file = event.target.files[0];
@@ -176,12 +201,12 @@ async function applyPipeline(img) {
 
 function getWatermarkSettings() {
     return {
-        opacity: document.getElementById('wm-opacity').value,
+        opacity: document.getElementById('wm-opacity').value + '%',
         color: document.getElementById('wm-color').value,
         angle: parseFloat(document.getElementById('wm-angle').value) || 45,
         sizeRatio: parseFloat(document.getElementById('wm-size-ratio').value) || 0.06,
         strokeColor: document.getElementById('wm-stroke-color').value,
-        strokeOpacity: document.getElementById('wm-stroke-opacity').value,
+        strokeOpacity: document.getElementById('wm-stroke-opacity').value + '%',
     };
 }
 
@@ -344,6 +369,7 @@ function setupDownloadButton(canvas) {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    applyTheme(); // Apply theme on load
     initEngine();
 
     const dropZone = document.getElementById('drop-zone');
@@ -433,10 +459,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Setup Syncs
-    syncRange('wm-opacity-range', 'wm-opacity', v => `${v}%`, v => parseFloat(v));
+    syncRange('wm-opacity-range', 'wm-opacity', v => v, v => parseFloat(v));
     syncRange('wm-angle-range', 'wm-angle', v => v, v => parseFloat(v));
     syncRange('wm-size-range', 'wm-size-ratio', v => (v / 100).toFixed(2), v => parseFloat(v) * 100);
-    syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => `${v}%`, v => parseFloat(v));
+    syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => v, v => parseFloat(v));
 
     syncColor('wm-color-picker', 'wm-color');
     syncColor('wm-stroke-color-picker', 'wm-stroke-color');

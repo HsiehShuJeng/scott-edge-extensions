@@ -8,6 +8,20 @@
     --shadow-md: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+.dark-theme {
+    --primary-color: #8ab4f8;
+    --background-color: #202124;
+    --surface-color: #292a2d;
+    --text-color: #e8eaed;
+    --border-color: #5f6368;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
 @font-face {
     font-family: 'UKai';
     src: url('../fonts/ukai.ttf');
@@ -38,9 +52,87 @@ body {
 }
 
 .dual-input input[type="text"],
-.dual-input input[type="number"] {
+.dual-input input[type="number"],
+.dual-input .input-wrapper {
     flex: 1;
-    min-width: 60px;
+    background: transparent;
+    color: var(--text-color);
+}
+
+.dark-theme .input-wrapper {
+    background: #3c4043;
+    border-color: #5f6368;
+}
+
+.dark-theme #drop-zone {
+    background-color: #303134;
+}
+
+.dark-theme .watermark-settings {
+    background-color: #303134;
+}
+
+.dark-theme .controls {
+    background: #292a2d;
+}
+
+.dark-theme .preview-box {
+    background-color: #303134;
+}
+
+.dark-theme .controls-column h3 {
+    color: #e8eaed;
+    border-bottom-color: #3c4043;
+}
+
+.dark-theme .setting-description {
+    color: #9aa0a6;
+}
+
+.dark-theme .input-group label {
+    color: #bdc1c6;
+}
+
+.dark-theme .input-group input,
+.dark-theme .format-select {
+    background-color: #3c4043;
+    color: #e8eaed;
+    border-color: #5f6368;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding-right: 4px;
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--primary-color);
+}
+
+.input-wrapper input[type="number"] {
+    border: none;
+    padding: 6px 4px 6px 8px;
+    /* Adjusted padding */
+    flex: 1;
+    width: 0;
+    /* Important for flex child to not overflow */
+    background: transparent;
+}
+
+.input-wrapper input[type="number"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.input-wrapper .unit {
+    color: #888;
+    font-size: 13px;
+    padding-right: 4px;
+    user-select: none;
 }
 
 .dual-input input[type="color"] {

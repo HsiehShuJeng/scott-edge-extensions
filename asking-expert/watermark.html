@@ -57,7 +57,10 @@
                                 <label for="wm-opacity">Opacity</label>
                                 <div class="dual-input">
                                     <input type="range" id="wm-opacity-range" min="0" max="100" value="7">
-                                    <input type="text" id="wm-opacity" value="7%" title="e.g. 7%, 0.07">
+                                    <div class="input-wrapper">
+                                        <input type="number" id="wm-opacity" value="7" min="0" max="100" title="0-100">
+                                        <span class="unit">%</span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="input-group">
@@ -98,7 +101,10 @@
                                 <label for="wm-stroke-opacity">Stroke Opacity</label>
                                 <div class="dual-input">
                                     <input type="range" id="wm-stroke-opacity-range" min="0" max="100" value="20">
-                                    <input type="text" id="wm-stroke-opacity" value="20%">
+                                    <div class="input-wrapper">
+                                        <input type="number" id="wm-stroke-opacity" value="20" min="0" max="100">
+                                        <span class="unit">%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
