@@ -244,6 +244,7 @@ h1 {
 .checkbox-label {
     margin-left: 8px;
     font-weight: 500;
+    font-size: 16px;
 }
 
 .setting-description {
@@ -439,4 +440,25 @@ h1 {
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+.icon-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    height: 30px;
+    /* match input height approx */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: rgba(66, 133, 244, 0.1);
+    border-color: var(--primary-color);
 }
