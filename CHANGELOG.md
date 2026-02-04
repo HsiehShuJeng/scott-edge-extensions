@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.35.0](///compare/v2.34.0...v2.35.0) (2026-02-04)
+
+
+### Features
+
+* improve Watermark UI/UX with rotation, opacity controls and dark mode 1e1001d
+
 ## [2.34.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.33.0...v2.34.0) (2026-02-04)
 
 
