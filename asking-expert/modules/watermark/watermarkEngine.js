@@ -121,6 +121,80 @@ export class WatermarkEngine {
      * @param {HTMLImageElement|HTMLCanvasElement} image - Input image
      * @returns {Promise<HTMLCanvasElement>} Processed canvas
      */
+    /**
+     * Detect if a watermark is likely present in the image
+     * @param {ImageData} imageData - Image data of the region where watermark would be
+     * @param {Float32Array} alphaMap - Alpha map for the watermark
+     * @returns {boolean} True if watermark is detected
+     */
+    /**
+     * Detect if a watermark is likely present in the image using Pearson Correlation
+     * This statistically verifies if the image pixel variations match the watermark alpha pattern.
+     * @param {ImageData} imageData - Image data of the region where watermark would be
+     * @param {Float32Array} alphaMap - Alpha map for the watermark
+     * @returns {boolean} True if watermark is detected
+     */
+    detectWatermark(imageData, alphaMap) {
+        const { data, width, height } = imageData;
+        const totalPixels = width * height;
+
+        // We only care about pixels where the watermark actually exists (alpha > 0)
+        // to avoid diluting the stats with background.
+        // However, we need enough data points.
+
+        let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+        let n = 0;
+
+        for (let i = 0; i < totalPixels; i++) {
+            const alpha = alphaMap[i];
+
+            // Only consider significant watermark pixels for correlation
+            if (alpha > 0.05) {
+                // Y (Watermark Signal) = alpha
+                // X (Image Signal) = Luminance of pixel
+
+                const r = data[i * 4];
+                const g = data[i * 4 + 1];
+                const b = data[i * 4 + 2];
+
+                // Simple luminance approximation
+                const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                sumX += luminance;
+                sumY += alpha;
+                sumXY += luminance * alpha;
+                sumX2 += luminance * luminance;
+                sumY2 += alpha * alpha;
+                n++;
+            }
+        }
+
+        if (n < 100) return false; // Not enough data
+
+        // Calculate Pearson Correlation Coefficient (r)
+        // r = (n*sumXY - sumX*sumY) / sqrt((n*sumX2 - sumX^2) * (n*sumY2 - sumY^2))
+
+        const numerator = n * sumXY - sumX * sumY;
+        const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+
+        if (denominator === 0) return false; // Zero variance
+
+        const correlation = numerator / denominator;
+
+        // console.log(`Watermark Correlation: ${correlation.toFixed(4)}`);
+
+        // Threshold: A visible watermark should have a clear positive correlation.
+        // 0.3 is a conservative threshold (weak but matching). 
+        // 0.5 is moderate.
+        // Gemini watermark is quite strong, usually > 0.6.
+        return correlation > 0.35;
+    }
+
+    /**
+     * Remove watermark from image based on watermark size
+     * @param {HTMLImageElement|HTMLCanvasElement} image - Input image
+     * @returns {Promise<{canvas: HTMLCanvasElement, detected: boolean}>} Processed canvas and detection result
+     */
     async removeWatermarkFromImage(image) {
         // Create canvas to process image
         const canvas = document.createElement('canvas');
@@ -141,13 +215,32 @@ export class WatermarkEngine {
         // Get alpha map for watermark size
         const alphaMap = await this.getAlphaMap(config.logoSize);
 
-        // Remove watermark from image data
-        removeWatermark(imageData, alphaMap, position);
+        // Extract watermark region for detection
+        const watermarkCtx = document.createElement('canvas').getContext('2d');
+        watermarkCtx.canvas.width = config.logoSize;
+        watermarkCtx.canvas.height = config.logoSize;
+        watermarkCtx.drawImage(
+            canvas,
+            position.x, position.y, position.width, position.height,
+            0, 0, config.logoSize, config.logoSize
+        );
+        const watermarkRegionData = watermarkCtx.getImageData(0, 0, config.logoSize, config.logoSize);
 
-        // Write processed image data back to canvas
-        ctx.putImageData(imageData, 0, 0);
+        // Perform smart detection
+        const isDetected = this.detectWatermark(watermarkRegionData, alphaMap);
 
-        return canvas;
+        if (isDetected) {
+            // Remove watermark from image data only if detected
+            removeWatermark(imageData, alphaMap, position);
+            // Write processed image data back to canvas
+            ctx.putImageData(imageData, 0, 0);
+        } else {
+            // Optimization: If not detected, we don't strictly need to do putImageData since canvas has original,
+            // but keeping it consistent is fine. The canvas already contains the original image.
+            // We can just return the canvas as is.
+        }
+
+        return { canvas, detected: isDetected };
     }
 
     /**

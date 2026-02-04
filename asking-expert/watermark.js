@@ -113,7 +113,10 @@ async function applyPipeline(img) {
     try {
         const startTime = performance.now();
         // 1. Remove Watermark (Always process on full res first)
-        const fullCanvas = await watermarkEngine.removeWatermarkFromImage(img);
+        // Now returns { canvas, detected }
+        const result = await watermarkEngine.removeWatermarkFromImage(img);
+        const fullCanvas = result.canvas;
+        const isDetected = result.detected;
 
         // 2. Handle Resizing
         let finalCanvas = fullCanvas;
@@ -153,7 +156,12 @@ async function applyPipeline(img) {
         finalCanvas.style.maxWidth = '100%';
         processedContainer.appendChild(finalCanvas);
 
-        updateStatus(`Processed in ${(endTime - startTime).toFixed(0)}ms.`);
+        // Update status with detection info
+        if (isDetected) {
+            updateStatus(`Watermark detected & removed in ${(endTime - startTime).toFixed(0)}ms.`);
+        } else {
+            updateStatus(`No Gemini watermark detected. (${(endTime - startTime).toFixed(0)}ms)`);
+        }
 
         // Setup download button
         setupDownloadButton(finalCanvas);
@@ -303,7 +311,7 @@ function setupDownloadButton(canvas) {
     oldBtn.parentNode.replaceChild(newBtn, oldBtn);
 
     newBtn.disabled = false;
-    
+
     // Add single click listener that reads current state
     newBtn.onclick = () => {
         const format = formatSelect.value;

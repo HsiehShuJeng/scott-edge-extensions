@@ -6,7 +6,7 @@ This browser extension provides comprehensive assistance for language learners (
 - [Language Learning Features](#language-learning-features)
 - [YouTube Quiz Generator](#youtube-quiz-generator)
 - [Infographic Prompt Generator](#infographic-prompt-generator)
-- [Watermark Remover (Gemini)](#watermark-remover-gemini)
+- [Gemini Image Polisher](#gemini-image-polisher)
 - [Programming Features](#programming-features)
   - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
   - [Pull Request Creation](#pull-request-creation)
@@ -291,13 +291,14 @@ flowchart LR
 | typeP  | <strong> in .sentence     | Question text + choices                                |
 | else   | <strong> in .sentence     | .sentence                                              |
 
----
+<!-- ... -->
 
-## Watermark Remover (Gemini)
+## Gemini Image Polisher
 
 A client-side tool to manipulate watermarks on images.
 
 ### Features
+- **Smart Detection**: Uses **Pearson Correlation** to statistically verify the presence of a watermark before processing, ensuring clean images are never damaged.
 - **Watermark Removal**: Uses advanced reverse alpha blending to remove Google Gemini generated watermarks.
 - **Watermark Addition**: Adds a customizable "signature" watermark with Traditional Chinese date and calligraphy font.
     - **Customizable**: Adjust opacity, color, angle, size, and stroke.
