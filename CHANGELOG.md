@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.32.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.31.1...v2.32.0) (2026-02-04)
+
+
+### Features
+
+* implement theme synchronization and fix opacity input UI ([1dd137b](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/1dd137b52bf7bdb7016be3b784ad64dab7615978))
+
 ### [2.31.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.31.0...v2.31.1) (2026-02-04)
 
 
