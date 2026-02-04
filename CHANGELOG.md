@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.31.0](///compare/v2.30.2...v2.31.0) (2026-02-04)
+
+
+### Features
+
+* **watermark:** add smart detection before removal 8887cd1
+
 ### [2.30.2](///compare/v2.30.1...v2.30.2) (2026-02-04)
 
 
