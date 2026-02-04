@@ -176,12 +176,12 @@ async function applyPipeline(img) {
 
 function getWatermarkSettings() {
     return {
-        opacity: document.getElementById('wm-opacity').value,
+        opacity: document.getElementById('wm-opacity').value + '%',
         color: document.getElementById('wm-color').value,
         angle: parseFloat(document.getElementById('wm-angle').value) || 45,
         sizeRatio: parseFloat(document.getElementById('wm-size-ratio').value) || 0.06,
         strokeColor: document.getElementById('wm-stroke-color').value,
-        strokeOpacity: document.getElementById('wm-stroke-opacity').value,
+        strokeOpacity: document.getElementById('wm-stroke-opacity').value + '%',
     };
 }
 
@@ -433,10 +433,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Setup Syncs
-    syncRange('wm-opacity-range', 'wm-opacity', v => `${v}%`, v => parseFloat(v));
+    // Setup Syncs
+    syncRange('wm-opacity-range', 'wm-opacity', v => v, v => parseFloat(v));
     syncRange('wm-angle-range', 'wm-angle', v => v, v => parseFloat(v));
     syncRange('wm-size-range', 'wm-size-ratio', v => (v / 100).toFixed(2), v => parseFloat(v) * 100);
-    syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => `${v}%`, v => parseFloat(v));
+    syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => v, v => parseFloat(v));
 
     syncColor('wm-color-picker', 'wm-color');
     syncColor('wm-stroke-color-picker', 'wm-stroke-color');
@@ -458,5 +459,25 @@ document.addEventListener('DOMContentLoaded', () => {
     wmCheckbox.addEventListener('change', toggleWmSettings);
     // Initial state
     toggleWmSettings();
+
+    // Angle Buttons
+    const btn45 = document.getElementById('wm-angle-45');
+    const btnNeg45 = document.getElementById('wm-angle-neg-45');
+
+    if (btn45) {
+        btn45.addEventListener('click', () => {
+            document.getElementById('wm-angle').value = 45;
+            document.getElementById('wm-angle-range').value = 45;
+            reprocess();
+        });
+    }
+
+    if (btnNeg45) {
+        btnNeg45.addEventListener('click', () => {
+            document.getElementById('wm-angle').value = -45;
+            document.getElementById('wm-angle-range').value = -45;
+            reprocess();
+        });
+    }
 });
 

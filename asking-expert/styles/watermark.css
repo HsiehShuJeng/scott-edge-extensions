@@ -8,6 +8,56 @@
     --shadow-md: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #8ab4f8;
+        --background-color: #202124;
+        --surface-color: #292a2d;
+        --text-color: #e8eaed;
+        --border-color: #5f6368;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    }
+
+    #drop-zone {
+        background-color: #303134;
+    }
+
+    .controls,
+    .watermark-settings,
+    .preview-box,
+    .format-select {
+        background-color: #303134;
+        color: var(--text-color);
+    }
+
+    .format-select {
+        background-color: #3c4043;
+        color: var(--text-color);
+    }
+
+    .setting-description,
+    .input-group label,
+    #status-message,
+    .preview-box h3 {
+        color: #9aa0a6;
+    }
+
+    .controls-column h3 {
+        color: #e8eaed;
+        border-bottom-color: #5f6368;
+    }
+
+    .watermark-settings {
+        background-color: #3c4043;
+    }
+
+    .input-group input {
+        background-color: #303134;
+        color: var(--text-color);
+        border-color: #5f6368;
+    }
+}
+
 @font-face {
     font-family: 'UKai';
     src: url('../fonts/ukai.ttf');
@@ -129,6 +179,7 @@ h1 {
 .checkbox-label {
     margin-left: 8px;
     font-weight: 500;
+    font-size: 16px;
 }
 
 .setting-description {
@@ -269,4 +320,25 @@ h1 {
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+.icon-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: var(--text-color);
+    height: 30px;
+    /* match input height approx */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.icon-btn:hover {
+    background-color: rgba(66, 133, 244, 0.1);
+    border-color: var(--primary-color);
 }
