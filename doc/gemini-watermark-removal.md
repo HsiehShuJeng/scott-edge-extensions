@@ -28,11 +28,18 @@ The implementation involves several steps handled by the `WatermarkEngine`:
     -   If dimensions are > 1024x1024, it assumes a **96x96px** watermark.
     -   Otherwise, it uses a **48x48px** watermark.
 
-2.  **Alpha Map Loading**:
+2.  **Smart Detection (Pearson Correlation)**:
+    -   Before attempting removal, the tool verifies if the watermark is actually present.
+    -   It calculates the **Pearson Correlation Coefficient** between the image's pixel brightness and the watermark's alpha map.
+    -   **Why Correlation?** Simple brightness checks fail on clean white images (false positives). Correlation statistically checks if the *variations* in pixel brightness match the specific *shape* of the watermark logo.
+    -   If the correlation is positive (> 0.35), the watermark is confirmed and removed.
+    -   If not, the image is left untouched (preventing "black watermark" artifacts on clean images).
+
+3.  **Alpha Map Loading**:
     -   The extension bundles pre-captured background images (`bg_48.png`, `bg_96.png`) which contain the watermark on a known background.
     -   From these reference images, we calculate the precise $\alpha$ map for each pixel in the watermark area.
 
-3.  **Pixel Restoration**:
+4.  **Pixel Restoration**:
     -   The tool iterates through the pixels in the bottom-right corner where the watermark is located.
     -   It applies the reverse blending formula to each RGB channel.
     -   To prevent noise and mathematical artifacts, it ignores pixels where $\alpha$ is very close to 0 and clamps the output values to the valid 0-255 range.
