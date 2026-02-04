@@ -144,6 +144,29 @@ body {
     cursor: pointer;
 }
 
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.quick-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quick-btn:hover {
+    background: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
 h1 {
     color: var(--text-color);
     margin-bottom: 30px;

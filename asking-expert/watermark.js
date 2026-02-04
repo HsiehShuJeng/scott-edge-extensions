@@ -465,7 +465,23 @@ document.addEventListener('DOMContentLoaded', () => {
     syncRange('wm-stroke-opacity-range', 'wm-stroke-opacity', v => v, v => parseFloat(v));
 
     syncColor('wm-color-picker', 'wm-color');
+    syncColor('wm-color-picker', 'wm-color');
     syncColor('wm-stroke-color-picker', 'wm-stroke-color');
+
+    // Quick Angle Buttons
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const val = e.target.getAttribute('data-value');
+            if (val) {
+                const angleInput = document.getElementById('wm-angle');
+                const angleRange = document.getElementById('wm-angle-range');
+
+                if (angleInput) angleInput.value = val;
+                // Dispatch input event to trigger sync and reprocess
+                if (angleInput) angleInput.dispatchEvent(new Event('change'));
+            }
+        });
+    });
 
 
     // Toggle Watermark Group UI
