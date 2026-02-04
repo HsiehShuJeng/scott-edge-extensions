@@ -56,6 +56,6 @@ describe('Watermark HTML Content Verification', () => {
     it('should have tooltip for stroke opacity', () => {
         const label = document.querySelector('label[for="wm-stroke-opacity"]');
         expect(label).toBeTruthy();
-        expect(label.getAttribute('title')).toBe('fading in and fading out');
+        expect(label.getAttribute('data-tooltip')).toBe('fading in and fading out');
     });
 });

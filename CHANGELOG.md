@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.34.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.33.0...v2.34.0) (2026-02-04)
+
+
+### Features
+
+* implement fading tooltips for watermark labels ([d4331f7](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/d4331f78b4f9555c61a835e76408382bb60aed5f))
+
+## [2.33.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.32.0...v2.33.0) (2026-02-04)
+
+
+### Features
+
+* restore angle quick selection buttons (45/-45) ([3c508dd](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/3c508ddff22d13dde7a4961fc596dd51ae467d31))
+
+## [2.32.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.31.1...v2.32.0) (2026-02-04)
+
+
+### Features
+
+* implement theme synchronization and fix opacity input UI ([1dd137b](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/1dd137b52bf7bdb7016be3b784ad64dab7615978))
+
+### [2.31.1](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.31.0...v2.31.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* **watermark:** use pearson correlation for detection and update terminology ([9bbcb70](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/9bbcb7045b8d6df65c7c6b5fcc5327fd5c45584f))
+
 ## [2.31.0](///compare/v2.30.2...v2.31.0) (2026-02-04)
 
 

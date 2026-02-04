@@ -8,54 +8,18 @@
     --shadow-md: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --primary-color: #8ab4f8;
-        --background-color: #202124;
-        --surface-color: #292a2d;
-        --text-color: #e8eaed;
-        --border-color: #5f6368;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
-    }
+.dark-theme {
+    --primary-color: #8ab4f8;
+    --background-color: #202124;
+    --surface-color: #292a2d;
+    --text-color: #e8eaed;
+    --border-color: #5f6368;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
 
-    #drop-zone {
-        background-color: #303134;
-    }
-
-    .controls,
-    .watermark-settings,
-    .preview-box,
-    .format-select {
-        background-color: #303134;
-        color: var(--text-color);
-    }
-
-    .format-select {
-        background-color: #3c4043;
-        color: var(--text-color);
-    }
-
-    .setting-description,
-    .input-group label,
-    #status-message,
-    .preview-box h3 {
-        color: #9aa0a6;
-    }
-
-    .controls-column h3 {
-        color: #e8eaed;
-        border-bottom-color: #5f6368;
-    }
-
-    .watermark-settings {
-        background-color: #3c4043;
-    }
-
-    .input-group input {
-        background-color: #303134;
-        color: var(--text-color);
-        border-color: #5f6368;
-    }
+body.dark-theme {
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 @font-face {
@@ -88,9 +52,87 @@ body {
 }
 
 .dual-input input[type="text"],
-.dual-input input[type="number"] {
+.dual-input input[type="number"],
+.dual-input .input-wrapper {
     flex: 1;
-    min-width: 60px;
+    background: transparent;
+    color: var(--text-color);
+}
+
+.dark-theme .input-wrapper {
+    background: #3c4043;
+    border-color: #5f6368;
+}
+
+.dark-theme #drop-zone {
+    background-color: #303134;
+}
+
+.dark-theme .watermark-settings {
+    background-color: #303134;
+}
+
+.dark-theme .controls {
+    background: #292a2d;
+}
+
+.dark-theme .preview-box {
+    background-color: #303134;
+}
+
+.dark-theme .controls-column h3 {
+    color: #e8eaed;
+    border-bottom-color: #3c4043;
+}
+
+.dark-theme .setting-description {
+    color: #9aa0a6;
+}
+
+.dark-theme .input-group label {
+    color: #bdc1c6;
+}
+
+.dark-theme .input-group input,
+.dark-theme .format-select {
+    background-color: #3c4043;
+    color: #e8eaed;
+    border-color: #5f6368;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    padding-right: 4px;
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--primary-color);
+}
+
+.input-wrapper input[type="number"] {
+    border: none;
+    padding: 6px 4px 6px 8px;
+    /* Adjusted padding */
+    flex: 1;
+    width: 0;
+    /* Important for flex child to not overflow */
+    background: transparent;
+}
+
+.input-wrapper input[type="number"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.input-wrapper .unit {
+    color: #888;
+    font-size: 13px;
+    padding-right: 4px;
+    user-select: none;
 }
 
 .dual-input input[type="color"] {
@@ -100,6 +142,29 @@ body {
     border: none;
     background: none;
     cursor: pointer;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.quick-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quick-btn:hover {
+    background: var(--background-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 h1 {
@@ -232,6 +297,61 @@ h1 {
     margin-bottom: 4px;
     color: #555;
     font-weight: 500;
+    position: relative;
+    /* Required for tooltip positioning */
+    width: fit-content;
+}
+
+/* Tooltip Styles */
+.input-group label::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+    z-index: 10;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.input-group label:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip Arrow */
+.input-group label::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    pointer-events: none;
+    z-index: 10;
+    margin-bottom: -2px;
+}
+
+.input-group label:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
 }
 
 .input-group input {

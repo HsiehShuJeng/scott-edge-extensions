@@ -41,6 +41,31 @@ function updateStatus(msg) {
     if (el) el.textContent = msg;
 }
 
+// --- Theme Synchronization ---
+// --- Theme Synchronization ---
+function applyTheme() {
+    chrome.storage.local.get('theme', (data) => {
+        let theme = data.theme;
+        if (!theme) {
+            const hour = new Date().getHours();
+            if (hour >= 18 || hour < 6) {
+                theme = 'dark';
+            } else {
+                theme = 'light';
+            }
+        }
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-theme', isDark);
+    });
+}
+
+// Listen for theme changes from popup
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.theme) {
+        applyTheme();
+    }
+});
+
 // Handle file selection
 function handleFileSelect(event) {
     const file = event.target.files[0];
@@ -344,6 +369,7 @@ function setupDownloadButton(canvas) {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    applyTheme(); // Apply theme on load
     initEngine();
 
     const dropZone = document.getElementById('drop-zone');
@@ -441,6 +467,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncColor('wm-color-picker', 'wm-color');
     syncColor('wm-stroke-color-picker', 'wm-stroke-color');
+
+    // Quick Angle Buttons
+    document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const val = e.target.getAttribute('data-value');
+            if (val) {
+                const angleInput = document.getElementById('wm-angle');
+                const angleRange = document.getElementById('wm-angle-range');
+
+                if (angleInput) angleInput.value = val;
+                // Dispatch input event to trigger sync and reprocess
+                if (angleInput) angleInput.dispatchEvent(new Event('change'));
+            }
+        });
+    });
 
 
     // Toggle Watermark Group UI
