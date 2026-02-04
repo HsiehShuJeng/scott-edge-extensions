@@ -293,11 +293,19 @@ async function addWatermark(inputCanvas) {
 }
 
 
+// Setup download button with dynamic format reading
 function setupDownloadButton(canvas) {
-    const downloadBtn = document.getElementById('download-btn');
+    const oldBtn = document.getElementById('download-btn');
     const formatSelect = document.getElementById('format-select');
 
-    const updateDownloadLink = () => {
+    // Clone button to remove old listeners
+    const newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+    newBtn.disabled = false;
+    
+    // Add single click listener that reads current state
+    newBtn.onclick = () => {
         const format = formatSelect.value;
         const quality = 0.92; // High quality for WebP/JPEG
 
@@ -319,21 +327,11 @@ function setupDownloadButton(canvas) {
             confirmName = `${name} (Unwatermarked)${ext}`;
         }
 
-        // Remove old listener
-        const newBtn = downloadBtn.cloneNode(true);
-        downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
-
-        newBtn.onclick = () => {
-            const link = document.createElement('a');
-            link.download = confirmName;
-            link.href = canvas.toDataURL(format, quality);
-            link.click();
-        };
-        newBtn.disabled = false;
+        const link = document.createElement('a');
+        link.download = confirmName;
+        link.href = canvas.toDataURL(format, quality);
+        link.click();
     };
-
-    updateDownloadLink();
-    formatSelect.onchange = updateDownloadLink;
 }
 
 // Event Listeners
