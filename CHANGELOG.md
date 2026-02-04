@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.34.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.33.0...v2.34.0) (2026-02-04)
+
+
+### Features
+
+* implement fading tooltips for watermark labels ([d4331f7](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/d4331f78b4f9555c61a835e76408382bb60aed5f))
+
 ## [2.33.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v2.32.0...v2.33.0) (2026-02-04)
 
 
