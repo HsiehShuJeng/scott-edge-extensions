@@ -121,6 +121,58 @@ export class WatermarkEngine {
      * @param {HTMLImageElement|HTMLCanvasElement} image - Input image
      * @returns {Promise<HTMLCanvasElement>} Processed canvas
      */
+    /**
+     * Detect if a watermark is likely present in the image
+     * @param {ImageData} imageData - Image data of the region where watermark would be
+     * @param {Float32Array} alphaMap - Alpha map for the watermark
+     * @returns {boolean} True if watermark is detected
+     */
+    detectWatermark(imageData, alphaMap) {
+        const { data, width, height } = imageData;
+        const totalPixels = width * height;
+        let invalidPixels = 0;
+        let checkedPixels = 0;
+        const tolerance = 10; // Allow small noise
+
+        for (let i = 0; i < totalPixels; i++) {
+            const alpha = alphaMap[i];
+
+            // Only check pixels where watermark has significant visibility
+            if (alpha > 0.1) {
+                checkedPixels++;
+                const r = data[i * 4];
+                const g = data[i * 4 + 1];
+                const b = data[i * 4 + 2];
+
+                // Logic: A watermarked pixel is Logo * alpha + Original * (1 - alpha)
+                // With Logo = 255 (white), Watermarked = 255 * alpha + Original * (1 - alpha)
+                // Therefore, Watermarked >= 255 * alpha (since Original >= 0)
+                // If Watermarked is significantly less than 255 * alpha, it's physically impossible
+                // for it to be a watermarked pixel (implies Original < 0).
+
+                const expectedMin = 255 * alpha - tolerance;
+                
+                if (r < expectedMin || g < expectedMin || b < expectedMin) {
+                    invalidPixels++;
+                }
+            }
+        }
+
+        // If too many pixels are "impossible", then watermark is not present.
+        // We use a strict threshold: if > 15% of significant pixels are invalid, reject.
+        if (checkedPixels === 0) return false;
+        
+        const invalidRatio = invalidPixels / checkedPixels;
+        // console.log(`Watermark Detection: ${invalidPixels}/${checkedPixels} invalid (${(invalidRatio * 100).toFixed(1)}%)`);
+        
+        return invalidRatio < 0.15;
+    }
+
+    /**
+     * Remove watermark from image based on watermark size
+     * @param {HTMLImageElement|HTMLCanvasElement} image - Input image
+     * @returns {Promise<{canvas: HTMLCanvasElement, detected: boolean}>} Processed canvas and detection result
+     */
     async removeWatermarkFromImage(image) {
         // Create canvas to process image
         const canvas = document.createElement('canvas');
@@ -141,13 +193,32 @@ export class WatermarkEngine {
         // Get alpha map for watermark size
         const alphaMap = await this.getAlphaMap(config.logoSize);
 
-        // Remove watermark from image data
-        removeWatermark(imageData, alphaMap, position);
+        // Extract watermark region for detection
+        const watermarkCtx = document.createElement('canvas').getContext('2d');
+        watermarkCtx.canvas.width = config.logoSize;
+        watermarkCtx.canvas.height = config.logoSize;
+        watermarkCtx.drawImage(
+            canvas, 
+            position.x, position.y, position.width, position.height, 
+            0, 0, config.logoSize, config.logoSize
+        );
+        const watermarkRegionData = watermarkCtx.getImageData(0, 0, config.logoSize, config.logoSize);
 
-        // Write processed image data back to canvas
-        ctx.putImageData(imageData, 0, 0);
+        // Perform smart detection
+        const isDetected = this.detectWatermark(watermarkRegionData, alphaMap);
 
-        return canvas;
+        if (isDetected) {
+             // Remove watermark from image data only if detected
+            removeWatermark(imageData, alphaMap, position);
+            // Write processed image data back to canvas
+            ctx.putImageData(imageData, 0, 0);
+        } else {
+             // Optimization: If not detected, we don't strictly need to do putImageData since canvas has original,
+             // but keeping it consistent is fine. The canvas already contains the original image.
+             // We can just return the canvas as is.
+        }
+
+        return { canvas, detected: isDetected };
     }
 
     /**
