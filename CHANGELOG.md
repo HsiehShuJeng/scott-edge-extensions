@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.35.4](///compare/v2.35.3...v2.35.4) (2026-02-05)
+
+
+### Bug Fixes
+
+* **watermark:** lower detection threshold to 0.10 for Banana Pro images a644880
+
 ### [2.35.3](///compare/v2.35.2...v2.35.3) (2026-02-05)
 
 ### [2.35.2](///compare/v2.35.1...v2.35.2) (2026-02-05)
