@@ -1,12 +1,36 @@
-// Watermark Remover UI Logic
+/**
+ * @fileoverview Gemini Image Polisher - Watermark Removal and Addition UI
+ * Handles image processing pipeline including watermark detection/removal,
+ * resizing, and custom watermark addition with real-time preview.
+ * @author Scott's Assistant Team
+ */
+
 import { WatermarkEngine } from './modules/watermark/watermarkEngine.js';
 
-// Global state
-let watermarkEngine;
+/* ============================================================================
+ * Global State
+ * ========================================================================== */
+
+/** @type {WatermarkEngine|null} Watermark detection and removal engine */
+let watermarkEngine = null;
+
+/** @type {File|null} Currently loaded image file */
 let currentOriginalFile = null;
+
+/** @type {HTMLCanvasElement|null} Processed image canvas for download */
 let currentProcessedCanvas = null;
 
-// Debounce helper for real-time updates
+/* ============================================================================
+ * Utility Functions
+ * ========================================================================== */
+
+/**
+ * Creates a debounced function that delays invoking func until after
+ * wait milliseconds have elapsed since the last invocation.
+ * @param {Function} func - Function to debounce
+ * @param {number} wait - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -19,14 +43,30 @@ function debounce(func, wait) {
     };
 }
 
-// Initialize the engine
+/**
+ * Updates the status message displayed to the user.
+ * @param {string} message - Status message to display
+ */
+function updateStatus(message) {
+    const statusEl = document.getElementById('status-message');
+    if (statusEl) statusEl.textContent = message;
+}
+
+/* ============================================================================
+ * Engine Initialization
+ * ========================================================================== */
+
+/**
+ * Initializes the watermark detection/removal engine and preloads fonts.
+ * @async
+ * @throws {Error} If engine initialization fails
+ */
 async function initEngine() {
     try {
         watermarkEngine = await WatermarkEngine.create();
         console.log('Watermark Engine initialized');
         updateStatus('Ready to process images.');
 
-        // Ensure font is loaded
         document.fonts.load('16px "UKai"').then(() => {
             console.log('UKai font loaded');
         });
@@ -36,45 +76,48 @@ async function initEngine() {
     }
 }
 
-function updateStatus(msg) {
-    const el = document.getElementById('status-message');
-    if (el) el.textContent = msg;
-}
+/* ============================================================================
+ * Theme Management
+ * ========================================================================== */
 
-// --- Theme Synchronization ---
-// --- Theme Synchronization ---
+/**
+ * Applies theme (light/dark) based on stored preference or time of day.
+ * Falls back to time-based theme if no preference is stored.
+ */
 function applyTheme() {
     chrome.storage.local.get('theme', (data) => {
         let theme = data.theme;
         if (!theme) {
             const hour = new Date().getHours();
-            if (hour >= 18 || hour < 6) {
-                theme = 'dark';
-            } else {
-                theme = 'light';
-            }
+            theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
         }
-        const isDark = theme === 'dark';
-        document.body.classList.toggle('dark-theme', isDark);
+        document.body.classList.toggle('dark-theme', theme === 'dark');
     });
 }
 
-// Listen for theme changes from popup
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === 'local' && changes.theme) {
         applyTheme();
     }
 });
 
-// Handle file selection
+/* ============================================================================
+ * File Handling & Drag/Drop
+ * ========================================================================== */
+
+/**
+ * Handles file selection from input element.
+ * @param {Event} event - Change event from file input
+ */
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    if (file) {
-        processFile(file);
-    }
+    if (file) processFile(file);
 }
 
-// Handle drag over
+/**
+ * Handles dragover event for drop zone.
+ * @param {DragEvent} event - Drag event
+ */
 function handleDragOver(event) {
     event.stopPropagation();
     event.preventDefault();
@@ -82,26 +125,33 @@ function handleDragOver(event) {
     document.getElementById('drop-zone').classList.add('drag-over');
 }
 
-// Handle drag leave
+/**
+ * Handles dragleave event for drop zone.
+ * @param {DragEvent} event - Drag event
+ */
 function handleDragLeave(event) {
     event.stopPropagation();
     event.preventDefault();
     document.getElementById('drop-zone').classList.remove('drag-over');
 }
 
-// Handle drop
+/**
+ * Handles drop event for file upload.
+ * @param {DragEvent} event - Drop event
+ */
 function handleDrop(event) {
     event.stopPropagation();
     event.preventDefault();
     document.getElementById('drop-zone').classList.remove('drag-over');
 
     const file = event.dataTransfer.files[0];
-    if (file) {
-        processFile(file);
-    }
+    if (file) processFile(file);
 }
 
-// Process the image file
+/**
+ * Validates and processes an image file.
+ * @param {File} file - Image file to process
+ */
 function processFile(file) {
     if (!file.type.match('image.*')) {
         alert('Please drop an image file.');
@@ -114,7 +164,6 @@ function processFile(file) {
     reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
-            // Display original
             const originalContainer = document.getElementById('original-preview');
             originalContainer.innerHTML = '';
             img.style.maxWidth = '100%';
@@ -127,7 +176,18 @@ function processFile(file) {
     reader.readAsDataURL(file);
 }
 
-// Main Pipeline: Remove -> Resize -> Add
+/* ============================================================================
+ * Image Processing Pipeline
+ * ========================================================================== */
+
+/**
+ * Main image processing pipeline:
+ * 1. Remove Gemini watermark (if detected)
+ * 2. Resize image (if enabled)
+ * 3. Add custom watermark (if enabled)
+ * @async
+ * @param {HTMLImageElement} img - Source image to process
+ */
 async function applyPipeline(img) {
     if (!watermarkEngine) {
         await initEngine();
@@ -135,41 +195,23 @@ async function applyPipeline(img) {
 
     updateStatus('Processing...');
 
-    // Get detection threshold from settings
     const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
 
     try {
         const startTime = performance.now();
-        // 1. Remove Watermark (Always process on full res first)
-        // Now returns { canvas, detected }
+
         const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
-        const fullCanvas = result.canvas;
+        let finalCanvas = result.canvas;
         const isDetected = result.detected;
 
-        // 2. Handle Resizing
-        let finalCanvas = fullCanvas;
         const shouldResize = document.getElementById('resize-checkbox').checked;
-
         if (shouldResize) {
             const targetWidth = 1920;
-            if (fullCanvas.width !== targetWidth) {
-                const scaleFactor = targetWidth / fullCanvas.width;
-                const targetHeight = Math.round(fullCanvas.height * scaleFactor);
-
-                const resizeCanvas = document.createElement('canvas');
-                resizeCanvas.width = targetWidth;
-                resizeCanvas.height = targetHeight;
-                const ctx = resizeCanvas.getContext('2d');
-
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(fullCanvas, 0, 0, targetWidth, targetHeight);
-
-                finalCanvas = resizeCanvas;
+            if (finalCanvas.width !== targetWidth) {
+                finalCanvas = resizeCanvas(finalCanvas, targetWidth);
             }
         }
 
-        // 3. Add Custom Watermark (if enabled)
         const shouldAddWatermark = document.getElementById('add-watermark-checkbox').checked;
         if (shouldAddWatermark) {
             finalCanvas = await addWatermark(finalCanvas);
@@ -178,20 +220,14 @@ async function applyPipeline(img) {
         const endTime = performance.now();
         currentProcessedCanvas = finalCanvas;
 
-        // Display processed image
-        const processedContainer = document.getElementById('processed-preview');
-        processedContainer.innerHTML = '';
-        finalCanvas.style.maxWidth = '100%';
-        processedContainer.appendChild(finalCanvas);
+        displayProcessedImage(finalCanvas);
 
-        // Update status with detection info
-        if (isDetected) {
-            updateStatus(`Watermark detected & removed in ${(endTime - startTime).toFixed(0)}ms.`);
-        } else {
-            updateStatus(`No Gemini watermark detected. (${(endTime - startTime).toFixed(0)}ms)`);
-        }
+        const processingTime = (endTime - startTime).toFixed(0);
+        updateStatus(isDetected
+            ? `Watermark detected & removed in ${processingTime}ms.`
+            : `No Gemini watermark detected. (${processingTime}ms)`
+        );
 
-        // Setup download button
         setupDownloadButton(finalCanvas);
 
     } catch (error) {
@@ -200,8 +236,47 @@ async function applyPipeline(img) {
     }
 }
 
-// --- Watermark Addition Logic ---
+/**
+ * Resizes a canvas to the target width while maintaining aspect ratio.
+ * @param {HTMLCanvasElement} sourceCanvas - Canvas to resize
+ * @param {number} targetWidth - Target width in pixels
+ * @returns {HTMLCanvasElement} Resized canvas
+ */
+function resizeCanvas(sourceCanvas, targetWidth) {
+    const scaleFactor = targetWidth / sourceCanvas.width;
+    const targetHeight = Math.round(sourceCanvas.height * scaleFactor);
 
+    const resizedCanvas = document.createElement('canvas');
+    resizedCanvas.width = targetWidth;
+    resizedCanvas.height = targetHeight;
+
+    const ctx = resizedCanvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(sourceCanvas, 0, 0, targetWidth, targetHeight);
+
+    return resizedCanvas;
+}
+
+/**
+ * Displays the processed image in the preview area.
+ * @param {HTMLCanvasElement} canvas - Processed image canvas
+ */
+function displayProcessedImage(canvas) {
+    const container = document.getElementById('processed-preview');
+    container.innerHTML = '';
+    canvas.style.maxWidth = '100%';
+    container.appendChild(canvas);
+}
+
+/* ============================================================================
+ * Custom Watermark Addition
+ * ========================================================================== */
+
+/**
+ * Retrieves current watermark settings from UI controls.
+ * @returns {Object} Watermark configuration object
+ */
 function getWatermarkSettings() {
     return {
         opacity: document.getElementById('wm-opacity').value + '%',
@@ -213,27 +288,37 @@ function getWatermarkSettings() {
     };
 }
 
+/**
+ * Parses color string and opacity into RGBA format.
+ * Supports hex (#RRGGBB), named colors (white, black), and RGB (r,g,b).
+ * @param {string} colorStr - Color value (hex, name, or comma-separated RGB)
+ * @param {string} opacityStr - Opacity value (percentage or decimal)
+ * @returns {string} RGBA color string
+ */
 function parseColor(colorStr, opacityStr) {
-    // Basic parser for hex, named colors, or "r,g,b"
-    // Returns CSS color string with alpha
     let r = 0, g = 0, b = 0;
     const str = colorStr.toLowerCase().trim();
 
-    if (str === 'white' || str === 'w') { r = 255; g = 255; b = 255; }
-    else if (str === 'black' || str === 'b') { r = 0; g = 0; b = 0; }
-    else if (str.startsWith('#')) {
+    if (str === 'white' || str === 'w') {
+        r = 255; g = 255; b = 255;
+    } else if (str === 'black' || str === 'b') {
+        r = 0; g = 0; b = 0;
+    } else if (str.startsWith('#')) {
         let hex = str.substring(1);
-        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        if (hex.length === 3) {
+            hex = hex.split('').map(c => c + c).join('');
+        }
         const bigint = parseInt(hex, 16);
         r = (bigint >> 16) & 255;
         g = (bigint >> 8) & 255;
         b = bigint & 255;
     } else if (str.includes(',')) {
         const parts = str.split(',').map(s => parseInt(s.trim()));
-        r = parts[0] || 0; g = parts[1] || 0; b = parts[2] || 0;
+        r = parts[0] || 0;
+        g = parts[1] || 0;
+        b = parts[2] || 0;
     }
 
-    // Parse opacity
     let alpha = 1.0;
     const op = opacityStr.toString().trim();
     if (op.endsWith('%')) {
@@ -242,57 +327,51 @@ function parseColor(colorStr, opacityStr) {
         alpha = parseFloat(op);
     }
 
-    // Clamp
     alpha = Math.max(0, Math.min(1, alpha));
 
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+/**
+ * Adds custom Chinese watermark to the image with rotation and styling.
+ * Watermark format: "考特製作於\nYYYY 年 MM 月 DD 日（weekday）"
+ * @async
+ * @param {HTMLCanvasElement} inputCanvas - Source canvas
+ * @returns {Promise<HTMLCanvasElement>} Canvas with watermark added
+ */
 async function addWatermark(inputCanvas) {
-    // Create a new canvas to avoid modifying the input directly if needed, 
-    // but here we want to return a modified version.
-    const canvas = document.createElement('canvas'); // Work on a copy/new layer
+    const canvas = document.createElement('canvas');
     canvas.width = inputCanvas.width;
     canvas.height = inputCanvas.height;
     const ctx = canvas.getContext('2d');
 
-    // Draw the base image
     ctx.drawImage(inputCanvas, 0, 0);
 
     const settings = getWatermarkSettings();
-    const width = canvas.width;
-    const height = canvas.height;
+    const { width, height } = canvas;
 
-    // 1. Build Text
     const now = new Date();
-    const weekDays = ["日", "一", "二", "三", "四", "五", "六"]; // JS Date.day is 0=Sun
+    const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
     const dayStr = weekDays[now.getDay()];
-    // "考特製作於\n{dt.year} 年 {dt.month} 月 {dt.day} 日（{weekday}）"
     const line1 = "考特製作於";
     const line2 = `${now.getFullYear()} 年 ${now.getMonth() + 1} 月 ${now.getDate()} 日（${dayStr}）`;
 
-    // 2. Configure Font
     const fontSize = Math.max(12, Math.min(width, height) * settings.sizeRatio);
-    // Use UKai font, fallback to sans-serif
     ctx.font = `${fontSize}px "UKai", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // 3. Measure Text
     const metrics1 = ctx.measureText(line1);
     const metrics2 = ctx.measureText(line2);
-    // Approximate height since metric.actualBoundingBoxAscent can be strict
     const textHeight = fontSize;
-    const lineSpacing = fontSize * 0.35; // default ratio 0.35
+    const lineSpacing = fontSize * 0.35;
 
     const blockWidth = Math.max(metrics1.width, metrics2.width);
     const blockHeight = (textHeight * 2) + lineSpacing;
 
-    // 4. Create an offscreen canvas for the text block to handle rotation cleanly
-    // Make it large enough to hold the rotated text
     const diagonal = Math.sqrt(blockWidth * blockWidth + blockHeight * blockHeight);
     const textCanvas = document.createElement('canvas');
-    textCanvas.width = diagonal * 1.5; // padding
+    textCanvas.width = diagonal * 1.5;
     textCanvas.height = diagonal * 1.5;
     const tCtx = textCanvas.getContext('2d');
 
@@ -303,23 +382,17 @@ async function addWatermark(inputCanvas) {
     tCtx.textAlign = 'center';
     tCtx.textBaseline = 'middle';
 
-    // 5. Draw Stroke (if needed)
-    // Canvas doesn't do "outside" stroke easily, it centers it.
-    // We can simulate it or just use standard stroke.
-    tCtx.lineWidth = fontSize * 0.06; // default ratio 0.06
+    tCtx.lineWidth = fontSize * 0.06;
     tCtx.lineJoin = 'round';
     tCtx.miterLimit = 2;
     tCtx.strokeStyle = parseColor(settings.strokeColor, settings.strokeOpacity);
     tCtx.strokeText(line1, 0, -(blockHeight / 2) + (textHeight / 2));
     tCtx.strokeText(line2, 0, (blockHeight / 2) - (textHeight / 2));
 
-    // 6. Draw Fill
     tCtx.fillStyle = parseColor(settings.color, settings.opacity);
     tCtx.fillText(line1, 0, -(blockHeight / 2) + (textHeight / 2));
     tCtx.fillText(line2, 0, (blockHeight / 2) - (textHeight / 2));
 
-    // 7. Paste onto main canvas (centered)
-    // Draw the rotated text canvas onto the center of the main image
     ctx.drawImage(textCanvas,
         (width - textCanvas.width) / 2,
         (height - textCanvas.height) / 2
@@ -328,75 +401,138 @@ async function addWatermark(inputCanvas) {
     return canvas;
 }
 
+/* ============================================================================
+ * Download Functionality
+ * ========================================================================== */
 
-// Setup download button with dynamic format reading
+/**
+ * Configures the download button with current canvas and format settings.
+ * @param {HTMLCanvasElement} canvas - Processed image to download
+ */
 function setupDownloadButton(canvas) {
     const oldBtn = document.getElementById('download-btn');
     const formatSelect = document.getElementById('format-select');
 
-    // Clone button to remove old listeners
     const newBtn = oldBtn.cloneNode(true);
     oldBtn.parentNode.replaceChild(newBtn, oldBtn);
 
     newBtn.disabled = false;
 
-    // Add single click listener that reads current state
     newBtn.onclick = () => {
         const format = formatSelect.value;
-        const quality = 0.92; // High quality for WebP/JPEG
+        const quality = 0.92;
 
-        // Determine extension
-        let ext = '.png';
-        if (format === 'image/webp') ext = '.webp';
-        if (format === 'image/jpeg') ext = '.jpg';
+        const extensions = {
+            'image/webp': '.webp',
+            'image/png': '.png',
+            'image/jpeg': '.jpg'
+        };
+        const ext = extensions[format] || '.png';
 
-        // Generate filename
-        let confirmName = `cleaned_image${ext}`;
-        if (currentOriginalFile && currentOriginalFile.name) {
+        let filename = `cleaned_image${ext}`;
+        if (currentOriginalFile?.name) {
             const originalName = currentOriginalFile.name;
             const lastDotIndex = originalName.lastIndexOf('.');
-            let name = originalName;
-
-            if (lastDotIndex !== -1) {
-                name = originalName.substring(0, lastDotIndex);
-            }
-            confirmName = `${name} (Unwatermarked)${ext}`;
+            const baseName = lastDotIndex !== -1
+                ? originalName.substring(0, lastDotIndex)
+                : originalName;
+            filename = `${baseName} (Unwatermarked)${ext}`;
         }
 
         const link = document.createElement('a');
-        link.download = confirmName;
+        link.download = filename;
         link.href = canvas.toDataURL(format, quality);
         link.click();
     };
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    applyTheme(); // Apply theme on load
-    initEngine();
+/* ============================================================================
+ * Event Listeners & UI Initialization
+ * ========================================================================== */
 
-    const dropZone = document.getElementById('drop-zone');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('dragleave', handleDragLeave, false);
-    dropZone.addEventListener('drop', handleDrop, false);
+/**
+ * Synchronizes a range slider with a text/number input bidirectionally.
+ * @param {string} rangeId - ID of range input element
+ * @param {string} textId - ID of text/number input element
+ * @param {Function} transformToText - Converts range value to text value
+ * @param {Function} transformToRange - Converts text value to range value
+ */
+function syncRange(rangeId, textId, transformToText, transformToRange) {
+    const range = document.getElementById(rangeId);
+    const text = document.getElementById(textId);
+    if (!range || !text) return;
 
-    const fileInput = document.getElementById('file-input');
-    fileInput.addEventListener('change', handleFileSelect, false);
-
-    dropZone.addEventListener('click', () => fileInput.click());
-
-    // Debounced reprocessing
     const reprocess = debounce(() => {
         if (currentOriginalFile) {
-            // Need to reload the image because applyPipeline consumes it/needs fresh start
-            // or just pass a cached Image object if implemented carefully. 
-            // For now, re-reading file is safest to ensure original state.
             processFile(currentOriginalFile);
         }
     }, 500);
 
-    // Watch all inputs for direct changes
-    const inputs = [
+    range.addEventListener('input', () => {
+        text.value = transformToText(range.value);
+        reprocess();
+    });
+
+    text.addEventListener('change', () => {
+        const val = transformToRange(text.value);
+        if (!isNaN(val)) {
+            range.value = val;
+        }
+    });
+}
+
+/**
+ * Synchronizes a color picker with a text input bidirectionally.
+ * @param {string} pickerId - ID of color picker element
+ * @param {string} textId - ID of text input element
+ */
+function syncColor(pickerId, textId) {
+    const picker = document.getElementById(pickerId);
+    const text = document.getElementById(textId);
+    if (!picker || !text) return;
+
+    const reprocess = debounce(() => {
+        if (currentOriginalFile) {
+            processFile(currentOriginalFile);
+        }
+    }, 500);
+
+    picker.addEventListener('input', () => {
+        text.value = picker.value;
+        reprocess();
+    });
+
+    text.addEventListener('change', () => {
+        if (/^#[0-9A-F]{6}$/i.test(text.value)) {
+            picker.value = text.value;
+        }
+    });
+}
+
+/**
+ * Initializes event listeners and UI controls on page load.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    applyTheme();
+    initEngine();
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('dragleave', handleDragLeave, false);
+    dropZone.addEventListener('drop', handleDrop, false);
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', handleFileSelect, false);
+
+    const reprocess = debounce(() => {
+        if (currentOriginalFile) {
+            processFile(currentOriginalFile);
+        }
+    }, 500);
+
+    const inputIds = [
         'resize-checkbox',
         'add-watermark-checkbox',
         'wm-opacity',
@@ -407,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'wm-stroke-opacity'
     ];
 
-    inputs.forEach(id => {
+    inputIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
             el.addEventListener('input', reprocess);
@@ -415,54 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Helper to sync Range <-> Text/Number
-    function syncRange(rangeId, textId, transformToText, transformToRange) {
-        const range = document.getElementById(rangeId);
-        const text = document.getElementById(textId);
-        if (!range || !text) return;
-
-        range.addEventListener('input', () => {
-            text.value = transformToText(range.value);
-            reprocess();
-        });
-
-        text.addEventListener('input', () => {
-            // simplified: only update range if valid
-            // let val = transformToRange(text.value);
-            // if (!isNaN(val)) range.value = val;
-            // reprocess(); // handled by general input watcher
-        });
-
-        // Update range when text changes (e.g. user types)
-        text.addEventListener('change', () => {
-            const val = transformToRange(text.value);
-            if (!isNaN(val)) {
-                range.value = val;
-            }
-        });
-    }
-
-    // Helper to sync Color Picker <-> Text
-    function syncColor(pickerId, textId) {
-        const picker = document.getElementById(pickerId);
-        const text = document.getElementById(textId);
-        if (!picker || !text) return;
-
-        picker.addEventListener('input', () => {
-            text.value = picker.value;
-            reprocess();
-        });
-
-        text.addEventListener('change', () => {
-            // Check if valid hex
-            if (/^#[0-9A-F]{6}$/i.test(text.value)) {
-                picker.value = text.value;
-            }
-        });
-    }
-
-    // Setup Syncs
-    // Setup Syncs
     syncRange('wm-opacity-range', 'wm-opacity', v => v, v => parseFloat(v));
     syncRange('wm-angle-range', 'wm-angle', v => v, v => parseFloat(v));
     syncRange('wm-size-range', 'wm-size-ratio', v => (v / 100).toFixed(2), v => parseFloat(v) * 100);
@@ -471,23 +559,19 @@ document.addEventListener('DOMContentLoaded', () => {
     syncColor('wm-color-picker', 'wm-color');
     syncColor('wm-stroke-color-picker', 'wm-stroke-color');
 
-    // Quick Angle Buttons
     document.querySelectorAll('.quick-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const val = e.target.getAttribute('data-value');
             if (val) {
                 const angleInput = document.getElementById('wm-angle');
-                const angleRange = document.getElementById('wm-angle-range');
-
-                if (angleInput) angleInput.value = val;
-                // Dispatch input event to trigger sync and reprocess
-                if (angleInput) angleInput.dispatchEvent(new Event('change'));
+                if (angleInput) {
+                    angleInput.value = val;
+                    angleInput.dispatchEvent(new Event('change'));
+                }
             }
         });
     });
 
-
-    // Toggle Watermark Group UI
     const wmCheckbox = document.getElementById('add-watermark-checkbox');
     const wmSettings = document.getElementById('watermark-settings');
 
@@ -501,11 +585,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     wmCheckbox.addEventListener('change', toggleWmSettings);
-    // Initial state
     toggleWmSettings();
 
-    // --- Detection Threshold Settings ---
-    // Load saved threshold from storage
     chrome.storage.local.get(['detectionThreshold'], (data) => {
         const threshold = data.detectionThreshold || 0.10;
         const thresholdInput = document.getElementById('detection-threshold');
@@ -515,13 +596,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
     });
 
-    // Sync threshold slider and number input
     syncRange('detection-threshold-range', 'detection-threshold',
         v => (v / 100).toFixed(2),
         v => Math.round(parseFloat(v) * 100)
     );
 
-    // Save threshold to storage when changed
     const thresholdInput = document.getElementById('detection-threshold');
     if (thresholdInput) {
         thresholdInput.addEventListener('change', () => {
@@ -532,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add to reprocess triggers
     const thresholdRange = document.getElementById('detection-threshold-range');
     if (thresholdRange) {
         thresholdRange.addEventListener('input', reprocess);
@@ -540,6 +618,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (thresholdInput) {
         thresholdInput.addEventListener('input', reprocess);
     }
-
 });
-
