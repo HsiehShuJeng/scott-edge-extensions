@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.36.0](///compare/v2.35.4...v2.36.0) (2026-02-05)
+
+
+### Features
+
+* **watermark:** add user-configurable detection threshold a24056e
+
 ### [2.35.4](///compare/v2.35.3...v2.35.4) (2026-02-05)
 
 
