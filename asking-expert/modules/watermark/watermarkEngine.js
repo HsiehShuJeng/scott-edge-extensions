@@ -188,7 +188,8 @@ export class WatermarkEngine {
         // 0.5 is moderate.
         // Gemini watermark is quite strong, usually > 0.6.
         // Update: lowered to 0.20 based on user report (score 0.21) while clean images are ~0.01.
-        return correlation > 0.20;
+        // Update 2: lowered to 0.10 after analysis of Banana Pro images (scores 0.10-0.14) while clean images remain ~0.01.
+        return correlation > 0.10;
     }
 
     /**
