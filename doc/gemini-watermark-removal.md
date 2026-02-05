@@ -32,7 +32,8 @@ The implementation involves several steps handled by the `WatermarkEngine`:
     -   Before attempting removal, the tool verifies if the watermark is actually present.
     -   It calculates the **Pearson Correlation Coefficient** between the image's pixel brightness and the watermark's alpha map.
     -   **Why Correlation?** Simple brightness checks fail on clean white images (false positives). Correlation statistically checks if the *variations* in pixel brightness match the specific *shape* of the watermark logo.
-    -   If the correlation is positive (> 0.10), the watermark is confirmed and removed.
+    -   The correlation threshold is **user-configurable** in the General Settings (default: 0.10). Lower values increase sensitivity but may cause false positives.
+    -   If the correlation exceeds the threshold, the watermark is confirmed and removed.
     -   If not, the image is left untouched (preventing "black watermark" artifacts on clean images).
 
 3.  **Alpha Map Loading**:

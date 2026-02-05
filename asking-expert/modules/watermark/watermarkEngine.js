@@ -132,9 +132,10 @@ export class WatermarkEngine {
      * This statistically verifies if the image pixel variations match the watermark alpha pattern.
      * @param {ImageData} imageData - Image data of the region where watermark would be
      * @param {Float32Array} alphaMap - Alpha map for the watermark
+     * @param {number} threshold - Detection threshold (default 0.10)
      * @returns {boolean} True if watermark is detected
      */
-    detectWatermark(imageData, alphaMap) {
+    detectWatermark(imageData, alphaMap, threshold = 0.10) {
         const { data, width, height } = imageData;
         const totalPixels = width * height;
 
@@ -183,21 +184,17 @@ export class WatermarkEngine {
 
         // console.log(`Watermark Correlation: ${correlation.toFixed(4)}`);
 
-        // Threshold: A visible watermark should have a clear positive correlation.
-        // 0.3 is a conservative threshold (weak but matching). 
-        // 0.5 is moderate.
-        // Gemini watermark is quite strong, usually > 0.6.
-        // Update: lowered to 0.20 based on user report (score 0.21) while clean images are ~0.01.
-        // Update 2: lowered to 0.10 after analysis of Banana Pro images (scores 0.10-0.14) while clean images remain ~0.01.
-        return correlation > 0.10;
+        // Use configurable threshold
+        return correlation > threshold;
     }
 
     /**
      * Remove watermark from image based on watermark size
      * @param {HTMLImageElement|HTMLCanvasElement} image - Input image
+     * @param {number} threshold - Detection threshold (default 0.10)
      * @returns {Promise<{canvas: HTMLCanvasElement, detected: boolean}>} Processed canvas and detection result
      */
-    async removeWatermarkFromImage(image) {
+    async removeWatermarkFromImage(image, threshold = 0.10) {
         // Create canvas to process image
         const canvas = document.createElement('canvas');
         canvas.width = image.naturalWidth || image.width;
@@ -228,8 +225,8 @@ export class WatermarkEngine {
         );
         const watermarkRegionData = watermarkCtx.getImageData(0, 0, config.logoSize, config.logoSize);
 
-        // Perform smart detection
-        const isDetected = this.detectWatermark(watermarkRegionData, alphaMap);
+        // Perform smart detection with custom threshold
+        const isDetected = this.detectWatermark(watermarkRegionData, alphaMap, threshold);
 
         if (isDetected) {
             // Remove watermark from image data only if detected

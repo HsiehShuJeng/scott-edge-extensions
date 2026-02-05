@@ -135,11 +135,14 @@ async function applyPipeline(img) {
 
     updateStatus('Processing...');
 
+    // Get detection threshold from settings
+    const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
+
     try {
         const startTime = performance.now();
         // 1. Remove Watermark (Always process on full res first)
         // Now returns { canvas, detected }
-        const result = await watermarkEngine.removeWatermarkFromImage(img);
+        const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
         const fullCanvas = result.canvas;
         const isDetected = result.detected;
 
@@ -500,6 +503,43 @@ document.addEventListener('DOMContentLoaded', () => {
     wmCheckbox.addEventListener('change', toggleWmSettings);
     // Initial state
     toggleWmSettings();
+
+    // --- Detection Threshold Settings ---
+    // Load saved threshold from storage
+    chrome.storage.local.get(['detectionThreshold'], (data) => {
+        const threshold = data.detectionThreshold || 0.10;
+        const thresholdInput = document.getElementById('detection-threshold');
+        const thresholdRange = document.getElementById('detection-threshold-range');
+
+        if (thresholdInput) thresholdInput.value = threshold.toFixed(2);
+        if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
+    });
+
+    // Sync threshold slider and number input
+    syncRange('detection-threshold-range', 'detection-threshold',
+        v => (v / 100).toFixed(2),
+        v => Math.round(parseFloat(v) * 100)
+    );
+
+    // Save threshold to storage when changed
+    const thresholdInput = document.getElementById('detection-threshold');
+    if (thresholdInput) {
+        thresholdInput.addEventListener('change', () => {
+            const threshold = parseFloat(thresholdInput.value) || 0.10;
+            chrome.storage.local.set({ detectionThreshold: threshold }, () => {
+                console.log('Detection threshold saved:', threshold);
+            });
+        });
+    }
+
+    // Add to reprocess triggers
+    const thresholdRange = document.getElementById('detection-threshold-range');
+    if (thresholdRange) {
+        thresholdRange.addEventListener('input', reprocess);
+    }
+    if (thresholdInput) {
+        thresholdInput.addEventListener('input', reprocess);
+    }
 
 });
 
