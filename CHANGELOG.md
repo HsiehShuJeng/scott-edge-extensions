@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.37.0](https://hsiehshujeng///compare/v2.35.1...v2.37.0) (2026-02-21)
+
+
+### Features
+
+* **watermark:** add user-configurable detection threshold ([a24056e](https://hsiehshujeng///commit/a24056e7932ea08103f8ba8725f2eeece7d77360))
+
+
+### Bug Fixes
+
+* **watermark:** lower detection threshold to 0.10 for Banana Pro images ([a644880](https://hsiehshujeng///commit/a644880e3fd7a536f150704c0be844a50282390b))
+* **watermark:** lower detection threshold to 0.20 ([5e6e411](https://hsiehshujeng///commit/5e6e41160043ee005762c55f87c6f86240c07f80))
+
 ## [2.36.0](///compare/v2.35.4...v2.36.0) (2026-02-05)
 
 
