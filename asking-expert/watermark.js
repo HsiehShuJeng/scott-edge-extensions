@@ -812,6 +812,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = document.querySelector('input[name="processing-mode"]:checked').value;
         const previewTitle = document.getElementById('processed-preview-title');
         const downloadBtn = document.getElementById('download-btn');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const mainTitle = document.getElementById('main-title'); // For when we change the main title
 
         const elementsToDisable = [
             ...document.querySelectorAll('.controls-column:nth-child(1) .settings-group:not(.mode-selection)'),
@@ -821,6 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (mode === 'notebooklm') {
             if (previewTitle) previewTitle.textContent = 'Cleared PDF';
+            if (uploadPrompt) uploadPrompt.textContent = 'Drag and drop PDF file to polish';
             if (downloadBtn && downloadBtn.disabled) downloadBtn.textContent = 'Download Clean PDF';
             else if (downloadBtn && currentProcessedPdfBlob) downloadBtn.textContent = 'Download Clean PDF'; // if PDF is processed
             else if (downloadBtn) downloadBtn.textContent = 'Download Clean PDF'; // generic fallback
@@ -832,6 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         } else {
             if (previewTitle) previewTitle.textContent = 'Right-bottom Corner Polished';
+            if (uploadPrompt) uploadPrompt.textContent = 'Drag and drop image to polish';
             // Restore context if image was generated in gemini mode
             if (downloadBtn) downloadBtn.textContent = 'Download Clean Image';
 
