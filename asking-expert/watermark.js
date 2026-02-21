@@ -648,7 +648,7 @@ function syncRange(rangeId, textId, transformToText, transformToRange) {
 
     const reprocess = debounce(() => {
         if (currentOriginalFile) {
-            processFile(currentOriginalFile);
+            enqueueFiles([currentOriginalFile]);
         }
     }, 500);
 
@@ -677,7 +677,7 @@ function syncColor(pickerId, textId) {
 
     const reprocess = debounce(() => {
         if (currentOriginalFile) {
-            processFile(currentOriginalFile);
+            enqueueFiles([currentOriginalFile]);
         }
     }, 500);
 
@@ -713,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fileInput.addEventListener('change', handleFileSelect, false);
 
     const reprocess = debounce(() => {
-        if (currentOriginalFile && currentOriginalFile.type.match('image.*')) {
+        if (currentOriginalFile && (currentOriginalFile.type.match('image.*') || currentOriginalFile.type === 'application/pdf')) {
             enqueueFiles([currentOriginalFile]);
         }
     }, 500);
