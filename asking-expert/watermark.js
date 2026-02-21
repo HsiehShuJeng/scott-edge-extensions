@@ -827,7 +827,13 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const fastUpdateIds = [
-        'add-watermark-checkbox'
+        'add-watermark-checkbox',
+        'wm-opacity',
+        'wm-color',
+        'wm-angle',
+        'wm-size-ratio',
+        'wm-stroke-color',
+        'wm-stroke-opacity'
     ];
 
     fullUpdateIds.forEach(id => {
