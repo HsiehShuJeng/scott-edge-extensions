@@ -7,7 +7,7 @@ describe("Infographic Prompt Generator", () => {
         const userText = "Quarterly Results";
         const result = generatePrompt(styleKey, userText);
 
-        expect(result).toContain('Create a clean, minimalist, enterprise-grade infographic about: "Quarterly Results"');
+        expect(result).toContain('Quarterly Results\n\nCreate a clean, minimalist, enterprise-grade infographic about the above information.');
         expect(result).toContain("Overall theme: **Bright Enterprise**");
         expect(result).toContain("Language requirement:");
         expect(result).toContain("Traditional Chinese");
@@ -18,8 +18,8 @@ describe("Infographic Prompt Generator", () => {
         const userText = "AI Architecture";
         const result = generatePrompt(styleKey, userText);
 
-        expect(result).toContain('Create a clean, minimalist, enterprise-grade infographic about: "AI Architecture"');
-        expect(result).toContain("UI style inspired by *Ghost in the Shell* HUD");
+        expect(result).toContain('AI Architecture\n\nCreate a clean, minimalist, enterprise-grade infographic about the above information.');
+        expect(result).toContain("UI style: flat, sharp, disciplined");
         expect(result).toContain("Overall theme: **Frosted Glass**");
     });
 

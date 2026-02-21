@@ -6,6 +6,7 @@
  */
 
 import { WatermarkEngine } from './modules/watermark/watermarkEngine.js';
+import { processNotebookLmImage, processNotebookLmPdf } from './modules/watermark/notebookLmWatermarkEngine.js';
 
 /* ============================================================================
  * Global State
@@ -17,8 +18,21 @@ let watermarkEngine = null;
 /** @type {File|null} Currently loaded image file */
 let currentOriginalFile = null;
 
+/** @type {File[]} Queue for batch processing */
+let fileQueue = [];
+let isProcessingQueue = false;
+
+/** @type {Blob|null} Currently processed PDF file, ready for download */
+let currentProcessedPdfBlob = null;
+
 /** @type {HTMLCanvasElement|null} Processed image canvas for download */
 let currentProcessedCanvas = null;
+
+/** @type {HTMLCanvasElement[]} Cached clean canvases for PDF pages */
+let cachedCleanPdfPages = [];
+
+/** @type {HTMLCanvasElement|null} Cached clean canvas for image */
+let cachedCleanImageCanvas = null;
 
 /* ============================================================================
  * Utility Functions
@@ -85,21 +99,29 @@ async function initEngine() {
  * Falls back to time-based theme if no preference is stored.
  */
 function applyTheme() {
-    chrome.storage.local.get('theme', (data) => {
-        let theme = data.theme;
-        if (!theme) {
-            const hour = new Date().getHours();
-            theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
-        }
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get('theme', (data) => {
+            let theme = data.theme;
+            if (!theme) {
+                const hour = new Date().getHours();
+                theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
+            }
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+        });
+    } else {
+        const hour = new Date().getHours();
+        const theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
         document.body.classList.toggle('dark-theme', theme === 'dark');
-    });
+    }
 }
 
-chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.theme) {
-        applyTheme();
-    }
-});
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'local' && changes.theme) {
+            applyTheme();
+        }
+    });
+}
 
 /* ============================================================================
  * File Handling & Drag/Drop
@@ -110,8 +132,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
  * @param {Event} event - Change event from file input
  */
 function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) processFile(file);
+    if (event.target.files.length > 0) {
+        enqueueFiles(Array.from(event.target.files));
+    }
 }
 
 /**
@@ -144,36 +167,117 @@ function handleDrop(event) {
     event.preventDefault();
     document.getElementById('drop-zone').classList.remove('drag-over');
 
-    const file = event.dataTransfer.files[0];
-    if (file) processFile(file);
+    if (event.dataTransfer.files.length > 0) {
+        enqueueFiles(Array.from(event.dataTransfer.files));
+    }
 }
 
 /**
- * Validates and processes an image file.
- * @param {File} file - Image file to process
+ * Validates and enqueues files.
+ * @param {File[]} files - Files to process
  */
-function processFile(file) {
-    if (!file.type.match('image.*')) {
-        alert('Please drop an image file.');
+function enqueueFiles(files) {
+    const mode = document.querySelector('input[name="processing-mode"]:checked').value;
+    const validFiles = files.filter(file => {
+        if (mode === 'notebooklm') {
+            return file.type.match('image.*') || file.type === 'application/pdf';
+        } else {
+            return file.type.match('image.*');
+        }
+    });
+
+    if (validFiles.length === 0) {
+        alert('Please drop valid images/PDFs for the selected mode.');
         return;
     }
 
+    fileQueue.push(...validFiles);
+    if (!isProcessingQueue) {
+        processQueue();
+    }
+}
+
+/**
+ * Processes the file queue sequentially
+ */
+async function processQueue() {
+    if (fileQueue.length === 0) {
+        isProcessingQueue = false;
+        updateStatus('Ready to process more files.');
+        return;
+    }
+
+    isProcessingQueue = true;
+    const file = fileQueue.shift();
+
+    // Process current file
+    await processFile(file);
+
+    // Process next file
+    processQueue();
+}
+
+/**
+ * Validates and processes an image or PDF file.
+ * @param {File} file - File to process
+ */
+async function processFile(file) {
+    // Reset caching for new file or mode toggle if necessary
+    if (file !== currentOriginalFile) {
+        cachedCleanPdfPages = [];
+        cachedCleanImageCanvas = null;
+    }
     currentOriginalFile = file;
+    const mode = document.querySelector('input[name="processing-mode"]:checked').value;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const originalContainer = document.getElementById('original-preview');
-            originalContainer.innerHTML = '';
-            img.style.maxWidth = '100%';
-            originalContainer.appendChild(img);
+    if (file.type === 'application/pdf') {
+        if (mode !== 'notebooklm') {
+            updateStatus('Skipping PDF (supported only in NotebookLM mode).');
+            return;
+        }
+        await applyPdfPipeline(file, false);
+    } else {
+        await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = async () => {
+                    const originalContainer = document.getElementById('original-preview');
+                    originalContainer.innerHTML = '';
+                    img.style.maxWidth = '100%';
+                    originalContainer.appendChild(img);
 
-            applyPipeline(img);
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+                    await applyPipeline(img, mode, false);
+                    resolve();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+}
+
+/* ============================================================================
+ * Fast Update Pipeline
+ * ========================================================================== */
+
+async function updatePipeline() {
+    if (!currentOriginalFile) return;
+    const mode = document.querySelector('input[name="processing-mode"]:checked').value;
+
+    if (currentOriginalFile.type === 'application/pdf' && mode === 'notebooklm') {
+        if (cachedCleanPdfPages.length > 0) {
+            await applyPdfPipeline(currentOriginalFile, true);
+        } else {
+            enqueueFiles([currentOriginalFile]);
+        }
+    } else {
+        if (cachedCleanImageCanvas) {
+            await applyPipeline(null, mode, true);
+        } else {
+            enqueueFiles([currentOriginalFile]);
+        }
+    }
 }
 
 /* ============================================================================
@@ -182,27 +286,49 @@ function processFile(file) {
 
 /**
  * Main image processing pipeline:
- * 1. Remove Gemini watermark (if detected)
+ * 1. Remove Gemini or NotebookLM watermark
  * 2. Resize image (if enabled)
  * 3. Add custom watermark (if enabled)
  * @async
  * @param {HTMLImageElement} img - Source image to process
+ * @param {string} mode - Processing mode ('gemini' or 'notebooklm')
  */
-async function applyPipeline(img) {
-    if (!watermarkEngine) {
+async function applyPipeline(img, mode, isUpdate = false) {
+    if (!watermarkEngine && mode === 'gemini') {
         await initEngine();
     }
 
-    updateStatus('Processing...');
-
-    const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
+    updateStatus(`Processing ${currentOriginalFile ? currentOriginalFile.name : 'image'}...`);
 
     try {
         const startTime = performance.now();
+        let finalCanvas;
+        let isDetected = false;
 
-        const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
-        let finalCanvas = result.canvas;
-        const isDetected = result.detected;
+        if (isUpdate && cachedCleanImageCanvas) {
+            const cloneCanvas = document.createElement('canvas');
+            cloneCanvas.width = cachedCleanImageCanvas.width;
+            cloneCanvas.height = cachedCleanImageCanvas.height;
+            const ctx = cloneCanvas.getContext('2d');
+            ctx.drawImage(cachedCleanImageCanvas, 0, 0);
+            finalCanvas = cloneCanvas;
+            isDetected = true;
+        } else {
+            if (mode === 'notebooklm') {
+                const result = await processNotebookLmImage(img);
+                finalCanvas = result.canvas;
+                isDetected = result.detected;
+            } else {
+                const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
+                const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
+                finalCanvas = result.canvas;
+                isDetected = result.detected;
+            }
+            cachedCleanImageCanvas = document.createElement('canvas');
+            cachedCleanImageCanvas.width = finalCanvas.width;
+            cachedCleanImageCanvas.height = finalCanvas.height;
+            cachedCleanImageCanvas.getContext('2d').drawImage(finalCanvas, 0, 0);
+        }
 
         const shouldResize = document.getElementById('resize-checkbox').checked;
         if (shouldResize) {
@@ -219,13 +345,17 @@ async function applyPipeline(img) {
 
         const endTime = performance.now();
         currentProcessedCanvas = finalCanvas;
+        currentProcessedPdfBlob = null; // reset PDF blob if we processed an image
+
+        document.getElementById('processed-preview-title').textContent =
+            mode === 'notebooklm' ? 'NotebookLM Cleaned Image' : 'Gemini Cleaned Image';
 
         displayProcessedImage(finalCanvas);
 
         const processingTime = (endTime - startTime).toFixed(0);
         updateStatus(isDetected
             ? `Watermark detected & removed in ${processingTime}ms.`
-            : `No Gemini watermark detected. (${processingTime}ms)`
+            : `Watermark removal attempted. (${processingTime}ms)`
         );
 
         setupDownloadButton(finalCanvas);
@@ -233,6 +363,127 @@ async function applyPipeline(img) {
     } catch (error) {
         console.error('Error processing image:', error);
         updateStatus('Error processing image.');
+    }
+}
+
+/**
+ * Pipeline for processing PDF files (NotebookLM)
+ */
+async function applyPdfPipeline(file, isUpdate = false) {
+    updateStatus(`Processing PDF: ${file.name} ...`);
+    try {
+        const startTime = performance.now();
+
+        const processedContainer = document.getElementById('processed-preview');
+
+        if (!isUpdate) {
+            const originalContainer = document.getElementById('original-preview');
+            originalContainer.innerHTML = '';
+            originalContainer.classList.add('scrollable');
+            const originalGrid = document.createElement('div');
+            originalGrid.className = 'pdf-sorter-grid';
+            originalGrid.id = 'original-pdf-grid';
+            originalContainer.appendChild(originalGrid);
+            cachedCleanPdfPages = [];
+        }
+
+        processedContainer.innerHTML = '';
+        processedContainer.classList.add('scrollable');
+        const processedGrid = document.createElement('div');
+        processedGrid.className = 'pdf-sorter-grid';
+        processedContainer.appendChild(processedGrid);
+
+        const onOriginalPageProcessed = (canvas, index) => {
+            if (isUpdate) return;
+            const originalGrid = document.getElementById('original-pdf-grid');
+            if (!originalGrid) return;
+            const thumb = document.createElement('canvas');
+            const thumbCtx = thumb.getContext('2d');
+            const scale = 140 / canvas.width;
+            thumb.width = 140;
+            thumb.height = canvas.height * scale;
+            thumb.className = 'pdf-page-thumbnail';
+            thumbCtx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
+            originalGrid.appendChild(thumb);
+        };
+
+        const shouldAddWatermark = document.getElementById('add-watermark-checkbox').checked;
+
+        const onPageProcessed = async (canvas, index) => {
+            if (!isUpdate) {
+                const cleanCopy = document.createElement('canvas');
+                cleanCopy.width = canvas.width;
+                cleanCopy.height = canvas.height;
+                cleanCopy.getContext('2d').drawImage(canvas, 0, 0);
+                cachedCleanPdfPages.push(cleanCopy);
+            }
+
+            let finalCanvas = canvas;
+            if (shouldAddWatermark) {
+                finalCanvas = await addWatermark(canvas);
+            }
+
+            const thumb = document.createElement('canvas');
+            const thumbCtx = thumb.getContext('2d');
+            const scale = 140 / finalCanvas.width;
+            thumb.width = 140;
+            thumb.height = finalCanvas.height * scale;
+            thumb.className = 'pdf-page-thumbnail';
+            thumbCtx.drawImage(finalCanvas, 0, 0, thumb.width, thumb.height);
+            processedGrid.appendChild(thumb);
+
+            return finalCanvas;
+        };
+
+        let blob;
+        if (isUpdate && cachedCleanPdfPages.length > 0) {
+            const { jsPDF } = window.jspdf;
+            let doc = null;
+            const total = cachedCleanPdfPages.length;
+
+            for (let i = 0; i < total; i++) {
+                updateStatus(`Processing PDF: ${file.name} - Page ${i + 1} of ${total}`);
+
+                const baseCanvas = cachedCleanPdfPages[i];
+                const cleanCopy = document.createElement('canvas');
+                cleanCopy.width = baseCanvas.width;
+                cleanCopy.height = baseCanvas.height;
+                cleanCopy.getContext('2d').drawImage(baseCanvas, 0, 0);
+
+                let finalCanvas = await onPageProcessed(cleanCopy, i + 1);
+
+                const imgData = finalCanvas.toDataURL('image/jpeg', 0.9);
+                const orientation = baseCanvas.width > baseCanvas.height ? 'l' : 'p';
+
+                if (i === 0) {
+                    doc = new jsPDF({
+                        orientation: orientation,
+                        unit: 'px',
+                        format: [baseCanvas.width, baseCanvas.height]
+                    });
+                } else {
+                    doc.addPage([baseCanvas.width, baseCanvas.height], orientation);
+                }
+                doc.addImage(imgData, 'JPEG', 0, 0, baseCanvas.width, baseCanvas.height);
+            }
+            blob = doc.output('blob');
+        } else {
+            blob = await processNotebookLmPdf(file, (current, total) => {
+                updateStatus(`Processing PDF: ${file.name} - Page ${current} of ${total}`);
+            }, onPageProcessed, onOriginalPageProcessed);
+        }
+
+        const endTime = performance.now();
+
+        updateStatus(`PDF completed in ${((endTime - startTime) / 1000).toFixed(1)}s.`);
+
+        // Save blob globally and configure the download button instead of auto-downloading
+        currentProcessedPdfBlob = blob;
+        setupDownloadButtonForPdf(file);
+
+    } catch (error) {
+        console.error('Error processing PDF:', error);
+        updateStatus('Error processing PDF.');
     }
 }
 
@@ -265,6 +516,7 @@ function resizeCanvas(sourceCanvas, targetWidth) {
 function displayProcessedImage(canvas) {
     const container = document.getElementById('processed-preview');
     container.innerHTML = '';
+    container.classList.remove('scrollable');
     canvas.style.maxWidth = '100%';
     container.appendChild(canvas);
 }
@@ -406,6 +658,34 @@ async function addWatermark(inputCanvas) {
  * ========================================================================== */
 
 /**
+ * Configures the download button for PDF processing.
+ * @param {File} file - Source PDF file
+ */
+function setupDownloadButtonForPdf(file) {
+    const oldBtn = document.getElementById('download-btn');
+    const newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+    newBtn.disabled = false;
+    newBtn.textContent = 'Download Clean PDF';
+
+    newBtn.onclick = () => {
+        if (!currentProcessedPdfBlob) return;
+        const url = URL.createObjectURL(currentProcessedPdfBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        const originalName = file.name;
+        const lastDotIndex = originalName.lastIndexOf('.');
+        const baseName = lastDotIndex !== -1 ? originalName.substring(0, lastDotIndex) : originalName;
+        a.download = `${baseName} (Unwatermarked).pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+}
+
+/**
  * Configures the download button with current canvas and format settings.
  * @param {HTMLCanvasElement} canvas - Processed image to download
  */
@@ -457,14 +737,18 @@ function setupDownloadButton(canvas) {
  * @param {Function} transformToText - Converts range value to text value
  * @param {Function} transformToRange - Converts text value to range value
  */
-function syncRange(rangeId, textId, transformToText, transformToRange) {
+function syncRange(rangeId, textId, transformToText, transformToRange, isFull = false) {
     const range = document.getElementById(rangeId);
     const text = document.getElementById(textId);
     if (!range || !text) return;
 
     const reprocess = debounce(() => {
-        if (currentOriginalFile) {
-            processFile(currentOriginalFile);
+        if (isFull) {
+            cachedCleanPdfPages = [];
+            cachedCleanImageCanvas = null;
+            if (currentOriginalFile) enqueueFiles([currentOriginalFile]);
+        } else {
+            updatePipeline();
         }
     }, 500);
 
@@ -492,9 +776,7 @@ function syncColor(pickerId, textId) {
     if (!picker || !text) return;
 
     const reprocess = debounce(() => {
-        if (currentOriginalFile) {
-            processFile(currentOriginalFile);
-        }
+        updatePipeline();
     }, 500);
 
     picker.addEventListener('input', () => {
@@ -524,16 +806,27 @@ document.addEventListener('DOMContentLoaded', () => {
     dropZone.addEventListener('drop', handleDrop, false);
     dropZone.addEventListener('click', () => fileInput.click());
 
+    // Allow multiple file selection
+    fileInput.setAttribute('multiple', 'true');
     fileInput.addEventListener('change', handleFileSelect, false);
 
-    const reprocess = debounce(() => {
-        if (currentOriginalFile) {
-            processFile(currentOriginalFile);
+    const reprocessFull = debounce(() => {
+        if (currentOriginalFile && (currentOriginalFile.type.match('image.*') || currentOriginalFile.type === 'application/pdf')) {
+            cachedCleanPdfPages = [];
+            cachedCleanImageCanvas = null;
+            enqueueFiles([currentOriginalFile]);
         }
     }, 500);
 
-    const inputIds = [
-        'resize-checkbox',
+    const reprocessFast = debounce(() => {
+        updatePipeline();
+    }, 500);
+
+    const fullUpdateIds = [
+        'resize-checkbox'
+    ];
+
+    const fastUpdateIds = [
         'add-watermark-checkbox',
         'wm-opacity',
         'wm-color',
@@ -543,11 +836,19 @@ document.addEventListener('DOMContentLoaded', () => {
         'wm-stroke-opacity'
     ];
 
-    inputIds.forEach(id => {
+    fullUpdateIds.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.addEventListener('input', reprocess);
-            el.addEventListener('change', reprocess);
+            el.addEventListener('input', reprocessFull);
+            el.addEventListener('change', reprocessFull);
+        }
+    });
+
+    fastUpdateIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', reprocessFast);
+            el.addEventListener('change', reprocessFast);
         }
     });
 
@@ -581,20 +882,28 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             wmSettings.classList.add('disabled');
         }
-        reprocess();
+        updatePipeline();
     };
 
     wmCheckbox.addEventListener('change', toggleWmSettings);
     toggleWmSettings();
 
-    chrome.storage.local.get(['detectionThreshold'], (data) => {
-        const threshold = data.detectionThreshold || 0.10;
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['detectionThreshold'], (data) => {
+            const threshold = data.detectionThreshold || 0.10;
+            const thresholdInput = document.getElementById('detection-threshold');
+            const thresholdRange = document.getElementById('detection-threshold-range');
+
+            if (thresholdInput) thresholdInput.value = threshold.toFixed(2);
+            if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
+        });
+    } else {
         const thresholdInput = document.getElementById('detection-threshold');
         const thresholdRange = document.getElementById('detection-threshold-range');
 
-        if (thresholdInput) thresholdInput.value = threshold.toFixed(2);
-        if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
-    });
+        if (thresholdInput) thresholdInput.value = "0.10";
+        if (thresholdRange) thresholdRange.value = 10;
+    }
 
     syncRange('detection-threshold-range', 'detection-threshold',
         v => (v / 100).toFixed(2),
@@ -605,17 +914,63 @@ document.addEventListener('DOMContentLoaded', () => {
     if (thresholdInput) {
         thresholdInput.addEventListener('change', () => {
             const threshold = parseFloat(thresholdInput.value) || 0.10;
-            chrome.storage.local.set({ detectionThreshold: threshold }, () => {
-                console.log('Detection threshold saved:', threshold);
-            });
+            if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                chrome.storage.local.set({ detectionThreshold: threshold }, () => {
+                    console.log('Detection threshold saved:', threshold);
+                });
+            }
         });
     }
 
     const thresholdRange = document.getElementById('detection-threshold-range');
     if (thresholdRange) {
-        thresholdRange.addEventListener('input', reprocess);
+        thresholdRange.addEventListener('input', reprocessFull);
     }
     if (thresholdInput) {
-        thresholdInput.addEventListener('input', reprocess);
+        thresholdInput.addEventListener('input', reprocessFull);
     }
+
+    // Radio button changes to automatically update text and toggle settings opacity
+    const modeRadios = document.querySelectorAll('input[name="processing-mode"]');
+    const updateModeUI = () => {
+        const mode = document.querySelector('input[name="processing-mode"]:checked').value;
+        const previewTitle = document.getElementById('processed-preview-title');
+        const downloadBtn = document.getElementById('download-btn');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const mainTitle = document.getElementById('main-title'); // For when we change the main title
+
+        const elementsToDisable = [
+            ...document.querySelectorAll('.controls-column:nth-child(1) .settings-group:not(.mode-selection)'),
+            ...document.querySelectorAll('.controls-column:nth-child(1) h3:not(:first-child)')
+        ];
+
+        if (mode === 'notebooklm') {
+            if (previewTitle) previewTitle.textContent = 'Cleared PDF';
+            if (uploadPrompt) uploadPrompt.textContent = 'Drag and drop PDF file to polish';
+            if (downloadBtn && downloadBtn.disabled) downloadBtn.textContent = 'Download Clean PDF';
+            else if (downloadBtn && currentProcessedPdfBlob) downloadBtn.textContent = 'Download Clean PDF'; // if PDF is processed
+            else if (downloadBtn) downloadBtn.textContent = 'Download Clean PDF'; // generic fallback
+
+            elementsToDisable.forEach(el => {
+                if (!el) return;
+                el.style.opacity = '0.4';
+                el.style.pointerEvents = 'none';
+            });
+        } else {
+            if (previewTitle) previewTitle.textContent = 'Right-bottom Corner Polished';
+            if (uploadPrompt) uploadPrompt.textContent = 'Drag and drop image to polish';
+            // Restore context if image was generated in gemini mode
+            if (downloadBtn) downloadBtn.textContent = 'Download Clean Image';
+
+            elementsToDisable.forEach(el => {
+                if (!el) return;
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
+        }
+    };
+
+    modeRadios.forEach(radio => radio.addEventListener('change', updateModeUI));
+    updateModeUI(); // Trigger UI refresh initially
+
 });

@@ -18,17 +18,17 @@ describe('Video Grid HTML Content Verification', () => {
     // Load the actual HTML file
     const htmlPath = path.join(__dirname, 'popup.html');
     const htmlContent = fs.readFileSync(htmlPath, 'utf-8');
-    
+
     // Create JSDOM instance
     dom = new JSDOM(htmlContent, {
       url: 'http://localhost',
       pretendToBeVisual: true,
       resources: 'usable'
     });
-    
+
     document = dom.window.document;
     window = dom.window;
-    
+
     // Make globals available
     global.document = document;
     global.window = window;
@@ -39,10 +39,10 @@ describe('Video Grid HTML Content Verification', () => {
       // Requirements: 1.1 - First grid item should show DeepSRT description
       const videoGridItems = document.querySelectorAll('.video-grid-item');
       expect(videoGridItems).toHaveLength(2);
-      
+
       const firstGridItem = videoGridItems[0];
       const instructionText = firstGridItem.querySelector('.instruction-text');
-      
+
       expect(instructionText).toBeTruthy();
       expect(instructionText.textContent.trim()).toBe(
         'Extract questions and options from DeepSRT challenge pages'
@@ -53,10 +53,10 @@ describe('Video Grid HTML Content Verification', () => {
       // Requirements: 1.2 - Second grid item should show YouTube description
       const videoGridItems = document.querySelectorAll('.video-grid-item');
       expect(videoGridItems).toHaveLength(2);
-      
+
       const secondGridItem = videoGridItems[1];
       const instructionText = secondGridItem.querySelector('.instruction-text');
-      
+
       expect(instructionText).toBeTruthy();
       expect(instructionText.textContent.trim()).toBe(
         'Generate quiz from YouTube video pages'
@@ -69,21 +69,21 @@ describe('Video Grid HTML Content Verification', () => {
       // Requirements: 1.3 - First grid item maintains existing functionality
       const videoGridItems = document.querySelectorAll('.video-grid-item');
       const firstGridItem = videoGridItems[0];
-      
+
       // Check video ID input exists
       const videoIdInput = firstGridItem.querySelector('#video-id-input');
       expect(videoIdInput).toBeTruthy();
       expect(videoIdInput.placeholder).toBe('Auto-detected or enter manually');
-      
+
       // Check video ID action button exists
       const videoIdAction = firstGridItem.querySelector('#video-id-action');
       expect(videoIdAction).toBeTruthy();
       expect(videoIdAction.title).toBe('Copy ID and open YouTube');
-      
+
       // Check Extract Questions button exists
       const extractButton = firstGridItem.querySelector('#extract-questions');
       expect(extractButton).toBeTruthy();
-      expect(extractButton.textContent.trim()).toBe('Extract Questions');
+      expect(extractButton.textContent.replace(/\s+/g, ' ').trim()).toBe('Extract Questions');
       expect(extractButton.classList.contains('modern-btn')).toBe(true);
       expect(extractButton.classList.contains('extract-btn')).toBe(true);
     });
@@ -92,11 +92,11 @@ describe('Video Grid HTML Content Verification', () => {
       // Requirements: 1.4 - Second grid item maintains existing functionality
       const videoGridItems = document.querySelectorAll('.video-grid-item');
       const secondGridItem = videoGridItems[1];
-      
+
       // Check Generate Quiz button exists
       const quizButton = secondGridItem.querySelector('#quiz-generator');
       expect(quizButton).toBeTruthy();
-      expect(quizButton.textContent.trim()).toBe('Generate Quiz');
+      expect(quizButton.textContent.replace(/\s+/g, ' ').trim()).toBe('Generate Quiz');
       expect(quizButton.classList.contains('modern-btn')).toBe(true);
       expect(quizButton.classList.contains('quiz-generator-btn')).toBe(true);
     });
@@ -105,10 +105,10 @@ describe('Video Grid HTML Content Verification', () => {
       // Verify overall structure is preserved
       const videoGridContainer = document.querySelector('.video-grid-container');
       expect(videoGridContainer).toBeTruthy();
-      
+
       const gridItems = videoGridContainer.querySelectorAll('.video-grid-item');
       expect(gridItems).toHaveLength(2);
-      
+
       // Verify each grid item has instruction text
       gridItems.forEach(item => {
         const instructionText = item.querySelector('.instruction-text');
@@ -122,11 +122,11 @@ describe('Video Grid HTML Content Verification', () => {
       const extractButton = document.querySelector('#extract-questions');
       const quizButton = document.querySelector('#quiz-generator');
       const videoIdAction = document.querySelector('#video-id-action');
-      
+
       expect(extractButton).toBeTruthy();
       expect(quizButton).toBeTruthy();
       expect(videoIdAction).toBeTruthy();
-      
+
       // Verify button types
       expect(extractButton.type).toBe('button');
       expect(quizButton.type).toBe('button');

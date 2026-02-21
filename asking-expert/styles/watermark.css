@@ -433,6 +433,33 @@ h1 {
     justify-content: center;
     border-radius: 4px;
     overflow: hidden;
+    position: relative;
+}
+
+.image-container.scrollable {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    max-height: 600px;
+}
+
+.pdf-sorter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.pdf-page-thumbnail {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    border-radius: 4px;
+    background-color: white;
 }
 
 .image-container img,
@@ -440,4 +467,24 @@ h1 {
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+/* Processing Mode Radio Buttons */
+.mode-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.radio-label {
+    margin-left: 8px;
+    font-weight: 500;
+    font-size: 15px;
 }
