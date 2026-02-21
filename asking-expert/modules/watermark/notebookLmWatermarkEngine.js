@@ -78,7 +78,7 @@ export async function processNotebookLmImage(image) {
  * @param {Function} onPageProcessed - Callback(canvas, pageIndex) for preview grid
  * @returns {Promise<Blob>} The processed PDF blob
  */
-export async function processNotebookLmPdf(file, progressCallback = null, onPageProcessed = null) {
+export async function processNotebookLmPdf(file, progressCallback = null, onPageProcessed = null, onOriginalPageProcessed = null) {
     if (!window.pdfjsLib || !window.jspdf) {
         throw new Error("PDF processing libraries not loaded");
     }
@@ -106,6 +106,9 @@ export async function processNotebookLmPdf(file, progressCallback = null, onPage
         canvas.height = viewport.height;
 
         await page.render({ canvasContext: ctx, viewport }).promise;
+
+        // Callback for the ORIGINAL pre-patched frame
+        if (onOriginalPageProcessed) onOriginalPageProcessed(canvas, i);
 
         // Apply the watermark removal patch
         removeNotebookLmWatermark(ctx, canvas.width, canvas.height);

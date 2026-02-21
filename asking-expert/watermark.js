@@ -312,11 +312,6 @@ async function applyPipeline(img, mode) {
 
         setupDownloadButton(finalCanvas);
 
-        // Auto download if batching
-        if (fileQueue.length > 0 || isProcessingQueue) {
-            document.getElementById('download-btn').click();
-        }
-
     } catch (error) {
         console.error('Error processing image:', error);
         updateStatus('Error processing image.');
@@ -334,13 +329,29 @@ async function applyPdfPipeline(file) {
         const processedContainer = document.getElementById('processed-preview');
         const originalContainer = document.getElementById('original-preview');
 
-        originalContainer.innerHTML = '<p style="text-align: center; color: #666; width: 100%;">PDF Input</p>';
+        originalContainer.innerHTML = '';
+        originalContainer.classList.add('scrollable');
         processedContainer.innerHTML = '';
         processedContainer.classList.add('scrollable');
 
-        const grid = document.createElement('div');
-        grid.className = 'pdf-sorter-grid';
-        processedContainer.appendChild(grid);
+        const originalGrid = document.createElement('div');
+        originalGrid.className = 'pdf-sorter-grid';
+        originalContainer.appendChild(originalGrid);
+
+        const processedGrid = document.createElement('div');
+        processedGrid.className = 'pdf-sorter-grid';
+        processedContainer.appendChild(processedGrid);
+
+        const onOriginalPageProcessed = (canvas, index) => {
+            const thumb = document.createElement('canvas');
+            const thumbCtx = thumb.getContext('2d');
+            const scale = 140 / canvas.width;
+            thumb.width = 140;
+            thumb.height = canvas.height * scale;
+            thumb.className = 'pdf-page-thumbnail';
+            thumbCtx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
+            originalGrid.appendChild(thumb);
+        };
 
         const onPageProcessed = (canvas, index) => {
             const thumb = document.createElement('canvas');
@@ -350,12 +361,12 @@ async function applyPdfPipeline(file) {
             thumb.height = canvas.height * scale;
             thumb.className = 'pdf-page-thumbnail';
             thumbCtx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
-            grid.appendChild(thumb);
+            processedGrid.appendChild(thumb);
         };
 
         const blob = await processNotebookLmPdf(file, (current, total) => {
             updateStatus(`Processing PDF: ${file.name} - Page ${current} of ${total}`);
-        }, onPageProcessed);
+        }, onPageProcessed, onOriginalPageProcessed);
 
         const endTime = performance.now();
 
@@ -364,11 +375,6 @@ async function applyPdfPipeline(file) {
         // Save blob globally and configure the download button instead of auto-downloading
         currentProcessedPdfBlob = blob;
         setupDownloadButtonForPdf(file);
-
-        // Auto trigger batch button ONLY if we are in a batch queue (multiple files)
-        if (fileQueue.length > 0 && isProcessingQueue) {
-            document.getElementById('download-btn').click();
-        }
 
     } catch (error) {
         console.error('Error processing PDF:', error);
