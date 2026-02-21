@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.2](///compare/v3.2.1...v3.2.2) (2026-02-21)
+
+
+### Bug Fixes
+
+* re-render PDF preview on signature setting changes 1f1e76b
+
 ### [3.2.1](///compare/v3.2.0...v3.2.1) (2026-02-21)
 
 
