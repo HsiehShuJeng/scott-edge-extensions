@@ -331,13 +331,31 @@ async function applyPdfPipeline(file) {
     try {
         const startTime = performance.now();
 
-        let originalContainer = document.getElementById('original-preview');
+        const processedContainer = document.getElementById('processed-preview');
+        const originalContainer = document.getElementById('original-preview');
+
         originalContainer.innerHTML = '<p style="text-align: center; color: #666; width: 100%;">PDF Input</p>';
-        document.getElementById('processed-preview').innerHTML = '';
+        processedContainer.innerHTML = '';
+        processedContainer.classList.add('scrollable');
+
+        const grid = document.createElement('div');
+        grid.className = 'pdf-sorter-grid';
+        processedContainer.appendChild(grid);
+
+        const onPageProcessed = (canvas, index) => {
+            const thumb = document.createElement('canvas');
+            const thumbCtx = thumb.getContext('2d');
+            const scale = 140 / canvas.width;
+            thumb.width = 140;
+            thumb.height = canvas.height * scale;
+            thumb.className = 'pdf-page-thumbnail';
+            thumbCtx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
+            grid.appendChild(thumb);
+        };
 
         const blob = await processNotebookLmPdf(file, (current, total) => {
             updateStatus(`Processing PDF: ${file.name} - Page ${current} of ${total}`);
-        });
+        }, onPageProcessed);
 
         const endTime = performance.now();
 
@@ -347,8 +365,8 @@ async function applyPdfPipeline(file) {
         currentProcessedPdfBlob = blob;
         setupDownloadButtonForPdf(file);
 
-        // Auto trigger batch button if we are in a batch queue
-        if (fileQueue.length > 0 || isProcessingQueue) {
+        // Auto trigger batch button ONLY if we are in a batch queue (multiple files)
+        if (fileQueue.length > 0 && isProcessingQueue) {
             document.getElementById('download-btn').click();
         }
 
@@ -387,6 +405,7 @@ function resizeCanvas(sourceCanvas, targetWidth) {
 function displayProcessedImage(canvas) {
     const container = document.getElementById('processed-preview');
     container.innerHTML = '';
+    container.classList.remove('scrollable');
     canvas.style.maxWidth = '100%';
     container.appendChild(canvas);
 }

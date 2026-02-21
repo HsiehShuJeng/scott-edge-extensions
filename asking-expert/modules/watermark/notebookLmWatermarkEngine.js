@@ -75,9 +75,10 @@ export async function processNotebookLmImage(image) {
  * Processes a PDF file to remove the NotebookLM watermark from all pages.
  * @param {File} file - PDF File object
  * @param {Function} progressCallback - Callback(currentPage, totalPages)
+ * @param {Function} onPageProcessed - Callback(canvas, pageIndex) for preview grid
  * @returns {Promise<Blob>} The processed PDF blob
  */
-export async function processNotebookLmPdf(file, progressCallback = null) {
+export async function processNotebookLmPdf(file, progressCallback = null, onPageProcessed = null) {
     if (!window.pdfjsLib || !window.jspdf) {
         throw new Error("PDF processing libraries not loaded");
     }
@@ -108,6 +109,8 @@ export async function processNotebookLmPdf(file, progressCallback = null) {
 
         // Apply the watermark removal patch
         removeNotebookLmWatermark(ctx, canvas.width, canvas.height);
+
+        if (onPageProcessed) onPageProcessed(canvas, i);
 
         const imgData = canvas.toDataURL('image/jpeg', 0.9);
 
