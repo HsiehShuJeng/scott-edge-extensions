@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.37.0](///compare/v2.35.1...v2.37.0) (2026-02-21)
+
+
+### Features
+
+* **watermark:** add local NotebookLM watermark removal f284735
+* **watermark:** add user-configurable detection threshold a24056e
+
+
+### Bug Fixes
+
+* **watermark:** lower detection threshold to 0.10 for Banana Pro images a644880
+* **watermark:** lower detection threshold to 0.20 5e6e411
+
 ## [2.36.0](///compare/v2.35.4...v2.36.0) (2026-02-05)
 
 
