@@ -113,9 +113,13 @@ export async function processNotebookLmPdf(file, progressCallback = null, onPage
         // Apply the watermark removal patch
         removeNotebookLmWatermark(ctx, canvas.width, canvas.height);
 
-        if (onPageProcessed) onPageProcessed(canvas, i);
+        let finalCanvas = canvas;
+        if (onPageProcessed) {
+            const result = await onPageProcessed(canvas, i);
+            if (result) finalCanvas = result;
+        }
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.9);
+        const imgData = finalCanvas.toDataURL('image/jpeg', 0.9);
 
         const orientation = viewport.width > viewport.height ? 'l' : 'p';
         if (i === 1) {

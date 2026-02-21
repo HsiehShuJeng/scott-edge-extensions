@@ -353,15 +353,24 @@ async function applyPdfPipeline(file) {
             originalGrid.appendChild(thumb);
         };
 
-        const onPageProcessed = (canvas, index) => {
+        const shouldAddWatermark = document.getElementById('add-watermark-checkbox').checked;
+
+        const onPageProcessed = async (canvas, index) => {
+            let finalCanvas = canvas;
+            if (shouldAddWatermark) {
+                finalCanvas = await addWatermark(canvas);
+            }
+
             const thumb = document.createElement('canvas');
             const thumbCtx = thumb.getContext('2d');
-            const scale = 140 / canvas.width;
+            const scale = 140 / finalCanvas.width;
             thumb.width = 140;
-            thumb.height = canvas.height * scale;
+            thumb.height = finalCanvas.height * scale;
             thumb.className = 'pdf-page-thumbnail';
-            thumbCtx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
+            thumbCtx.drawImage(finalCanvas, 0, 0, thumb.width, thumb.height);
             processedGrid.appendChild(thumb);
+
+            return finalCanvas;
         };
 
         const blob = await processNotebookLmPdf(file, (current, total) => {
