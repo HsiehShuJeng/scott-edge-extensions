@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](///compare/v2.37.0...v3.0.0) (2026-02-21)
+
+
+### Features
+
+* **watermark:** refine PDF preview with slide-sorter grid and manual download dd5e9f1
+
 ## [2.37.0](///compare/v2.35.1...v2.37.0) (2026-02-21)
 
 
