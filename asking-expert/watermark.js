@@ -826,8 +826,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const elementsToDisable = [
             ...document.querySelectorAll('.controls-column:nth-child(1) .settings-group:not(.mode-selection)'),
-            ...document.querySelectorAll('.controls-column:nth-child(1) h3:not(:first-child)'),
-            document.querySelector('.controls-column:nth-child(2)')
+            ...document.querySelectorAll('.controls-column:nth-child(1) h3:not(:first-child)')
         ];
 
         if (mode === 'notebooklm') {
