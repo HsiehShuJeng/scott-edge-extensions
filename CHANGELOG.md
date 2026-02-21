@@ -8,7 +8,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [3.2.4](///compare/v3.2.3...v3.2.4) (2026-02-21)
 
-
 ### Bug Fixes
 
 * update preview on all signature parameter changes d5b02c7
@@ -17,23 +16,25 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [3.2.2](///compare/v3.2.1...v3.2.2) (2026-02-21)
 
-
 ### Bug Fixes
 
 * re-render PDF preview on signature setting changes 1f1e76b
 
 ### [3.2.1](///compare/v3.2.0...v3.2.1) (2026-02-21)
 
-
 ### Bug Fixes
 
 * keep signature watermark controls enabled in NotebookLM mode ce7995a
 
-## [3.2.0](///compare/v3.1.2...v3.2.0) (2026-02-21)
+## [3.2.0](///compare/v2.37.0...v3.2.0) (2026-02-21)
+
+## [2.37.0](https://hsiehshujeng///compare/v2.35.1...v2.37.0) (2026-02-21)
+
 
 
 ### Features
 
+<<<<<<< HEAD
 * enable signature watermark for PDFs 818b6c2
 
 ### [3.1.2](///compare/v3.1.1...v3.1.2) (2026-02-21)
@@ -61,12 +62,20 @@ All notable changes to this project will be documented in this file. See [standa
 
 * **watermark:** add local NotebookLM watermark removal f284735
 * **watermark:** add user-configurable detection threshold a24056e
+=======
+* **watermark:** add user-configurable detection threshold ([a24056e](https://hsiehshujeng///commit/a24056e7932ea08103f8ba8725f2eeece7d77360))
+>>>>>>> origin/main
 
 
 ### Bug Fixes
 
+<<<<<<< HEAD
 * **watermark:** lower detection threshold to 0.10 for Banana Pro images a644880
 * **watermark:** lower detection threshold to 0.20 5e6e411
+=======
+* **watermark:** lower detection threshold to 0.10 for Banana Pro images ([a644880](https://hsiehshujeng///commit/a644880e3fd7a536f150704c0be844a50282390b))
+* **watermark:** lower detection threshold to 0.20 ([5e6e411](https://hsiehshujeng///commit/5e6e41160043ee005762c55f87c6f86240c07f80))
+>>>>>>> origin/main
 
 ## [2.36.0](///compare/v2.35.4...v2.36.0) (2026-02-05)
 
