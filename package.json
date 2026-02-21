@@ -29,5 +29,9 @@
     "stylelint-declaration-block-no-ignored-properties": "^2.8.0",
     "stylelint-no-unsupported-browser-features": "^8.0.5",
     "vitest": "^4.0.16"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "puppeteer": "^24.37.5"
   }
 }

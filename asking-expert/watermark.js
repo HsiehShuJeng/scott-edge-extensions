@@ -6,6 +6,7 @@
  */
 
 import { WatermarkEngine } from './modules/watermark/watermarkEngine.js';
+import { processNotebookLmImage, processNotebookLmPdf } from './modules/watermark/notebookLmWatermarkEngine.js';
 
 /* ============================================================================
  * Global State
@@ -16,6 +17,13 @@ let watermarkEngine = null;
 
 /** @type {File|null} Currently loaded image file */
 let currentOriginalFile = null;
+
+/** @type {File[]} Queue for batch processing */
+let fileQueue = [];
+let isProcessingQueue = false;
+
+/** @type {Blob|null} Currently processed PDF file, ready for download */
+let currentProcessedPdfBlob = null;
 
 /** @type {HTMLCanvasElement|null} Processed image canvas for download */
 let currentProcessedCanvas = null;
@@ -85,21 +93,29 @@ async function initEngine() {
  * Falls back to time-based theme if no preference is stored.
  */
 function applyTheme() {
-    chrome.storage.local.get('theme', (data) => {
-        let theme = data.theme;
-        if (!theme) {
-            const hour = new Date().getHours();
-            theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
-        }
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get('theme', (data) => {
+            let theme = data.theme;
+            if (!theme) {
+                const hour = new Date().getHours();
+                theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
+            }
+            document.body.classList.toggle('dark-theme', theme === 'dark');
+        });
+    } else {
+        const hour = new Date().getHours();
+        const theme = (hour >= 18 || hour < 6) ? 'dark' : 'light';
         document.body.classList.toggle('dark-theme', theme === 'dark');
-    });
+    }
 }
 
-chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.theme) {
-        applyTheme();
-    }
-});
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'local' && changes.theme) {
+            applyTheme();
+        }
+    });
+}
 
 /* ============================================================================
  * File Handling & Drag/Drop
@@ -110,8 +126,9 @@ chrome.storage.onChanged.addListener((changes, area) => {
  * @param {Event} event - Change event from file input
  */
 function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file) processFile(file);
+    if (event.target.files.length > 0) {
+        enqueueFiles(Array.from(event.target.files));
+    }
 }
 
 /**
@@ -144,36 +161,89 @@ function handleDrop(event) {
     event.preventDefault();
     document.getElementById('drop-zone').classList.remove('drag-over');
 
-    const file = event.dataTransfer.files[0];
-    if (file) processFile(file);
+    if (event.dataTransfer.files.length > 0) {
+        enqueueFiles(Array.from(event.dataTransfer.files));
+    }
 }
 
 /**
- * Validates and processes an image file.
- * @param {File} file - Image file to process
+ * Validates and enqueues files.
+ * @param {File[]} files - Files to process
  */
-function processFile(file) {
-    if (!file.type.match('image.*')) {
-        alert('Please drop an image file.');
+function enqueueFiles(files) {
+    const mode = document.querySelector('input[name="processing-mode"]:checked').value;
+    const validFiles = files.filter(file => {
+        if (mode === 'notebooklm') {
+            return file.type.match('image.*') || file.type === 'application/pdf';
+        } else {
+            return file.type.match('image.*');
+        }
+    });
+
+    if (validFiles.length === 0) {
+        alert('Please drop valid images/PDFs for the selected mode.');
         return;
     }
 
+    fileQueue.push(...validFiles);
+    if (!isProcessingQueue) {
+        processQueue();
+    }
+}
+
+/**
+ * Processes the file queue sequentially
+ */
+async function processQueue() {
+    if (fileQueue.length === 0) {
+        isProcessingQueue = false;
+        updateStatus('Ready to process more files.');
+        return;
+    }
+
+    isProcessingQueue = true;
+    const file = fileQueue.shift();
+
+    // Process current file
+    await processFile(file);
+
+    // Process next file
+    processQueue();
+}
+
+/**
+ * Validates and processes an image or PDF file.
+ * @param {File} file - File to process
+ */
+async function processFile(file) {
     currentOriginalFile = file;
+    const mode = document.querySelector('input[name="processing-mode"]:checked').value;
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-            const originalContainer = document.getElementById('original-preview');
-            originalContainer.innerHTML = '';
-            img.style.maxWidth = '100%';
-            originalContainer.appendChild(img);
+    if (file.type === 'application/pdf') {
+        if (mode !== 'notebooklm') {
+            updateStatus('Skipping PDF (supported only in NotebookLM mode).');
+            return;
+        }
+        await applyPdfPipeline(file);
+    } else {
+        await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = async () => {
+                    const originalContainer = document.getElementById('original-preview');
+                    originalContainer.innerHTML = '';
+                    img.style.maxWidth = '100%';
+                    originalContainer.appendChild(img);
 
-            applyPipeline(img);
-        };
-        img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+                    await applyPipeline(img, mode);
+                    resolve();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 }
 
 /* ============================================================================
@@ -182,27 +252,35 @@ function processFile(file) {
 
 /**
  * Main image processing pipeline:
- * 1. Remove Gemini watermark (if detected)
+ * 1. Remove Gemini or NotebookLM watermark
  * 2. Resize image (if enabled)
  * 3. Add custom watermark (if enabled)
  * @async
  * @param {HTMLImageElement} img - Source image to process
+ * @param {string} mode - Processing mode ('gemini' or 'notebooklm')
  */
-async function applyPipeline(img) {
-    if (!watermarkEngine) {
+async function applyPipeline(img, mode) {
+    if (!watermarkEngine && mode === 'gemini') {
         await initEngine();
     }
 
-    updateStatus('Processing...');
-
-    const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
+    updateStatus(`Processing ${currentOriginalFile ? currentOriginalFile.name : 'image'}...`);
 
     try {
         const startTime = performance.now();
+        let finalCanvas;
+        let isDetected = false;
 
-        const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
-        let finalCanvas = result.canvas;
-        const isDetected = result.detected;
+        if (mode === 'notebooklm') {
+            const result = await processNotebookLmImage(img);
+            finalCanvas = result.canvas;
+            isDetected = result.detected;
+        } else {
+            const detectionThreshold = parseFloat(document.getElementById('detection-threshold').value) || 0.10;
+            const result = await watermarkEngine.removeWatermarkFromImage(img, detectionThreshold);
+            finalCanvas = result.canvas;
+            isDetected = result.detected;
+        }
 
         const shouldResize = document.getElementById('resize-checkbox').checked;
         if (shouldResize) {
@@ -219,20 +297,64 @@ async function applyPipeline(img) {
 
         const endTime = performance.now();
         currentProcessedCanvas = finalCanvas;
+        currentProcessedPdfBlob = null; // reset PDF blob if we processed an image
+
+        document.getElementById('processed-preview-title').textContent =
+            mode === 'notebooklm' ? 'NotebookLM Cleaned Image' : 'Gemini Cleaned Image';
 
         displayProcessedImage(finalCanvas);
 
         const processingTime = (endTime - startTime).toFixed(0);
         updateStatus(isDetected
             ? `Watermark detected & removed in ${processingTime}ms.`
-            : `No Gemini watermark detected. (${processingTime}ms)`
+            : `Watermark removal attempted. (${processingTime}ms)`
         );
 
         setupDownloadButton(finalCanvas);
 
+        // Auto download if batching
+        if (fileQueue.length > 0 || isProcessingQueue) {
+            document.getElementById('download-btn').click();
+        }
+
     } catch (error) {
         console.error('Error processing image:', error);
         updateStatus('Error processing image.');
+    }
+}
+
+/**
+ * Pipeline for processing PDF files (NotebookLM)
+ */
+async function applyPdfPipeline(file) {
+    updateStatus(`Processing PDF: ${file.name} ...`);
+    try {
+        const startTime = performance.now();
+
+        let originalContainer = document.getElementById('original-preview');
+        originalContainer.innerHTML = '<p style="text-align: center; color: #666; width: 100%;">PDF Input</p>';
+        document.getElementById('processed-preview').innerHTML = '';
+
+        const blob = await processNotebookLmPdf(file, (current, total) => {
+            updateStatus(`Processing PDF: ${file.name} - Page ${current} of ${total}`);
+        });
+
+        const endTime = performance.now();
+
+        updateStatus(`PDF completed in ${((endTime - startTime) / 1000).toFixed(1)}s.`);
+
+        // Save blob globally and configure the download button instead of auto-downloading
+        currentProcessedPdfBlob = blob;
+        setupDownloadButtonForPdf(file);
+
+        // Auto trigger batch button if we are in a batch queue
+        if (fileQueue.length > 0 || isProcessingQueue) {
+            document.getElementById('download-btn').click();
+        }
+
+    } catch (error) {
+        console.error('Error processing PDF:', error);
+        updateStatus('Error processing PDF.');
     }
 }
 
@@ -406,6 +528,34 @@ async function addWatermark(inputCanvas) {
  * ========================================================================== */
 
 /**
+ * Configures the download button for PDF processing.
+ * @param {File} file - Source PDF file
+ */
+function setupDownloadButtonForPdf(file) {
+    const oldBtn = document.getElementById('download-btn');
+    const newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+
+    newBtn.disabled = false;
+    newBtn.textContent = 'Download Clean PDF';
+
+    newBtn.onclick = () => {
+        if (!currentProcessedPdfBlob) return;
+        const url = URL.createObjectURL(currentProcessedPdfBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        const originalName = file.name;
+        const lastDotIndex = originalName.lastIndexOf('.');
+        const baseName = lastDotIndex !== -1 ? originalName.substring(0, lastDotIndex) : originalName;
+        a.download = `${baseName} (Unwatermarked).pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+}
+
+/**
  * Configures the download button with current canvas and format settings.
  * @param {HTMLCanvasElement} canvas - Processed image to download
  */
@@ -524,11 +674,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dropZone.addEventListener('drop', handleDrop, false);
     dropZone.addEventListener('click', () => fileInput.click());
 
+    // Allow multiple file selection
+    fileInput.setAttribute('multiple', 'true');
     fileInput.addEventListener('change', handleFileSelect, false);
 
     const reprocess = debounce(() => {
-        if (currentOriginalFile) {
-            processFile(currentOriginalFile);
+        if (currentOriginalFile && currentOriginalFile.type.match('image.*')) {
+            enqueueFiles([currentOriginalFile]);
         }
     }, 500);
 
@@ -587,14 +739,22 @@ document.addEventListener('DOMContentLoaded', () => {
     wmCheckbox.addEventListener('change', toggleWmSettings);
     toggleWmSettings();
 
-    chrome.storage.local.get(['detectionThreshold'], (data) => {
-        const threshold = data.detectionThreshold || 0.10;
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['detectionThreshold'], (data) => {
+            const threshold = data.detectionThreshold || 0.10;
+            const thresholdInput = document.getElementById('detection-threshold');
+            const thresholdRange = document.getElementById('detection-threshold-range');
+
+            if (thresholdInput) thresholdInput.value = threshold.toFixed(2);
+            if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
+        });
+    } else {
         const thresholdInput = document.getElementById('detection-threshold');
         const thresholdRange = document.getElementById('detection-threshold-range');
 
-        if (thresholdInput) thresholdInput.value = threshold.toFixed(2);
-        if (thresholdRange) thresholdRange.value = Math.round(threshold * 100);
-    });
+        if (thresholdInput) thresholdInput.value = "0.10";
+        if (thresholdRange) thresholdRange.value = 10;
+    }
 
     syncRange('detection-threshold-range', 'detection-threshold',
         v => (v / 100).toFixed(2),
@@ -605,9 +765,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (thresholdInput) {
         thresholdInput.addEventListener('change', () => {
             const threshold = parseFloat(thresholdInput.value) || 0.10;
-            chrome.storage.local.set({ detectionThreshold: threshold }, () => {
-                console.log('Detection threshold saved:', threshold);
-            });
+            if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+                chrome.storage.local.set({ detectionThreshold: threshold }, () => {
+                    console.log('Detection threshold saved:', threshold);
+                });
+            }
         });
     }
 
@@ -618,4 +780,45 @@ document.addEventListener('DOMContentLoaded', () => {
     if (thresholdInput) {
         thresholdInput.addEventListener('input', reprocess);
     }
+
+    // Radio button changes to automatically update text and toggle settings opacity
+    const modeRadios = document.querySelectorAll('input[name="processing-mode"]');
+    const updateModeUI = () => {
+        const mode = document.querySelector('input[name="processing-mode"]:checked').value;
+        const previewTitle = document.getElementById('processed-preview-title');
+        const downloadBtn = document.getElementById('download-btn');
+
+        const elementsToDisable = [
+            ...document.querySelectorAll('.controls-column:nth-child(1) .settings-group:not(.mode-selection)'),
+            ...document.querySelectorAll('.controls-column:nth-child(1) h3:not(:first-child)'),
+            document.querySelector('.controls-column:nth-child(2)')
+        ];
+
+        if (mode === 'notebooklm') {
+            if (previewTitle) previewTitle.textContent = 'Cleared PDF';
+            if (downloadBtn && downloadBtn.disabled) downloadBtn.textContent = 'Download Clean PDF';
+            else if (downloadBtn && currentProcessedPdfBlob) downloadBtn.textContent = 'Download Clean PDF'; // if PDF is processed
+            else if (downloadBtn) downloadBtn.textContent = 'Download Clean PDF'; // generic fallback
+
+            elementsToDisable.forEach(el => {
+                if (!el) return;
+                el.style.opacity = '0.4';
+                el.style.pointerEvents = 'none';
+            });
+        } else {
+            if (previewTitle) previewTitle.textContent = 'Right-bottom Corner Polished';
+            // Restore context if image was generated in gemini mode
+            if (downloadBtn) downloadBtn.textContent = 'Download Clean Image';
+
+            elementsToDisable.forEach(el => {
+                if (!el) return;
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
+        }
+    };
+
+    modeRadios.forEach(radio => radio.addEventListener('change', updateModeUI));
+    updateModeUI(); // Trigger UI refresh initially
+
 });

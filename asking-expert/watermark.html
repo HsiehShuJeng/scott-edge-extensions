@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scott's Watermark Remover</title>
     <link rel="stylesheet" href="styles/watermark.css">
+
+    <!-- Core Libraries for NotebookLM PDF Processing -->
+    <script src="lib/pdf.min.js"></script>
+    <script src="lib/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -15,14 +19,27 @@
         <div id="drop-zone">
             <p>Drag and drop image to polish</p>
             <p><small>or click to select file</small></p>
-            <input type="file" id="file-input" accept="image/*" style="display: none;">
+            <input type="file" id="file-input" accept="image/*,application/pdf" multiple style="display: none;">
         </div>
 
         <div class="controls">
             <div class="controls-grid">
                 <!-- Left Column: Existing Controls -->
                 <div class="controls-column">
-                    <h3>General Settings</h3>
+                    <h3>Processing Mode</h3>
+                    <div class="settings-group mode-selection">
+                        <label class="radio-wrapper">
+                            <input type="radio" name="processing-mode" value="gemini" checked>
+                            <span class="radio-label">Gemini Pro Image</span>
+                        </label>
+                        <label class="radio-wrapper">
+                            <input type="radio" name="processing-mode" value="notebooklm">
+                            <span class="radio-label">NotebookLM (Image/PDF)</span>
+                        </label>
+                        <p class="setting-description">Select the type of watermark to remove.</p>
+                    </div>
+
+                    <h3 style="margin-top: 20px;">General Settings</h3>
                     <div class="settings-group">
                         <label class="checkbox-wrapper">
                             <input type="checkbox" id="resize-checkbox" checked>
@@ -42,14 +59,18 @@
                     </div>
 
                     <div class="settings-group">
-                        <label for="detection-threshold" class="select-label" data-tooltip="Adjust sensitivity for watermark detection. Lower = more sensitive.">Detection Threshold:</label>
+                        <label for="detection-threshold" class="select-label"
+                            data-tooltip="Adjust sensitivity for watermark detection. Lower = more sensitive.">Detection
+                            Threshold:</label>
                         <div class="dual-input">
                             <input type="range" id="detection-threshold-range" min="1" max="50" step="1" value="10">
                             <div class="input-wrapper">
-                                <input type="number" id="detection-threshold" value="0.10" min="0.01" max="0.50" step="0.01">
+                                <input type="number" id="detection-threshold" value="0.10" min="0.01" max="0.50"
+                                    step="0.01">
                             </div>
                         </div>
-                        <p class="setting-description">Controls watermark detection sensitivity. Default: 0.10 (recommended for most images).</p>
+                        <p class="setting-description">Controls watermark detection sensitivity. Default: 0.10
+                            (recommended for most images).</p>
                     </div>
                 </div>
 
@@ -142,7 +163,7 @@
                 </div>
             </div>
             <div class="preview-box">
-                <h3>Right-bottom Corner Polished</h3>
+                <h3 id="processed-preview-title">Right-bottom Corner Polished</h3>
                 <div id="processed-preview" class="image-container">
                     <!-- Processed image will be shown here -->
                 </div>

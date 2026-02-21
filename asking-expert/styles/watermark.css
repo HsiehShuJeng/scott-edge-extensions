@@ -441,3 +441,21 @@ h1 {
     height: auto;
     display: block;
 }
+
+/* Processing Mode Radio Buttons */
+.mode-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.radio-wrapper {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.radio-label {
+    margin-left: 8px;
+    font-weight: 500;
+    font-size: 15px;
+}
