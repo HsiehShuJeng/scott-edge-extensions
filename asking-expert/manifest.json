@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Asking Expert",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "An assistant for language learning (English/Korean), programming workflows, YouTube quiz generation, and professional infographic prompts.",
   "icons": {
     "48": "images/icon48.png"
