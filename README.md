@@ -3,14 +3,7 @@
 This browser extension provides comprehensive assistance for language learners (English and Korean) and programmers. It extracts vocabulary questions and context from Vocabulary.com, generates optimized LLM prompts for language learning, and provides programming tools for commit message generation and pull request creation.
 
 ## Table of Contents
-- [Language Learning Features](#language-learning-features)
-- [YouTube Quiz Generator](#youtube-quiz-generator)
-- [Infographic Prompt Generator](#infographic-prompt-generator)
-- [Gemini Image Polisher](#gemini-image-polisher)
-- [Programming Features](#programming-features)
-  - [Enhanced Commit Message Generation](#enhanced-commit-message-generation)
-  - [Pull Request Creation](#pull-request-creation)
-  - [Branch Naming Tools](#branch-naming-tools)
+- [Features Overview](#features-overview)
 - [Technical Documentation](#technical-documentation)
 - [UI Features](#ui-features)
 - [Architecture](#architecture)
@@ -29,126 +22,14 @@ This browser extension provides comprehensive assistance for language learners (
 
 ---
 
-## Language Learning Features
+## Features Overview
 
-### English Learning
-- **Vocabulary extraction** from Vocabulary.com with context
-- **Etymology and part of speech** integration from Etymonline
-- **Contextual prompt generation** for LLM assistance
-- **Image prompt generation** for visual learning
-- **Translation to Traditional Chinese**
+See the detailed documentation available in our `docs/` folder for specific workflows and use-cases:
 
-### Korean Learning
-- **Korean sentence input** with contextual prompt generation
-- **Multi-line text support** for complex Korean content
-- **Integrated learning session management**
-
-## YouTube Quiz Generator
-
-### Educational Content Creation
-- **YouTube Video Metadata Extraction**  
-  Automatically extracts video URL and title from YouTube video pages using content scripts
-- **Structured Quiz Prompt Generation**  
-  Creates formatted 10-question multiple-choice quiz templates based on video content
-- **Clipboard Integration**  
-  Copies generated quiz prompts directly to clipboard for immediate use
-- **Comprehensive Error Handling**  
-  Validates YouTube page context and provides clear feedback for unsupported pages
-- **Educational Focus**  
-  Generates prompts that encourage analytical thinking and comprehension testing
-
-#### Quiz Prompt Template Features
-The generated quiz prompts include:
-
-- **Structured Format**: Numbered questions with 4 multiple-choice options (A, B, C, D)
-- **Educational Requirements**: Instructions for correct answers and explanations
-- **Difficulty Variation**: Mix of basic recall and analytical thinking questions
-- **Content Analysis**: Prompts for video transcript analysis and key concept identification
-- **Engagement Focus**: Questions designed to test viewer understanding and retention
-
-## Infographic Prompt Generator
-
-### Professional Visual Design
-- **9 Distinct Styles**:
-  Select from professionally curated styles including Bright Enterprise, Frosted Glass, Neon Cyberpunk, Minimalist Swiss, and Cinematic Nature.
-- **Global Artistic Inspiration**:
-  Apply sophisticated artistic directions (e.g., "Ghost in the Shell" Cyberpunk HUD, "Final Fantasy VIII" JRPG UI) to *any* of the base styles for unique combinations.
-- **Visual Previews**:
-  Interactive preview images update instantly to show the aesthetic of the selected style.
-- **Smart Prompt Engineering**:
-  - **Context-Aware**: Generates generic templates if no topic is provided, or specific content-based prompts if a topic is entered.
-  - **Auto-Localization**: Automatically appends requirements for Traditional Chinese text output suitable for the Taiwan market.
-
-
-
-## Programming Features
-
-### Enhanced Commit Message Generation
-- **Current Changes Analysis**  
-Generate commit messages for unstaged changes using `git diff --word-diff`
-- **Staged Changes Analysis**  
-Generate commit messages for staged changes using `git diff --cached --word-diff`
-- **Range Changes Analysis**  
-Generate commit messages for changes between branches using `git diff main..HEAD`
-- **AI-Optimized Prompt Generation**  
-Creates a structured prompt based on file changes and conventional commit rules for LLM processing.
-
-#### Conventional Commit Framework
-The extension implements comprehensive conventional commit rules with the following structure:
-
-**Format:** `<type>[optional scope]: <description>`
-
-**Supported Types (prioritized):**
-- `feat`: new features or capabilities
-- `fix`: bug fixes or corrections  
-- `docs`: documentation only changes
-- `style`: formatting, missing semicolons (no code change)
-- `refactor`: code change that neither fixes bug nor adds feature
-- `perf`: performance improvements
-- `test`: adding missing tests or correcting existing tests
-- `build`: changes affecting build system or dependencies
-- `ci`: changes to CI configuration files and scripts
-- `chore`: other changes that don't modify src or test files
-- `revert`: reverts a previous commit
-
-**Guidelines:**
-- Subject line: imperative mood, no period, under 50 characters
-- Body: wrap at 72 characters, use present tense
-- Include breaking changes in footer with `BREAKING CHANGE:`
-- Reference issues with `Closes #123` or `Fixes #456`
-- Use scope for component/module (e.g., auth, ui, api)
-
-**Examples:**
-- `feat(auth): add user login validation`
-- `fix(ui): resolve button alignment on mobile`
-- `docs: update API documentation for v2.0`
-
-### Pull Request Creation
-- **PR Command Generation**  
-Generate printf commands for PR creation with automatic git repository detection
-- **Shell Command Output**  
-Creates ready-to-execute commands that extract owner, repo, head, and base branch information
-- **Input Validation**  
-Validates PR descriptions (3-5000 characters) with detailed error messages
-
-### Branch Naming Tools
-- **Feature Description Input**  
-Generate branch naming suggestions based on feature descriptions or bug reports
-- **Input Validation**  
-Validates input length (3-2000 characters) and provides clear error messages
-- **Prompt Generation**  
-Creates structured prompts for LLM-assisted branch naming with development context
-
-
-
-## Language Learning Scenarios
-
-- **Single word**: e.g., `unenforceable`
-- **Single word with context sentence**: e.g., `aloof`  
-  _His ratings remain dismal, not least because of his cold, aloof manner and his eagerness to please the party._
-- **Multiple words with context sentence**
-- **All major Vocabulary.com question types** (see Scenario Table below)
-- **Etymology and part of speech**: If available, the prompt will include etymology and part of speech fetched from Etymonline.
+- [**Language Learning & Video Content**](docs/language-and-video.md): Vocabulary.com extraction, Etymonline fetching, and YouTube video AI quiz generation.
+- [**Programming & Engineering Workflows**](docs/programming-features.md): Automatic Conventional Commit statements, Pull Request scaffolders, and automated branch naming via `git diff` analyses.
+- **Infographic Design Engine**: Generate professional prompts natively in 9 styles with automatic visual previews and language translations.
+- **Gemini & NotebookLM Image Polisher**: Smartly strip away AI watermarks and overlay your own custom signatures using client-side pixel manipulation operations.
 
 ---
 
@@ -307,9 +188,10 @@ A client-side tool to manipulate watermarks on images.
 
 ## Technical Documentation
 
-- [Gemini Watermark Removal Logic](doc/gemini-watermark-removal.md)
-- [Watermark Addition & Font Handling](doc/watermark-addition.md)
-- [UI Resolution: Marquee Text Cutoff](doc/marquee_fix.md)
+- [Gemini Watermark Removal Logic](docs/gemini-watermark-removal.md)
+- [NotebookLM Watermark Removal Logic](docs/notebooklm-watermark-removal.md)
+- [Watermark Addition & Font Handling](docs/watermark-addition.md)
+- [UI Resolution: Marquee Text Cutoff](docs/marquee_fix.md)
 
 
 ## Development & Contribution

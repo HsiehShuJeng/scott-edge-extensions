@@ -34,8 +34,8 @@ describe('Watermark HTML Content Verification', () => {
     });
 
     it('should have rotation buttons', () => {
-        const btn45 = document.getElementById('wm-angle-45');
-        const btnNeg45 = document.getElementById('wm-angle-neg-45');
+        const btn45 = document.querySelector('button[data-value="45"]');
+        const btnNeg45 = document.querySelector('button[data-value="-45"]');
 
         expect(btn45).toBeTruthy();
         expect(btn45.textContent).toContain('45°');
