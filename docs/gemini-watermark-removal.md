@@ -24,9 +24,8 @@ $$ Original = \frac{Watermarked - \alpha \times Logo}{1 - \alpha} $$
 The implementation involves several steps handled by the `WatermarkEngine`:
 
 1.  **Configuration Detection**:
-    -   The tool checks the input image dimensions.
-    -   If dimensions are > 1024x1024, it assumes a **96x96px** watermark.
-    -   Otherwise, it uses a **48x48px** watermark.
+    -   The tool dynamically checks for both possible Gemini watermark sizes (**96x96px** and **48x48px**).
+    -   Instead of strictly relying on image dimensions, it tests both configurations and selects the one with the highest correlation to the image data.
 
 2.  **Smart Detection (Pearson Correlation)**:
     -   Before attempting removal, the tool verifies if the watermark is actually present.
