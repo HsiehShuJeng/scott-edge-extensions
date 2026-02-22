@@ -11,29 +11,21 @@ import { removeWatermark } from './blendModes.js';
 const BG_48_PATH = '../../images/bg_48.png';
 const BG_96_PATH = '../../images/bg_96.png';
 
-/**
- * Detect watermark configuration based on image size
- * @param {number} imageWidth - Image width
- * @param {number} imageHeight - Image height
- * @returns {Object} Watermark configuration {logoSize, marginRight, marginBottom}
- */
 export function detectWatermarkConfig(imageWidth, imageHeight) {
-    // Gemini's watermark rules:
-    // If both image width and height are greater than 1024, use 96×96 watermark
-    // Otherwise, use 48×48 watermark
-    if (imageWidth > 1024 && imageHeight > 1024) {
-        return {
+    // Gemini's watermark rules are somewhat dynamic based on image orientation and dimensions.
+    // Instead of strict rules, return both possible configurations to test.
+    return [
+        {
             logoSize: 96,
             marginRight: 64,
             marginBottom: 64
-        };
-    } else {
-        return {
+        },
+        {
             logoSize: 48,
             marginRight: 32,
             marginBottom: 32
-        };
-    }
+        }
+    ];
 }
 
 /**
@@ -182,10 +174,10 @@ export class WatermarkEngine {
 
         const correlation = numerator / denominator;
 
-        // console.log(`Watermark Correlation: ${correlation.toFixed(4)}`);
-
-        // Use configurable threshold
-        return correlation > threshold;
+        return {
+            detected: correlation > threshold,
+            correlation: correlation
+        };
     }
 
     /**
@@ -208,48 +200,53 @@ export class WatermarkEngine {
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
         // Detect watermark configuration
-        const config = detectWatermarkConfig(canvas.width, canvas.height);
-        const position = calculateWatermarkPosition(canvas.width, canvas.height, config);
+        const configs = detectWatermarkConfig(canvas.width, canvas.height);
+        let bestCorrelation = -Infinity;
+        let chosenPosition = null;
+        let chosenAlphaMap = null;
+        let isDetected = false;
 
-        // Get alpha map for watermark size
-        const alphaMap = await this.getAlphaMap(config.logoSize);
+        // Try configurations to find the best match
+        for (const config of configs) {
+            const position = calculateWatermarkPosition(canvas.width, canvas.height, config);
+            const alphaMap = await this.getAlphaMap(config.logoSize);
 
-        // Extract watermark region for detection
-        const watermarkCtx = document.createElement('canvas').getContext('2d');
-        watermarkCtx.canvas.width = config.logoSize;
-        watermarkCtx.canvas.height = config.logoSize;
-        watermarkCtx.drawImage(
-            canvas,
-            position.x, position.y, position.width, position.height,
-            0, 0, config.logoSize, config.logoSize
-        );
-        const watermarkRegionData = watermarkCtx.getImageData(0, 0, config.logoSize, config.logoSize);
+            // Extract watermark region for detection
+            const watermarkCtx = document.createElement('canvas').getContext('2d');
+            watermarkCtx.canvas.width = config.logoSize;
+            watermarkCtx.canvas.height = config.logoSize;
+            watermarkCtx.drawImage(
+                canvas,
+                position.x, position.y, position.width, position.height,
+                0, 0, config.logoSize, config.logoSize
+            );
+            const watermarkRegionData = watermarkCtx.getImageData(0, 0, config.logoSize, config.logoSize);
 
-        // Perform smart detection with custom threshold
-        const isDetected = this.detectWatermark(watermarkRegionData, alphaMap, threshold);
+            const result = this.detectWatermark(watermarkRegionData, alphaMap, threshold);
 
-        if (isDetected) {
-            // Remove watermark from image data only if detected
-            removeWatermark(imageData, alphaMap, position);
+            if (result.correlation > bestCorrelation) {
+                bestCorrelation = result.correlation;
+                chosenPosition = position;
+                chosenAlphaMap = alphaMap;
+            }
+            if (result.detected) {
+                isDetected = true;
+            }
+        }
+
+        if (isDetected && chosenPosition && chosenAlphaMap) {
+            // Remove watermark from image data
+            removeWatermark(imageData, chosenAlphaMap, chosenPosition);
             // Write processed image data back to canvas
             ctx.putImageData(imageData, 0, 0);
-        } else {
-            // Optimization: If not detected, we don't strictly need to do putImageData since canvas has original,
-            // but keeping it consistent is fine. The canvas already contains the original image.
-            // We can just return the canvas as is.
         }
 
         return { canvas, detected: isDetected };
     }
 
-    /**
-     * Get watermark information (for display)
-     * @param {number} imageWidth - Image width
-     * @param {number} imageHeight - Image height
-     * @returns {Object} Watermark information {size, position, config}
-     */
     getWatermarkInfo(imageWidth, imageHeight) {
-        const config = detectWatermarkConfig(imageWidth, imageHeight);
+        const configs = detectWatermarkConfig(imageWidth, imageHeight);
+        const config = configs[0]; // just return the first for display defaults
         const position = calculateWatermarkPosition(imageWidth, imageHeight, config);
 
         return {
