@@ -907,7 +907,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     syncRange('detection-threshold-range', 'detection-threshold',
         v => (v / 100).toFixed(2),
-        v => Math.round(parseFloat(v) * 100)
+        v => Math.round(parseFloat(v) * 100),
+        true // mark as full update
     );
 
     const thresholdInput = document.getElementById('detection-threshold');
@@ -922,13 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    const thresholdRange = document.getElementById('detection-threshold-range');
-    if (thresholdRange) {
-        thresholdRange.addEventListener('input', reprocessFull);
-    }
-    if (thresholdInput) {
-        thresholdInput.addEventListener('input', reprocessFull);
-    }
+
 
     // Radio button changes to automatically update text and toggle settings opacity
     const modeRadios = document.querySelectorAll('input[name="processing-mode"]');
