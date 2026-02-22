@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.2.7](///compare/v3.2.6...v3.2.7) (2026-02-22)
+
+
+### Bug Fixes
+
+* **watermark:** adjust threshold limits and fix race condition in UI listeners e462e99
+
 ### [3.2.6](///compare/v3.2.4...v3.2.6) (2026-02-21)
 
 ### [3.2.5](///compare/v3.2.4...v3.2.5) (2026-02-21)
