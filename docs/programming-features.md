@@ -6,7 +6,7 @@ Scott's Assistant is also built to accelerate common developer workflows, focusi
 
 Open **PE → Agent Post-merge Prompt**, paste a GitHub PR link, choose an agent and scenario, adjust the tasks, then select **Generate & Copy Prompt**. Paste the resulting English plain text into Discord yourself. The default is **Miko**, **Include Discord mention** enabled, and **Standard cleanup**. **Reset** restores those defaults and clears the URL.
 
-The URL can belong to any GitHub repository. PR roots and their `/files`, `/commits` and `/checks` pages are accepted. Leading/trailing whitespace, the supported subpage, a trailing slash, query and fragment are removed from the generated PR root URL. Only HTTPS `github.com/owner/repo/pull/positive-integer` links without credentials are accepted; other trailing paths report an explicit error. The module checks format locally; “This PR has been merged:” is the user's handoff statement, not a verified GitHub merge status.
+The URL can belong to any GitHub repository. PR roots and their `/files`, `/changes`, `/commits`, `/commits/<sha>` and `/checks` pages are accepted; the commit SHA must be 7–40 hexadecimal characters. Leading/trailing whitespace, the supported subpage, a trailing slash, query and fragment are removed from the generated PR root URL. Only HTTPS `github.com/owner/repo/pull/positive-integer` links without credentials are accepted; other trailing paths report an explicit error. The module checks format locally; “This PR has been merged:” is the user's handoff statement, not a verified GitHub merge status.
 
 | Scenario | Selected tasks |
 | --- | --- |

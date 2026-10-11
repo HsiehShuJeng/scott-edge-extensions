@@ -28,7 +28,7 @@ const TASK_TEXT = Object.freeze({
 // backslashes and embedded whitespace. PR numbers stay strings, like bot IDs.
 function normalizePrUrl(value) {
   const trimmed = typeof value === 'string' ? value.trim() : '';
-  const match = /^https:\/\/github\.com\/([a-z\d][a-z\d-]*)\/([a-z\d_.-]+)\/pull\/([1-9]\d*)(?:\/(?:files|commits|checks))?\/?(?:[?#][^\s]*)?$/i.exec(trimmed);
+  const match = /^https:\/\/github\.com\/([a-z\d][a-z\d-]*)\/([a-z\d_.-]+)\/pull\/([1-9]\d*)(?:\/(?:files|changes|checks|commits(?:\/[a-f\d]{7,40})?))?\/?(?:[?#][^\s]*)?$/i.exec(trimmed);
   if (!match || ['.', '..'].includes(match[2])) return null;
   return `https://github.com/${match[1]}/${match[2]}/pull/${match[3]}`;
 }
@@ -38,7 +38,7 @@ export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks =
   const errors = {};
   const normalizedUrl = normalizePrUrl(prUrl);
   if (!normalizedUrl) {
-    errors.prUrl = 'Enter an HTTPS GitHub PR URL without credentials. Use the PR root or its /files, /commits or /checks page; other trailing paths are unsupported.';
+    errors.prUrl = 'Enter an HTTPS GitHub PR URL without credentials. Use the PR root or its /files, /changes, /checks, /commits or /commits/<sha> page; other trailing paths are unsupported.';
   }
   const agent = agents.find(candidate => candidate.key === agentKey);
   if (includeMention && !(typeof agent?.botId === 'string' && /^[1-9]\d{16,19}$/.test(agent.botId))) {
