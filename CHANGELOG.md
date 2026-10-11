@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## Unreleased
+
+### Added
+
+- Composable agent post-merge prompts in Programming Engineering, with six agents, optional Discord mentions, four editable scenarios, live previews and validated clipboard copying ([#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29)).
+
 ### [3.2.9](///compare/v3.2.8...v3.2.9) (2026-02-22)
 
 ### [3.2.8](///compare/v3.2.7...v3.2.8) (2026-02-22)

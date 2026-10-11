@@ -27,7 +27,7 @@ This browser extension provides comprehensive assistance for language learners (
 See the detailed documentation available in our `docs/` folder for specific workflows and use-cases:
 
 - [**Language Learning & Video Content**](docs/language-and-video.md): Vocabulary.com extraction, Etymonline fetching, and YouTube video AI quiz generation.
-- [**Programming & Engineering Workflows**](docs/programming-features.md): Automatic Conventional Commit statements, Pull Request scaffolders, and automated branch naming via `git diff` analyses.
+- [**Programming & Engineering Workflows**](docs/programming-features.md): Conventional Commit prompts, Pull Request scaffolders, branch naming, and composable agent post-merge prompts for Discord.
 - **Infographic Design Engine**: Generate professional prompts natively in 9 styles with automatic visual previews and language translations.
 - **Gemini & NotebookLM Image Polisher**: Smartly strip away AI watermarks and overlay your own custom signatures using client-side pixel manipulation operations.
 
@@ -40,7 +40,7 @@ See the detailed documentation available in our `docs/` folder for specific work
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Multi-language Support**: Dedicated sections for English and Korean learning in the Language tab
-- **Programming Tools**: Comprehensive development tools in the PE tab including commit analysis, PR creation, and branch naming
+- **Programming Tools**: PE tools for commit analysis, PR creation, branch naming, and [agent post-merge handoffs](docs/programming-features.md#agent-post-merge-prompt)
 - **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages and generating YouTube quiz content
 - **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
