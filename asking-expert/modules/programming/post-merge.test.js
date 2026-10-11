@@ -48,12 +48,20 @@ describe('post-merge prompt contract', () => {
     expect(result.text).not.toContain('?');
   });
 
+  it.each(['files', 'commits', 'checks'])('normalizes the %s PR subpage to its root', tab => {
+    for (const suffix of ['', '/', '?tab=files#discussion', '/?tab=files#discussion']) {
+      const result = formatPostMergePrompt(input({ prUrl: `  ${central}/${tab}${suffix}  ` }));
+      expect(result).toEqual(formatPostMergePrompt(input()));
+    }
+  });
+
   it.each(['', ' ', 'http://github.com/o/r/pull/1', 'https://github.com.evil.test/o/r/pull/1',
     'https://www.github.com/o/r/pull/1', 'https://github.com/o/r/issues/1',
     'https://github.com//r/pull/1', 'https://github.com/o//pull/1',
     'https://github.com/o/r/pull/0', 'https://github.com/o/r/pull/-1',
     'https://github.com/o/r/pull/1.2', 'https://github.com/o/r/pull/abc',
-    'https://github.com/o/r/pull/01', 'https://github.com/o/r/pull/1/files',
+    'https://github.com/o/r/pull/01', 'https://github.com/o/r/pull/1/unknown',
+    'https://github.com/o/r/pull/1/files/extra', 'https://github.com/o/r/pull/1/files/../checks',
     'https://user:pass@github.com/o/r/pull/1', 'https://github.com:444/o/r/pull/1',
     'https://github.com/o/r/pull/1\n2', 'https://github.com/o/../r/pull/1',
   ])('rejects malformed URLs: %s', prUrl => {

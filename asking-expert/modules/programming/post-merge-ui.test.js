@@ -60,6 +60,16 @@ describe('post-merge PE form', () => {
     expect(el('url').value).toContain('?tab=files');
   });
 
+  it.each(['files', 'commits', 'checks'])('copies the canonical root for a %s PR subpage', tab => {
+    change('url', `${prUrl}/${tab}/?view=1#discussion`);
+    const expected = formatPostMergePrompt({
+      agentKey: 'miko', includeMention: true, prUrl, tasks: PRESETS.standard.tasks,
+    }).text;
+    expect(el('preview').value).toBe(expected);
+    copy();
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(expected);
+  });
+
   it.each(['thread', 'skip-adapters', 'thorough', 'standard'])('applies %s without changing URL, agent or mention', preset => {
     change('url', prUrl);
     change('agent', 'jolene');
