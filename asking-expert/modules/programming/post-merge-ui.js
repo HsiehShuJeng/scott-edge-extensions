@@ -15,6 +15,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   const taskControls = [el('cleanup'), el('workflow'), el('adapters'), el('review'), el('title')];
   let submitted = false;
   let copying = false;
+  let revision = 0;
   const readTasks = () => ({
     cleanup: el('cleanup').checked,
     checkWorkflow: el('workflow').value === 'check',
@@ -64,6 +65,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   el('preset').append(custom);
 
   const reset = () => {
+    revision++;
     submitted = false;
     el('agent').value = DEFAULT_AGENT;
     el('mention').checked = true;
@@ -74,10 +76,12 @@ export function setupPostMergeGenerator(agents = AGENTS) {
     refresh();
   };
   form.addEventListener('input', () => {
+    revision++;
     el('clipboard-status').textContent = '';
     refresh();
   });
   form.addEventListener('change', event => {
+    revision++;
     if (event.target === el('preset') && PRESETS[el('preset').value]) {
       applyPreset(el('preset').value);
     } else if (taskControls.includes(event.target)) {
@@ -102,6 +106,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
     }
     copying = true;
     el('copy').disabled = true;
+    const copyRevision = revision;
     try {
       if (typeof navigator.clipboard?.writeText !== 'function') {
         throw new Error('Clipboard API is unavailable');
@@ -109,9 +114,11 @@ export function setupPostMergeGenerator(agents = AGENTS) {
       // writeText resolves only after the clipboard is updated:
       // https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText
       await navigator.clipboard.writeText(result.text);
+      if (copyRevision !== revision) return;
       el('clipboard-status').textContent = 'Prompt copied.';
       showNotification('Post-merge prompt copied!', false, 'Programming Engineering');
     } catch (error) {
+      if (copyRevision !== revision) return;
       const message = `Could not copy prompt (${error?.message || 'clipboard write failed'}); copy the preview manually.`;
       el('clipboard-status').textContent = message;
       showNotification(message, true);

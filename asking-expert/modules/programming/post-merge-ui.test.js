@@ -70,6 +70,40 @@ describe('post-merge PE form', () => {
     expect(writeText).toHaveBeenCalledExactlyOnceWith(expected);
   });
 
+  it.each(['URL', 'scenario', 'Reset', 'agent', 'mention', 'task', 'edit then restore']
+    .flatMap(edit => ['fulfill', 'reject'].map(outcome => [edit, outcome])))
+  ('ignores stale clipboard feedback after %s with delayed %s', async (edit, outcome) => {
+    let fulfill, reject;
+    writeText.mockImplementation(() => new Promise((resolve, fail) => {
+      fulfill = resolve;
+      reject = fail;
+    }));
+    change('url', prUrl);
+    const copied = el('preview').value;
+    copy();
+    const edits = {
+      URL: () => change('url', 'https://github.com/example/repo/pull/2'),
+      scenario: () => change('preset', 'thorough'),
+      Reset: () => el('reset').click(),
+      agent: () => change('agent', 'jolene'),
+      mention: () => change('mention', false),
+      task: () => change('cleanup', false),
+      'edit then restore': () => {
+        change('url', 'https://github.com/example/repo/pull/2');
+        change('url', prUrl);
+      },
+    };
+    edits[edit]();
+    const currentPreview = el('preview').value;
+    if (outcome === 'fulfill') fulfill();
+    else reject(new Error('late permission denial'));
+    await vi.waitFor(() => expect(el('copy').disabled).toBe(false));
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(copied);
+    expect(el('preview').value).toBe(currentPreview);
+    expect(el('clipboard-status').textContent).toBe('');
+    expect(showNotification).not.toHaveBeenCalled();
+  });
+
   it.each(['thread', 'skip-adapters', 'thorough', 'standard'])('applies %s without changing URL, agent or mention', preset => {
     change('url', prUrl);
     change('agent', 'jolene');
