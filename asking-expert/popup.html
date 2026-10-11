@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="styles/popup-flags.css">
     <link rel="stylesheet" href="styles/popup-commit.css">
     <link rel="stylesheet" href="styles/popup-development-routines.css">
+    <link rel="stylesheet" href="styles/popup-post-merge.css">
     <link rel="stylesheet" href="styles/popup-tabs.css">
     <link rel="stylesheet" href="styles/popup-design.css">
 </head>
@@ -221,6 +222,57 @@
                     aria-label="Generate pull request command">Generate PR Command</button>
             </div>
         </div>
+
+        <form id="post-merge-form" class="post-merge-panel" novalidate>
+            <h3>Agent Post-merge Prompt</h3>
+            <p class="post-merge-help">Paste a merged PR link, choose tasks, then copy the prompt for Discord.</p>
+            <label for="post-merge-url">GitHub PR URL (required)</label>
+            <input id="post-merge-url" class="input-control" type="text" inputmode="url" required
+                placeholder="https://github.com/owner/repo/pull/123" aria-describedby="post-merge-url-error">
+            <p id="post-merge-url-error" class="post-merge-error" aria-live="polite"></p>
+
+            <label for="post-merge-agent">Agent</label>
+            <select id="post-merge-agent" class="dropdown input-control" aria-describedby="post-merge-agent-error"></select>
+            <label for="post-merge-mention" class="post-merge-check">
+                <input id="post-merge-mention" type="checkbox" checked> Include Discord mention
+            </label>
+            <p id="post-merge-agent-error" class="post-merge-error" aria-live="polite"></p>
+
+            <label for="post-merge-preset">Scenario</label>
+            <select id="post-merge-preset" class="dropdown input-control"></select>
+            <fieldset id="post-merge-tasks" aria-describedby="post-merge-tasks-error">
+                <legend>Tasks</legend>
+                <label for="post-merge-cleanup" class="post-merge-check">
+                    <input id="post-merge-cleanup" type="checkbox" checked> Perform cleanup
+                </label>
+                <label for="post-merge-workflow">Post-merge workflow</label>
+                <select id="post-merge-workflow" class="dropdown input-control">
+                    <option value="default">Default / no extra instruction</option>
+                    <option value="check">Check repository requirements</option>
+                </select>
+                <label for="post-merge-adapters">Adapter scripts</label>
+                <select id="post-merge-adapters" class="dropdown input-control">
+                    <option value="default">Default / no extra instruction</option>
+                    <option value="skip">Do not execute</option>
+                </select>
+                <label for="post-merge-review" class="post-merge-check">
+                    <input id="post-merge-review" type="checkbox"> Review unchecked items
+                </label>
+                <label for="post-merge-title" class="post-merge-check">
+                    <input id="post-merge-title" type="checkbox" checked> Update Discord thread title
+                </label>
+                <p id="post-merge-tasks-error" class="post-merge-error" aria-live="polite"></p>
+            </fieldset>
+
+            <label for="post-merge-preview">Prompt preview</label>
+            <textarea id="post-merge-preview" class="input-control" rows="8" readonly
+                placeholder="Enter a valid PR URL and select at least one task."></textarea>
+            <div class="post-merge-actions">
+                <button id="post-merge-copy" class="dev-routine-btn" type="submit">Generate &amp; Copy Prompt</button>
+                <button id="post-merge-reset" class="dev-routine-btn" type="reset">Reset</button>
+            </div>
+            <p id="post-merge-clipboard-status" class="post-merge-help" role="status"></p>
+        </form>
     </div>
 
     <!-- Tools Tab Content -->

@@ -1,6 +1,7 @@
 import { initializeUI, showNotification } from './modules/core/index.js';
 import { handleExtractQuestions, autoDetectVideoId, handleVideoIdAction, handleQuizGeneratorClick } from './modules/video/index.js';
 import { styles, generatePrompt } from './modules/design/infographic.js';
+import { setupPostMergeGenerator } from './modules/programming/post-merge-ui.js';
 
 
 /**
@@ -501,6 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupThemeToggle();
     setupTabNavigation();
     setupVideoExtractor();
+    setupPostMergeGenerator();
 
     // Setup auto-resize for textareas
     const textareas = document.querySelectorAll('#sentence, #korean-word, #pr-description, #branch-description');
