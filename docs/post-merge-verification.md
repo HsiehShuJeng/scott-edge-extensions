@@ -20,7 +20,7 @@ Used the installed **Microsoft Edge 155.0.4283.45**, extension **3.2.9**, throug
 - Simulated `NotAllowedError` rejection and simulated Clipboard API absence show failure and preserve the preview. These exercise error handling; they are not claims of naturally occurring Edge permission denial.
 - No HTTP(S) requests or uncaught popup errors were observed during the scenario flows. Runtime source inspection also confirms no OpenAI/GitHub/Discord client, command execution or auto-send in the new module.
 
-The PR evidence draft release `pr-evidence-29-agent-post-merge` contains `edge-light.png`, `edge-dark.png`, `edge-report.json`, `clipboard-text.txt` and the standalone `edge-check.cjs` reproduction script. The script uses the repository's existing Puppeteer dependency; run it from the repository root on a machine with Edge installed. It uses a task-specific evidence output directory and should be adapted for another host. The PR links the uploaded artifacts.
+Local evidence artifacts are `edge-light.png`, `edge-dark.png`, `edge-report.json`, `clipboard-text.txt` and the standalone `edge-check.cjs` reproduction script. They have not been uploaded: automatic approval review rejected external attachment upload pending explicit authorization. This does not invalidate the checks, but remote reviewers cannot inspect the local screenshots yet. The script uses the repository's existing Puppeteer dependency; run it from the repository root on a machine with Edge installed. It uses a task-specific evidence output directory and should be adapted for another host.
 
 ## Remaining manual acceptance
 
