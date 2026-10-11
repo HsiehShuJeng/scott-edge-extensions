@@ -43,14 +43,16 @@ The new verifier passed on macOS with Edge 155.0.4283.45 and extension 3.2.9: 35
 
 ## Non-blocking review follow-up (2026-10-12)
 
-Both suggestions in the [latest review](https://github.com/HsiehShuJeng/scott-edge-extensions/pull/30#issuecomment-6114830243) were adopted after checking the current source:
+Both suggestions in the [earlier review](https://github.com/HsiehShuJeng/scott-edge-extensions/pull/30#issuecomment-6114830243) were adopted after checking the current source:
 
 - `/changes` and `/commits/<sha>` now normalize to the PR root, including trailing slash, query and fragment. Commit SHA segments must contain 7–40 hexadecimal characters; malformed SHA segments and extra path segments remain rejected. Regression tests reproduce the formerly rejected URLs before the fix.
 - The Edge verifier saves each theme through the actual extension storage API and reloads the popup before capturing it, instead of switching the theme on an already rendered textarea. It verifies both foreground and background colors, waits for the existing popup notice to disappear, and waits for finite animations, fonts and two animation frames. Infinite marquee animations are excluded; canceled transitions may settle without aborting verification.
 - `npm test`: 104 tests across 6 files pass. `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass.
-- The final verifier passed three consecutive runs in isolated profiles on macOS with Edge 155.0.4283.45, Puppeteer 24.37.5 and extension 3.2.9. Each run passed all 8 checks. All three dark screenshots were inspected: the preview has a dark background and readable light text. The three dark PNGs are identical, as are the three light PNGs. Local evidence is under `/private/tmp/pr30-nonblocker-final-{1,2,3}/`; it is not uploaded or included in the source commit.
+- The final verifier passed three consecutive runs in isolated profiles on macOS with Edge 155.0.4283.45, Puppeteer 24.37.5 and extension 3.2.9. Each run passed all 8 checks. All three dark screenshots were inspected: the preview has a dark background and readable light text. The three dark PNGs are identical, as are the three light PNGs. Evidence remains local; it is not uploaded or included in the source commit.
 
-Simplification review covered the changed formatter, tests, source verifier and documentation. The existing URL validation and parameterized tests were retained; no additional abstraction or unrelated cleanup was warranted. The pre-existing lockfile mismatch is outside these two fixes. The version remains 3.2.9; the release workflow performs the version bump after merge. Manual toolbar popup and external paste acceptance still require the checks below, and the new head needs a reviewer recheck.
+Simplification review covered the changed formatter, tests, source verifier and documentation. The existing URL validation and parameterized tests were retained; no additional abstraction or unrelated cleanup was warranted. The pre-existing lockfile mismatch is outside these two fixes. The version remains 3.2.9; the release workflow performs the version bump after merge. Manual toolbar popup and external paste acceptance still require the checks below.
+
+The [subsequent review](https://github.com/HsiehShuJeng/scott-edge-extensions/pull/30#issuecomment-6114976334) rechecked head `dfbeb79` and reported matching test and screenshot results. The reviewer also reported a separate real `#theme-toggle` interaction probe in headless and headful Edge, with 12 readable dark-preview captures. That probe is review evidence, not coverage provided by the repository verifier: the verifier captures saved themes after reload and does not exercise the live toggle. Its old screenshot timing issue does not establish a product repaint defect. The review's two wording suggestions were adopted: remove the machine-specific temporary evidence path and clarify the script comment's scope.
 
 ## Remaining manual acceptance
 

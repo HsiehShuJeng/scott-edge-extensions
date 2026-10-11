@@ -103,8 +103,9 @@ async function main() {
 
     const themes = [];
     for (const dark of [false, true]) {
-      // Load the saved theme in a fresh document: a correct computed style after
-      // toggling the existing page did not reliably repaint Edge's textarea.
+      // Reload each saved theme to avoid the old script's screenshot timing issue.
+      // This loop covers saved-theme loading; live #theme-toggle checks require
+      // a separate interaction flow.
       await page.evaluate(value => chrome.storage.local.set({ theme: value ? 'dark' : 'light' }), dark);
       await page.reload();
       await page.waitForSelector('#post-merge-agent option');
