@@ -87,7 +87,7 @@ async function main() {
       assert.equal(await preview(), `<@1489873862668718240>\n\nThis PR has been merged:\n${url}\n\n${actions.join('\n')}`);
     }
     const expected = await preview();
-    for (const tab of ['files', 'commits', 'checks']) {
+    for (const tab of ['files', 'changes', 'commits', 'commits/070d9ba', 'checks']) {
       await setUrl(`${url}/${tab}/?view=1#discussion`);
       assert.equal(await preview(), expected);
     }
@@ -103,11 +103,30 @@ async function main() {
 
     const themes = [];
     for (const dark of [false, true]) {
-      await page.evaluate(value => document.body.classList.toggle('dark-theme', value), dark);
-      // Await the shared theme transitions and the existing notification fade.
+      // Load the saved theme in a fresh document: a correct computed style after
+      // toggling the existing page did not reliably repaint Edge's textarea.
+      await page.evaluate(value => chrome.storage.local.set({ theme: value ? 'dark' : 'light' }), dark);
+      await page.reload();
+      await page.waitForSelector('#post-merge-agent option');
+      await page.click('[data-tab="programming"]');
+      await setUrl(url);
+      assert.equal(await preview(), expected);
+      await page.waitForFunction(value => {
+        const style = getComputedStyle(document.getElementById('post-merge-preview'));
+        return document.body.classList.contains('dark-theme') === value &&
+          style.backgroundColor === (value ? 'rgb(51, 51, 51)' : 'rgb(255, 255, 255)') &&
+          style.color === (value ? 'rgb(240, 240, 240)' : 'rgb(51, 51, 51)');
+      }, {}, dark);
+      // The popup's existing internal-page notice must not cover the evidence.
       await page.waitForFunction(() => ![...document.body.children].some(el => el.style.position === 'fixed' && el.style.zIndex === '10000'));
-      await page.waitForFunction(value => getComputedStyle(document.getElementById('post-merge-preview')).backgroundColor ===
-        (value ? 'rgb(51, 51, 51)' : 'rgb(255, 255, 255)'), {}, dark);
+      await page.evaluate(async () => {
+        // A replaced CSS transition rejects its finished promise when canceled.
+        await Promise.allSettled(document.getAnimations()
+          .filter(animation => Number.isFinite(animation.effect.getComputedTiming().endTime))
+          .map(animation => animation.finished));
+        await document.fonts.ready;
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      });
       const metrics = await page.evaluate(() => ({
         clientWidth: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth,
         dropdownRepeat: getComputedStyle(document.getElementById('post-merge-agent')).backgroundRepeat,
@@ -116,7 +135,7 @@ async function main() {
       assert.equal(metrics.scrollWidth, metrics.clientWidth);
       assert.equal(metrics.dropdownRepeat, 'no-repeat');
       assert.equal(metrics.dropdownSize, '10px 10px');
-      themes.push({ dark, ...metrics });
+      themes.push({ dark, loadedFromSavedTheme: true, ...metrics });
       await page.screenshot({ path: path.join(output, dark ? 'edge-dark.png' : 'edge-light.png'), fullPage: true });
     }
     report.themes = themes;
@@ -168,4 +187,4 @@ async function main() {
   }
 }
 
-main().catch(error => { console.error(error.message); process.exitCode = 1; });
+main().catch(error => { console.error(error); process.exitCode = 1; });
