@@ -17,11 +17,20 @@
   font-size: 14px;
 }
 
-.post-merge-panel select {
+.post-merge-panel select.dropdown {
   padding: 0.5em 1.8em 0.5em 0.6em;
   border-radius: 8px;
   font: inherit;
   margin-bottom: 0.7em;
+  /* Shared activity styles reset background shorthand; restore the arrow here. */
+  background-image: var(--dropdown-arrow-svg-light);
+  background-repeat: no-repeat;
+  background-position: calc(100% - 7px) center;
+  background-size: 10px 10px;
+}
+
+.dark-theme .post-merge-panel select.dropdown {
+  background-image: var(--dropdown-arrow-svg-dark);
 }
 
 .post-merge-panel fieldset {
