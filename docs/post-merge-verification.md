@@ -17,6 +17,7 @@ Used the installed **Microsoft Edge 155.0.4283.45**, extension **3.2.9**, throug
 - The four golden-output scenarios pass against the rendered form.
 - Real Clipboard API write and read-back match the preview exactly, including the literal mention and newlines. Clipboard read permission was granted only to the temporary test profile for evidence collection; the shipped manifest is unchanged.
 - Light/dark screenshots were inspected. At 350px, `scrollWidth === clientWidth === 350`; preview colors are `#333` on `#fff` in light mode and `#f0f0f0` on `#333` in dark mode. Dropdown arrows use a single non-repeating 10px image in both themes. A shared background-shorthand reset initially tiled the dark arrow; the fix is scoped to this module.
+- URL and all-tasks-off error text use a scoped dark red in light mode (6.50:1 against white), preserving the shared dark-theme error color. This addresses a contrast issue found in the independent review; rendered error paths were checked in both themes.
 - Simulated `NotAllowedError` rejection and simulated Clipboard API absence show failure and preserve the preview. These exercise error handling; they are not claims of naturally occurring Edge permission denial.
 - No HTTP(S) requests or uncaught popup errors were observed during the scenario flows. Runtime source inspection also confirms no OpenAI/GitHub/Discord client, command execution or auto-send in the new module.
 

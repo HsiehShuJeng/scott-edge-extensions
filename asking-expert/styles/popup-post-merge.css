@@ -65,6 +65,10 @@
 }
 
 .post-merge-error {
+  color: #b02a37;
+}
+
+.dark-theme .post-merge-error {
   color: var(--error-color);
 }
 
