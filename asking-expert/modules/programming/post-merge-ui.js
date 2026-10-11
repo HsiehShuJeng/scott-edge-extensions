@@ -64,31 +64,28 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   custom.disabled = true;
   el('preset').append(custom);
 
-  const reset = () => {
+  const invalidate = () => {
     revision++;
+    el('clipboard-status').textContent = '';
+    refresh();
+  };
+  const reset = () => {
     submitted = false;
     el('agent').value = DEFAULT_AGENT;
     el('mention').checked = true;
     el('url').value = '';
     el('preset').value = DEFAULT_PRESET;
     applyPreset(DEFAULT_PRESET);
-    el('clipboard-status').textContent = '';
-    refresh();
+    invalidate();
   };
-  form.addEventListener('input', () => {
-    revision++;
-    el('clipboard-status').textContent = '';
-    refresh();
-  });
+  form.addEventListener('input', invalidate);
   form.addEventListener('change', event => {
-    revision++;
     if (event.target === el('preset') && PRESETS[el('preset').value]) {
       applyPreset(el('preset').value);
     } else if (taskControls.includes(event.target)) {
       el('preset').value = 'custom';
     }
-    el('clipboard-status').textContent = '';
-    refresh();
+    invalidate();
   });
   form.addEventListener('reset', event => {
     event.preventDefault();
