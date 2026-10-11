@@ -1,6 +1,6 @@
 # Agent Post-merge Prompt Verification
 
-Verification date: 2026-10-11. Feature scope and identifier provenance are in [programming-features.md](programming-features.md#agent-post-merge-prompt); acceptance requirements are in [#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29).
+Feature scope and identifier provenance are in [programming-features.md](programming-features.md#agent-post-merge-prompt); acceptance requirements are in [#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29). Original verification below is dated 2026-10-11; the maintainer follow-up is dated 2026-10-12.
 
 ## Automated checks
 
@@ -21,7 +21,25 @@ Used the installed **Microsoft Edge 155.0.4283.45**, extension **3.2.9**, throug
 - Simulated `NotAllowedError` rejection and simulated Clipboard API absence show failure and preserve the preview. These exercise error handling; they are not claims of naturally occurring Edge permission denial.
 - No HTTP(S) requests or uncaught popup errors were observed during the scenario flows. Runtime source inspection also confirms no OpenAI/GitHub/Discord client, command execution or auto-send in the new module.
 
-Local evidence artifacts are `edge-light.png`, `edge-dark.png`, `edge-report.json`, `clipboard-text.txt` and the standalone `edge-check.cjs` reproduction script. They have not been uploaded: automatic approval review rejected external attachment upload pending explicit authorization. This does not invalidate the checks, but remote reviewers cannot inspect the local screenshots yet. The script uses the repository's existing Puppeteer dependency; run it from the repository root on a machine with Edge installed. It uses a task-specific evidence output directory and should be adapted for another host.
+The original local screenshots, report, clipboard sample and host-specific script were not uploaded: automatic approval review rejected external attachment upload pending explicit authorization. This does not invalidate those historical checks, but remote reviewers cannot inspect those screenshots. The reproducible source tool added below replaces the instruction to run a script unavailable in the repository.
+
+## Maintainer follow-up (2026-10-12)
+
+All five [maintainer suggestions](https://github.com/HsiehShuJeng/scott-edge-extensions/pull/30#issuecomment-6110808589) were adopted after source verification. The formatter now requires an actual action and normalizes supported PR subpages; the UI suppresses obsolete clipboard completion/rejection feedback after any field edit or Reset. Release notes use the existing conventional-commit generator instead of a hand-written `Unreleased` header.
+
+- `npm test`: 95 tests across 6 files pass. New cases cover adapter-only rejection, `/files`/`commits`/`checks` normalization with query/fragment/trailing slash, and 14 delayed clipboard fulfill/reject combinations, including editing then restoring the same preview.
+- `npm run lint` passes; `node --check scripts/check-post-merge-edge.cjs` passes.
+- [scripts/check-post-merge-edge.cjs](../scripts/check-post-merge-edge.cjs) is a portable source verifier using the existing Puppeteer dependency and an isolated temporary Edge profile. It exercises the actual extension page, agent defaults, four exact scenarios, URL normalization, Tab/Space/Enter, real Clipboard API read-back, delayed clipboard fulfillment/rejection after Reset, adapter-only rejection, theme layout and request/error observation.
+
+Run from the repository root after installing dependencies:
+
+```sh
+node scripts/check-post-merge-edge.cjs --out /tmp/pe-post-merge-evidence
+```
+
+Use `--edge /path/to/msedge` if Edge is not in a detected installation location. With no `--out`, the tool creates a temporary local output directory. Output must be outside the repository; generated PNGs and JSON are local evidence, not source files to commit. The script loads an unpacked extension and writes format-only fixture text to the clipboard. It grants read permission only in its temporary test profile to compare the write with the preview. Loading uses [Puppeteer's extension API](https://pptr.dev/guides/chrome-extensions#at-runtime); the installed 24.37.5 API was checked before use.
+
+The new verifier passed on macOS with Edge 155.0.4283.45 and extension 3.2.9: 350px light/dark layouts have no horizontal overflow, clipboard read-back equals the preview, both simulated late completion paths preserve Reset, adapter-only copying is blocked, and no HTTP(S) requests or uncaught page errors were observed. Other operating systems and the native toolbar popup are not claimed verified. The screenshots/report remain local.
 
 ## Remaining manual acceptance
 
