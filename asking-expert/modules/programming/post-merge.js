@@ -49,7 +49,9 @@ export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks =
     .map(([key, sentence]) => key === 'skipAdapters' && tasks.checkWorkflow === true
       ? `${sentence} The adapter-script exclusion takes precedence; report any resulting incomplete steps.`
       : sentence);
-  if (!actions.length) errors.tasks = 'Select at least one post-merge task.';
+  if (!Object.keys(TASK_TEXT).some(key => key !== 'skipAdapters' && tasks[key] === true)) {
+    errors.tasks = 'Select at least one post-merge action: cleanup, workflow check, checklist review or thread title.';
+  }
   if (Object.keys(errors).length) return { ok: false, errors };
   const body = `This PR has been merged:\n${normalizedUrl}\n\n${actions.join('\n')}`;
   return { ok: true, text: includeMention ? `<@${agent.botId}>\n\n${body}` : body };

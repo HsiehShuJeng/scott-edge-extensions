@@ -15,7 +15,7 @@ The URL can belong to any GitHub repository. Leading/trailing whitespace, a trai
 | Thorough post-merge review | Cleanup, check repository post-merge requirements, review unchecked PR/linked-issue description and comment items, update the title |
 | Standard cleanup | Cleanup, update the title |
 
-Scenarios change only task options: the PR URL, agent and mention preference stay intact. Editing any task marks the scenario **Custom**. Workflow and adapter **Default / no extra instruction** add no execution command. Selecting a workflow check together with an adapter exclusion explicitly gives the exclusion precedence and asks the agent to report incomplete steps. At least one task is required.
+Scenarios change only task options: the PR URL, agent and mention preference stay intact. Editing any task marks the scenario **Custom**. Workflow and adapter **Default / no extra instruction** add no execution command. Selecting a workflow check together with an adapter exclusion explicitly gives the exclusion precedence and asks the agent to report incomplete steps. At least one action is required: cleanup, workflow check, checklist review or thread-title update. An adapter restriction alone does not give the agent any work and cannot be copied.
 
 The selectable preview updates immediately and clears when input becomes invalid. Copying writes exactly the valid preview, with real newlines and an optional literal `<@bot_id>` first line. Success is shown only after the Clipboard API write fulfills. If the API is unavailable or rejects the write, the input and preview remain available for manual copying. Validation errors identify the field/task and submission focuses the correction point.
 

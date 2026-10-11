@@ -79,11 +79,20 @@ describe('post-merge prompt contract', () => {
     expect(formatPostMergePrompt(input({ tasks: {} }))).toMatchObject({ ok: false, errors: { tasks: expect.any(String) } });
   });
 
+  it('rejects an adapter restriction without an action', () => {
+    expect(formatPostMergePrompt(input({ tasks: { skipAdapters: true } })))
+      .toMatchObject({ ok: false, errors: { tasks: expect.stringContaining('action') } });
+  });
+
   it('composes all 32 combinations in order with adapter precedence', () => {
     const keys = ['cleanup', 'checkWorkflow', 'skipAdapters', 'reviewUnchecked', 'updateThreadTitle'];
-    for (let mask = 1; mask < 32; mask++) {
+    for (let mask = 0; mask < 32; mask++) {
       const tasks = Object.fromEntries(keys.map((key, index) => [key, Boolean(mask & (1 << index))]));
       const result = formatPostMergePrompt(input({ tasks }));
+      if (!keys.some(key => key !== 'skipAdapters' && tasks[key])) {
+        expect(result).toMatchObject({ ok: false, errors: { tasks: expect.any(String) } });
+        continue;
+      }
       expect(result.ok).toBe(true);
       const actions = result.text.split('\n\n')[2].split('\n');
       expect(actions).toHaveLength(keys.filter(key => tasks[key]).length);

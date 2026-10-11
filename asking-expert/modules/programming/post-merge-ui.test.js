@@ -118,9 +118,20 @@ describe('post-merge PE form', () => {
     change('title', false);
     copy();
     expect(writeText).not.toHaveBeenCalled();
-    expect(el('tasks-error').textContent).toBe('Select at least one post-merge task.');
+    expect(el('tasks-error').textContent).toContain('at least one post-merge action');
     expect(el('preview').value).toBe('');
     expect(document.activeElement).toBe(el('cleanup'));
+  });
+
+  it('never copies an adapter restriction without an action', () => {
+    change('url', prUrl);
+    change('cleanup', false);
+    change('title', false);
+    change('adapters', 'skip');
+    copy();
+    expect(writeText).not.toHaveBeenCalled();
+    expect(el('tasks-error').textContent).toContain('at least one post-merge action');
+    expect(el('preview').value).toBe('');
   });
 
   it('allows a missing bot ID only after mention is turned off', () => {
