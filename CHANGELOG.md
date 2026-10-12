@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v3.1.0...v3.3.0) (2026-10-12)
+
+
+### Features
+
+* enable signature watermark for PDFs ([818b6c2](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/818b6c2ab224db60fa7be5cdc0b62bdf0caba3d9))
+* **pe:** accept common PR subpage links ([8cda5b1](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/8cda5b1b1f7efc6ea785fc52e652ea8638096587))
+* **pe:** add post-merge prompt controls ([3f737aa](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/3f737aa2893a9768debc1a1d4f9c14faf13a551f))
+* **pe:** compose post-merge agent prompts ([c46ce2e](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/c46ce2e2ccba7338dd46001e2bde46d6ecb37a03))
+
+
+### Bug Fixes
+
+* keep signature watermark controls enabled in NotebookLM mode ([ce7995a](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/ce7995a6430de027ab4993a17fad5bbb5296015d))
+* **pe:** ignore stale clipboard feedback ([c03be3d](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/c03be3d057cea179b1dff9d8e6ed05681436fadf))
+* **pe:** improve validation error contrast ([16d2db0](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/16d2db01b9532b7915513a67a4d8b1db09e843c6))
+* **pe:** normalize additional PR subpages ([f73e8d2](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/f73e8d24071e91f9be8a176abf3737f6a74b289e))
+* **pe:** prevent tiled dropdown arrows ([2d581e6](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/2d581e62c33e9395adb2e0128de88d4654490966))
+* **pe:** require a post-merge action ([064a39d](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/064a39dfbfcc51b9a375a36b357f6f7010e2fda7))
+* re-render PDF preview on signature setting changes ([1f1e76b](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/1f1e76ba83c90abcaedf46e864240bb1749292a8))
+* update preview on all signature parameter changes ([d5b02c7](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/d5b02c7a1e7811c8d047689533caf6294799c06a))
+* **watermark:** adjust threshold limits and fix race condition in UI listeners ([e462e99](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/e462e9904a418824cd1854fddf522e9e3e9f3d20))
+* **watermark:** dynamically fallback to 96x96 mask size for sub-1024px images ([424ad1a](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/424ad1a5637c6eac7051289907f609ee08ee8a28))
+
 ### [3.2.9](///compare/v3.2.8...v3.2.9) (2026-02-22)
 
 ### [3.2.8](///compare/v3.2.7...v3.2.8) (2026-02-22)
