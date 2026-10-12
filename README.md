@@ -263,7 +263,7 @@ graph TD
 2. `node scripts/sync-version.js`
 3. `git add asking-expert/manifest.json`
 4. `git commit --amend --no-edit`
-5. `git tag -f vX.X.X`
+5. `git tag -f -a vX.X.X -m "Release vX.X.X"` (keep the tag annotated for `--follow-tags`)
 6. `git push --follow-tags origin <branch-name>`
 
 ### Modular CSS & UI Consistency

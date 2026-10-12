@@ -14,8 +14,9 @@ description: Release flow (npm release + manifest sync + amend + tag + push)
 4. Amend the release commit to include the manifest update
    - `git commit --amend --no-edit`
 
-5. Update the git tag to point to the amended commit
-   - `git tag -f v$(node -p "require('./package.json').version")`
+5. Update the annotated git tag to point to the amended commit
+   - `git tag -f -a v$(node -p "require('./package.json').version") -m "Release v$(node -p "require('./package.json').version")"`
+   - Keep the tag annotated so `git push --follow-tags` includes it.
 
 6. Push the commit and the tag
    - `git push --follow-tags origin $(git branch --show-current)`
