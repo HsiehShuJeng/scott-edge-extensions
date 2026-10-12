@@ -1,5 +1,12 @@
 # Lessons Learned: Robust Vocabulary.com Extension Implementation
 
+## Agent Post-merge Prompt Composition
+
+- Keep prompt formatting pure and separate from clipboard/notification handling so exact output and validation can be tested without browser side effects.
+- Store Discord snowflakes as strings; identifier provenance and historical verification limits belong in [programming documentation](docs/programming-features.md#agent-identifiers).
+- Presets set explicit task options. Mark edited combinations as Custom so the scenario label never promises different behavior from the preview.
+- Clipboard success means the write promise fulfilled. Keep the input and selectable preview when copying fails; an automated Clipboard API read-back does not prove a human pasted into Discord.
+
 ## 1. Scenario Separation for User Experience
 - **Manual Entry Always Works:**  
   The popup logic ensures that if the "Word" field has content, "Generate Prompt" will always generate and copy the prompt, regardless of page parsing. This prevents the extension from being blocked by parsing failures.

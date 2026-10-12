@@ -1,0 +1,119 @@
+/* PE prompt form: use shared theme variables and native keyboard controls. */
+.post-merge-panel {
+  padding: 0.8em;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--main-color);
+  min-width: 0;
+}
+
+.post-merge-panel h3 {
+  margin: 0 0 0.5em;
+}
+
+.post-merge-panel label {
+  margin-bottom: 0.4em;
+  font-size: 14px;
+}
+
+.post-merge-panel select.dropdown {
+  padding: 0.5em 1.8em 0.5em 0.6em;
+  border-radius: 8px;
+  font: inherit;
+  margin-bottom: 0.7em;
+  /* Shared activity styles reset background shorthand; restore the arrow here. */
+  background-image: var(--dropdown-arrow-svg-light);
+  background-repeat: no-repeat;
+  background-position: calc(100% - 7px) center;
+  background-size: 10px 10px;
+}
+
+.dark-theme .post-merge-panel select.dropdown {
+  background-image: var(--dropdown-arrow-svg-dark);
+}
+
+.post-merge-panel fieldset {
+  min-width: 0;
+  margin: 0 0 0.7em;
+  padding: 0.6em;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.post-merge-panel .post-merge-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.7em;
+}
+
+.post-merge-check input {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.post-merge-help,
+.post-merge-error {
+  margin: 0 0 0.7em;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.post-merge-help {
+  color: var(--text-secondary);
+}
+
+.post-merge-error {
+  color: #b02a37;
+}
+
+.dark-theme .post-merge-error {
+  color: var(--error-color);
+}
+
+.post-merge-error:empty,
+#post-merge-clipboard-status:empty {
+  display: none;
+}
+
+#post-merge-preview {
+  height: 10em;
+  max-height: 16em;
+  margin-bottom: 0.7em;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.post-merge-actions {
+  display: flex;
+  gap: 0.6em;
+}
+
+.post-merge-actions .dev-routine-btn {
+  background: var(--button-bg);
+  border-color: var(--border-color);
+  color: var(--main-color);
+}
+
+#post-merge-copy {
+  flex: 3;
+}
+
+#post-merge-reset {
+  flex: 1;
+}
+
+.post-merge-panel :focus-visible {
+  outline: 2px solid var(--main-color);
+  outline-offset: 2px;
+}
+
+.post-merge-panel [aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+#post-merge-copy:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
