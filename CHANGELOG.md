@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v3.3.0...v3.4.0) (2026-10-22)
+
+
+### Features
+
+* **programming:** add agent assignment ([7048861](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/7048861fbf491414a4cfc2e729acd1ae24b8dcad)), closes [#31](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/31)
+* **programming:** refine post-merge modes ([d246135](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/d2461357e18a85b2ae746520a7f8870aed9d99e0)), closes [#31](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/31)
+
+
+### Bug Fixes
+
+* **programming:** default title to green check ([fa3a06f](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/fa3a06fb4aecff9b7cd384b6e60f6a4140cbda28)), closes [#31](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/31)
+* **video:** skip tabs without a URL ([cae9545](https://github.com/HsiehShuJeng/scott-edge-extensions/commit/cae95450b42595a525d65f386663d5c5d27b5813)), closes [#31](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/31)
+
 ## [3.3.0](https://github.com/HsiehShuJeng/scott-edge-extensions/compare/v3.1.0...v3.3.0) (2026-10-12)
 
 
