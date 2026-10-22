@@ -66,6 +66,7 @@ flowchart TD
     PRTools["PR Creation Tools"]
     BranchTools["Branch Naming Tools"]
     AssignTools["Assign to Agent (local formatter + identity registry)"]
+    PostMerge["Agent Post-merge (tasks + explicit title marker)"]
     YouTubeQuiz["YouTube Quiz Generator (youtube-quiz-generator.js)"]
 
     UI -- interacts with --> PopupJS
@@ -77,6 +78,9 @@ flowchart TD
     UI -- uses --> PRTools
     UI -- uses --> BranchTools
     PopupJS -- initializes --> AssignTools
+    PopupJS -- initializes --> PostMerge
+    UI -- uses --> PostMerge
+    PostMerge -- notifications --> Utils
     UI -- uses --> AssignTools
     AssignTools -- notifications --> Utils
     UI -- uses --> YouTubeQuiz
@@ -100,6 +104,14 @@ flowchart TD
     Start --> CommitBtn["Commit Button Click"]
     Start --> PRBtn["PR Button Click"]
     Start --> BranchBtn["Branch Button Click"]
+    Start --> PostMergeInput["Post-merge: PR URL + Agent + Tasks"]
+    PostMergeInput --> TitleTask{"Update Thread Title?"}
+    TitleTask --> |"Yes"| Marker["Default 🔄; ✅ only when selected"]
+    TitleTask --> |"No (Thorough preset)"| FormatMerge["Format Selected Tasks Locally"]
+    Marker --> FormatMerge
+    FormatMerge --> CopyMerge["Copy Preview to Clipboard"]
+    CopyMerge --> |"Fulfilled"| Notify
+    CopyMerge --> |"Rejected or unavailable"| ManualAssign
     Start --> AssignBtn["Assign: Choose GitHub Identity"]
     AssignBtn --> AssignPrompt["Format Dispatch Text Locally"]
     AssignPrompt --> CopyAssign["Copy Preview to Clipboard"]
@@ -167,6 +179,8 @@ flowchart LR
     subgraph "Extension_Popup[Extension Popup]"
         PopupUI["Popup UI<br/>(popup.html, ui.js)"]
         Assign["PE Assign Formatter + Identity Registry"]
+        PostMerge["PE Post-merge Formatter + Tasks + Title Marker"]
+        PopupUI -- "Local post-merge text" --> PostMerge
         PopupUI -- "Local dispatch text" --> Assign
     end
     PopupUI -- "chrome.scripting.executeScript + sendMessage" --> ContentScript
@@ -190,7 +204,8 @@ flowchart LR
 | Tool | Input | Output |
 | --- | --- | --- |
 | Assign to Agent | GitHub identity from `identities.js` | Local dispatch sentence with the selected login |
-| Agent Post-merge Prompt | PR URL, agent and task options | Local post-merge handoff for manual Discord paste |
+| Agent Post-merge Prompt | PR URL, agent and task options | Local handoff; title marker defaults to 🔄, ✅ requires selection |
+| Thorough post-merge review | Cleanup, workflow/adapter execution and unchecked-item review | No thread-title instruction |
 
 <!-- ... -->
 

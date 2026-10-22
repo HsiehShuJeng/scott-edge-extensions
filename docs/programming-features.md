@@ -16,7 +16,7 @@ Success (`Prompt copied.`) appears only after the clipboard write fulfills. Reje
 
 ## Agent Post-merge Prompt
 
-Open **PE → Agent Post-merge Prompt**, paste a GitHub PR link, choose an agent and scenario, adjust the tasks, then select **Generate & Copy Prompt**. Paste the resulting English plain text into Discord yourself. The default is **Miko**, **Include Discord mention** enabled, and **Standard cleanup**. **Reset** restores those defaults and clears the URL.
+Open **PE → Agent Post-merge Prompt**, paste a GitHub PR link, choose an agent and scenario, adjust the tasks, then select **Generate & Copy Prompt**. Paste the resulting English plain text into Discord yourself. The default is **Miko**, **Include Discord mention** enabled, and **Standard cleanup** with the **🔄 in progress** thread-title marker. **Reset** restores those defaults and clears the URL.
 
 The URL can belong to any GitHub repository. PR roots and their `/files`, `/changes`, `/commits`, `/commits/<sha>` and `/checks` pages are accepted; the commit SHA must be 7–40 hexadecimal characters. Leading/trailing whitespace, the supported subpage, a trailing slash, query and fragment are removed from the generated PR root URL. Only HTTPS `github.com/owner/repo/pull/positive-integer` links without credentials are accepted; other trailing paths report an explicit error. The module checks format locally; “This PR has been merged:” is the user's handoff statement, not a verified GitHub merge status.
 
@@ -24,8 +24,10 @@ The URL can belong to any GitHub repository. PR roots and their `/files`, `/chan
 | --- | --- |
 | Thread title only | Update the Discord thread title |
 | Cleanup — skip adapter scripts | Cleanup, exclude adapter scripts, update the title |
-| Thorough post-merge review | Cleanup, check repository post-merge requirements, review unchecked PR/linked-issue description and comment items, update the title |
+| Thorough post-merge review | Cleanup, execute applicable repository post-merge workflow/adapter scripts, review unchecked PR/linked-issue description and comment items; no title update |
 | Standard cleanup | Cleanup, update the title |
+
+The **Update Discord thread title** task has two native radio modes: **🔄 in progress** (default) and **✅ green check** (explicit completion). The radio group stays visible but disabled when the task is off. Re-enabling the task, choosing any scenario, or using Reset restores 🔄; none silently selects ✅. Changing a mode marks the scenario **Custom**. The generated instruction names the selected prefix, rather than inferring whether the work is complete.
 
 Scenarios change only task options: the PR URL, agent and mention preference stay intact. Editing any task marks the scenario **Custom**. Workflow and adapter **Default / no extra instruction** add no execution command. Selecting a workflow check together with an adapter exclusion explicitly gives the exclusion precedence and asks the agent to report incomplete steps. At least one action is required: cleanup, workflow check, checklist review or thread-title update. An adapter restriction alone does not give the agent any work and cannot be copied.
 
@@ -38,7 +40,7 @@ This PR has been merged:
 https://github.com/HsiehShuJeng/content-summarizer/pull/63
 
 Perform the appropriate post-merge cleanup.
-Update the title of the current Discord thread to reflect the actual completion status.
+Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).
 ```
 
 This feature generates local text. It makes no OpenAI, GitHub or Discord request, executes no commands, sends no messages, and performs no actual cleanup. It requires no new credentials or extension permissions. Popup drafts are not persisted.
@@ -57,11 +59,13 @@ Provenance from [issue #29](https://github.com/HsiehShuJeng/scott-edge-extension
 
 Runtime files are `popup.html`, `popup.js`, `styles/popup-post-merge.css`, and `modules/programming/{agents,post-merge,post-merge-ui}.js`. Documentation and `*.test.js` are reference/test-only. Presets are ordinary task data consumed by a pure formatter rather than separate duplicated templates; this keeps customized combinations deterministic while matching the existing native ES-module UI. No new dependency or architecture migration is introduced.
 
-`formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks })` returns `{ ok: true, text }` or `{ ok: false, errors }`. Validation keys are `prUrl`, `agentKey` and `tasks`. Task keys and golden outputs are maintained in [formatter tests](../asking-expert/modules/programming/post-merge.test.js); clipboard, reset and preset/custom transitions are covered by [UI tests](../asking-expert/modules/programming/post-merge-ui.test.js). The real popup bootstrap and existing commit/branch/PR tools have [regression tests](../asking-expert/programming.test.js).
+`formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks, threadTitleMode })` returns `{ ok: true, text }` or `{ ok: false, errors }`. Validation keys are `prUrl`, `agentKey` and `tasks`. `threadTitleMode: 'completed'` explicitly requests ✅; omitted or unrecognized values use 🔄, and no title sentence is generated when the task is disabled. Task keys and golden outputs are maintained in [formatter tests](../asking-expert/modules/programming/post-merge.test.js); clipboard, reset, native marker radios and preset/custom transitions are covered by [UI tests](../asking-expert/modules/programming/post-merge-ui.test.js). The real popup bootstrap and existing commit/branch/PR tools have [regression tests](../asking-expert/programming.test.js).
 
-The implementation plan used three independent slices: pure formatting and agent registry; PE controls and interaction/regression tests; documentation and verification evidence. Each implementation slice was verified before its atomic commit. Run `npm test` and `npm run lint`. On npm versions resolving new unlocked peer dependencies, the existing lockfile needs `npm ci --legacy-peer-deps`; this feature does not change dependency manifests.
+The original post-merge implementation plan used three independent slices: pure formatting and agent registry; PE controls and interaction/regression tests; documentation and verification evidence. Each implementation slice was verified before its atomic commit. Run `npm test` and `npm run lint`. On npm versions resolving new unlocked peer dependencies, the existing lockfile needs `npm ci --legacy-peer-deps`; this feature does not change dependency manifests.
 
-Clipboard handling follows [the writeText promise contract](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText). Test mocking follows [Vitest's utility API](https://vitest.dev/api/vi.html#vi-stubglobal). Browser verification and its remaining manual checks are recorded in [post-merge verification](post-merge-verification.md).
+Issue #31 follows three ordered, independently verified slices: (1) registry-driven assignment with formatter/UI/clipboard tests; (2) revised Thorough workflow and explicit title markers with golden/UI tests; (3) browser verification and synchronized reference documentation. Acceptance is exact assignment text, extensible identity selection, workflow/adapter execution without a Thorough title line, and ✅ only after explicit selection. No dependency, storage format or permission change is needed.
+
+Clipboard handling follows [the writeText promise contract](https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText). Native radio grouping and labels follow [MDN radio input guidance](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/radio). Test mocking follows [Vitest's utility API](https://vitest.dev/api/vi.html#vi-stubglobal). Browser verification and its remaining manual checks are recorded in [post-merge verification](post-merge-verification.md).
 
 ## Developer Workflows
 

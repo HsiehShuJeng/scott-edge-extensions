@@ -57,6 +57,40 @@
   margin: 0;
 }
 
+.post-merge-panel .post-merge-segments {
+  display: flex;
+  gap: 0.4em;
+  padding: 0.4em;
+}
+
+.post-merge-segments legend {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.post-merge-segments .post-merge-check {
+  flex: 1;
+  padding: 0.4em;
+  margin: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--button-bg);
+  cursor: pointer;
+}
+
+.post-merge-segments .post-merge-check:has(input:checked) {
+  border-color: var(--main-color);
+  background: var(--card-bg);
+}
+
+.post-merge-segments:disabled {
+  opacity: 0.6;
+}
+
+.post-merge-segments:disabled .post-merge-check {
+  cursor: default;
+}
+
 .post-merge-help,
 .post-merge-error {
   margin: 0 0 0.7em;

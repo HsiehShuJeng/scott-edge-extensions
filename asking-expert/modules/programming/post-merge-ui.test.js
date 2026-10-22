@@ -12,7 +12,7 @@ const prUrl = 'https://github.com/HsiehShuJeng/content-summarizer/pull/63';
 const el = name => document.getElementById(`post-merge-${name}`);
 const change = (name, value) => {
   const field = el(name);
-  if (field.type === 'checkbox') field.checked = value;
+  if (['checkbox', 'radio'].includes(field.type)) field.checked = value;
   else field.value = value;
   field.dispatchEvent(new Event('input', { bubbles: true }));
   field.dispatchEvent(new Event('change', { bubbles: true }));
@@ -70,7 +70,7 @@ describe('post-merge PE form', () => {
     expect(writeText).toHaveBeenCalledExactlyOnceWith(expected);
   });
 
-  it.each(['URL', 'scenario', 'Reset', 'agent', 'mention', 'task', 'edit then restore']
+  it.each(['URL', 'scenario', 'Reset', 'agent', 'mention', 'task', 'title mode', 'edit then restore']
     .flatMap(edit => ['fulfill', 'reject'].map(outcome => [edit, outcome])))
   ('ignores stale clipboard feedback after %s with delayed %s', async (edit, outcome) => {
     let fulfill, reject;
@@ -88,6 +88,7 @@ describe('post-merge PE form', () => {
       agent: () => change('agent', 'jolene'),
       mention: () => change('mention', false),
       task: () => change('cleanup', false),
+      'title mode': () => change('title-completed', true),
       'edit then restore': () => {
         change('url', 'https://github.com/example/repo/pull/2');
         change('url', prUrl);
@@ -124,6 +125,52 @@ describe('post-merge PE form', () => {
     expect(el('preset').value).toBe('custom');
     expect(el('preview').value).toContain('The adapter-script exclusion takes precedence; report any resulting incomplete steps.');
     expect(el('preview').value).toContain("Check whether the repository's post-merge workflow");
+  });
+
+  it('enables native marker radios only for the title task and returns to progress on re-enable', () => {
+    change('url', prUrl);
+    expect(el('title-progress').checked).toBe(true);
+    expect(el('title-modes').disabled).toBe(false);
+    expect(el('preview').value).toContain('🔄');
+    expect(el('preview').value).not.toContain('✅');
+    change('title-completed', true);
+    expect(el('preset').value).toBe('custom');
+    expect(el('preview').value).toContain('reflect the completed status (prefix with ✅).');
+    expect(el('preview').value).not.toContain('🔄');
+    copy();
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(el('preview').value);
+    change('title', false);
+    expect(el('title-modes').disabled).toBe(true);
+    expect(el('title-completed').matches(':disabled')).toBe(true);
+    expect(el('preview').value).not.toMatch(/thread|✅|🔄/);
+    change('title', true);
+    expect(el('title-modes').disabled).toBe(false);
+    expect(el('title-progress').checked).toBe(true);
+    expect(el('preview').value).toContain('🔄');
+    expect(el('preview').value).not.toContain('✅');
+  });
+
+  it.each(['thread', 'skip-adapters', 'thorough', 'standard'])('never carries green check into preset %s', preset => {
+    change('url', prUrl);
+    change('title-completed', true);
+    change('preset', preset);
+    expect(el('title-progress').checked).toBe(true);
+    expect(el('title-completed').checked).toBe(false);
+    expect(el('title-modes').disabled).toBe(preset === 'thorough');
+    expect(el('preview').value).not.toContain('✅');
+    if (preset === 'thorough') expect(el('preview').value).not.toContain('thread');
+    else expect(el('preview').value).toContain('🔄');
+  });
+
+  it('resets a completed marker to in progress', () => {
+    change('title-completed', true);
+    el('reset').click();
+    expect(el('title-progress').checked).toBe(true);
+    expect(el('title-completed').checked).toBe(false);
+    expect(el('title-modes').disabled).toBe(false);
+    change('url', prUrl);
+    expect(el('preview').value).toContain('🔄');
+    expect(el('preview').value).not.toContain('✅');
   });
 
   it('resets every field and task to its initial default', () => {

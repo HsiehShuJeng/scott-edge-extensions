@@ -74,12 +74,12 @@ async function main() {
     report.checks.push('Native Tab/Space keyboard flow');
 
     const cleanup = 'Perform the appropriate post-merge cleanup.';
-    const title = 'Update the title of the current Discord thread to reflect the actual completion status.';
+    const title = 'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).';
     const scenarios = {
       thread: [title],
       'skip-adapters': [cleanup, 'Do not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).', title],
-      thorough: [cleanup, "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements.",
-        'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.', title],
+      thorough: [cleanup, "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements, including executing applicable adapter scripts.",
+        'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.'],
       standard: [cleanup, title],
     };
     for (const [preset, actions] of Object.entries(scenarios)) {

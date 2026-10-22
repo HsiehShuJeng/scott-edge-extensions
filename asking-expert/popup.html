@@ -276,6 +276,15 @@
                 <label for="post-merge-title" class="post-merge-check">
                     <input id="post-merge-title" type="checkbox" checked> Update Discord thread title
                 </label>
+                <fieldset id="post-merge-title-modes" class="post-merge-segments" aria-label="Thread title marker">
+                    <legend>Thread title marker</legend>
+                    <label for="post-merge-title-progress" class="post-merge-check">
+                        <input id="post-merge-title-progress" type="radio" name="post-merge-title-mode" value="in-progress" checked> 🔄 in progress
+                    </label>
+                    <label for="post-merge-title-completed" class="post-merge-check">
+                        <input id="post-merge-title-completed" type="radio" name="post-merge-title-mode" value="completed"> ✅ green check
+                    </label>
+                </fieldset>
                 <p id="post-merge-tasks-error" class="post-merge-error" aria-live="polite"></p>
             </fieldset>
 

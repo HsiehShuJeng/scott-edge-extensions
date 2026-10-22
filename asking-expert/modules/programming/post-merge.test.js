@@ -23,13 +23,13 @@ describe('post-merge prompt contract', () => {
 
   it.each([
     ['thread', central.replace('584', '587'),
-      'Update the title of the current Discord thread to reflect the actual completion status.'],
+      'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).'],
     ['skip-adapters', central,
-      'Perform the appropriate post-merge cleanup.\nDo not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).\nUpdate the title of the current Discord thread to reflect the actual completion status.'],
+      'Perform the appropriate post-merge cleanup.\nDo not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).\nUpdate the title of the current Discord thread to reflect in-progress status (prefix with 🔄).'],
     ['thorough', central,
-      "Perform the appropriate post-merge cleanup.\nCheck whether the repository's post-merge workflow needs to be executed and follow its applicable requirements.\nReview unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.\nUpdate the title of the current Discord thread to reflect the actual completion status."],
+      "Perform the appropriate post-merge cleanup.\nCheck whether the repository's post-merge workflow needs to be executed and follow its applicable requirements, including executing applicable adapter scripts.\nReview unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence."],
     ['standard', 'https://github.com/HsiehShuJeng/content-summarizer/pull/63',
-      'Perform the appropriate post-merge cleanup.\nUpdate the title of the current Discord thread to reflect the actual completion status.'],
+      'Perform the appropriate post-merge cleanup.\nUpdate the title of the current Discord thread to reflect in-progress status (prefix with 🔄).'],
   ])('matches the exact %s scenario with and without mention', (preset, prUrl, actions) => {
     for (const includeMention of [true, false]) {
       const result = formatPostMergePrompt(input({ prUrl, includeMention, tasks: PRESETS[preset].tasks }));
@@ -37,6 +37,30 @@ describe('post-merge prompt contract', () => {
         ok: true, text: `${includeMention ? '<@1489873862668718240>\n\n' : ''}This PR has been merged:\n${prUrl}\n\n${actions}`,
       });
     }
+  });
+
+  it('keeps thorough focused on workflow and unchecked work', () => {
+    expect(PRESETS.thorough.tasks).toMatchObject({
+      cleanup: true, checkWorkflow: true, skipAdapters: false,
+      reviewUnchecked: true, updateThreadTitle: false,
+    });
+    const result = formatPostMergePrompt(input({ tasks: PRESETS.thorough.tasks }));
+    expect(result.text).toContain('executing applicable adapter scripts');
+    expect(result.text).not.toMatch(/thread|🔄|✅|Do not execute/);
+  });
+
+  it.each([undefined, 'in-progress', 'invalid', '', null])('defaults marker %s to in progress', threadTitleMode => {
+    const result = formatPostMergePrompt(input({ threadTitleMode }));
+    expect(result.text).toContain('reflect in-progress status (prefix with 🔄).');
+    expect(result.text).not.toContain('✅');
+  });
+
+  it('uses green check only for an explicitly completed title mode', () => {
+    const result = formatPostMergePrompt(input({ threadTitleMode: 'completed' }));
+    expect(result.text).toContain('reflect the completed status (prefix with ✅).');
+    expect(result.text).not.toContain('🔄');
+    expect(formatPostMergePrompt(input({ tasks: PRESETS.thorough.tasks, threadTitleMode: 'completed' })).text)
+      .not.toMatch(/thread|✅|🔄/);
   });
 
   it.each([central, `${central}/`, `  ${central}/?tab=files#discussion  `,

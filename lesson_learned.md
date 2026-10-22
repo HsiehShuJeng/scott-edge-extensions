@@ -5,6 +5,12 @@
 - Keep GitHub logins separate from Discord bot IDs: each registry owns one public identifier type, and dropdown options come directly from registry data.
 - Give the assign form the same promise-based clipboard feedback and stale-operation protection as the post-merge form; appending an identity should not require UI or formatter edits.
 
+## Honest Thread-title Markers
+
+- Treat completion markers as explicit intent: only a user-selected completed mode may produce ✅. Presets, unknown modes, Reset and re-enabling the title task use 🔄.
+- Keep the Thorough preset focused on repository workflow/adapter execution and unfinished checklist work; do not append a thread-title update.
+- Preserve native radio grouping and fieldset disabling for keyboard and assistive-technology support while styling the labels as compact segments.
+
 ## Agent Post-merge Prompt Composition
 
 - Keep prompt formatting pure and separate from clipboard/notification handling so exact output and validation can be tested without browser side effects.
