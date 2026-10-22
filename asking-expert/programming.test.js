@@ -23,6 +23,8 @@ describe('Programming Engineering bootstrap and existing tools', () => {
   afterAll(() => vi.unstubAllGlobals());
 
   it('initializes the new generator from the real popup bootstrap', () => {
+    expect(document.getElementById('assign-identity').value).toBe('HsiehShuJeng');
+    expect(document.getElementById('assign-preview').value).toBe('Use proper skill and gh identity, i.e., HsiehShuJeng, to proceed the task.');
     expect(document.getElementById('post-merge-agent').value).toBe('miko');
     expect(document.getElementById('post-merge-preset').value).toBe('standard');
   });

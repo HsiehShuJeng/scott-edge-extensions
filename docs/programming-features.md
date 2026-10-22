@@ -2,6 +2,18 @@
 
 Scott's Assistant is also built to accelerate common developer workflows, focusing heavily on GitHub integrations and commit scaffolding.
 
+## Assign to Agent
+
+Open **PE → Assign to Agent**, choose a GitHub identity, then select **Generate & Copy Prompt**. The default is `HsiehShuJeng`; `vixenclawsastraagent` is also available. The live, selectable preview contains exactly:
+
+```text
+Use proper skill and gh identity, i.e., HsiehShuJeng, to proceed the task.
+```
+
+[modules/programming/identities.js](../asking-expert/modules/programming/identities.js) exports a frozen `IDENTITIES` array of frozen `{ key, login }` entries and `DEFAULT_IDENTITY`. Append one entry to extend the picker without editing the form or formatter. `formatAssignPrompt({ identityKey }, identities)` returns `{ ok: true, text }` or `{ ok: false, errors: { identityKey } }` for an unknown key. The runtime formatter/UI pair is `modules/programming/{assign,assign-ui}.js`, initialized by `popup.js`.
+
+Success (`Prompt copied.`) appears only after the clipboard write fulfills. Rejection or an unavailable API keeps the preview visible for manual copying. Changing the identity or using **Reset** suppresses feedback from an earlier pending copy. Reset restores the default identity. No GitHub authentication, network request, or agent dispatch occurs; this tool only formats local text. Formatter golden outputs, registry-driven picker extension, validation and asynchronous clipboard behavior are covered by `assign.test.js` and `assign-ui.test.js`; the real popup bootstrap is covered by `programming.test.js`.
+
 ## Agent Post-merge Prompt
 
 Open **PE → Agent Post-merge Prompt**, paste a GitHub PR link, choose an agent and scenario, adjust the tasks, then select **Generate & Copy Prompt**. Paste the resulting English plain text into Discord yourself. The default is **Miko**, **Include Discord mention** enabled, and **Standard cleanup**. **Reset** restores those defaults and clears the URL.

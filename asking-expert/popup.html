@@ -223,6 +223,21 @@
             </div>
         </div>
 
+        <form id="assign-form" class="post-merge-panel" novalidate>
+            <h3>Assign to Agent</h3>
+            <p class="post-merge-help">Choose the GitHub identity for a review or coding agent, then copy the dispatch prompt.</p>
+            <label for="assign-identity">GitHub identity</label>
+            <select id="assign-identity" class="dropdown input-control" aria-describedby="assign-identity-error"></select>
+            <p id="assign-identity-error" class="post-merge-error" aria-live="polite"></p>
+            <label for="assign-preview">Prompt preview</label>
+            <textarea id="assign-preview" class="input-control post-merge-preview" rows="3" readonly></textarea>
+            <div class="post-merge-actions">
+                <button id="assign-copy" class="dev-routine-btn" type="submit">Generate &amp; Copy Prompt</button>
+                <button id="assign-reset" class="dev-routine-btn" type="reset">Reset</button>
+            </div>
+            <p id="assign-clipboard-status" class="post-merge-help" role="status"></p>
+        </form>
+
         <form id="post-merge-form" class="post-merge-panel" novalidate>
             <h3>Agent Post-merge Prompt</h3>
             <p class="post-merge-help">Paste a merged PR link, choose tasks, then copy the prompt for Discord.</p>
