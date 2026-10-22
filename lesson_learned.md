@@ -18,7 +18,7 @@
 
 ## Honest Thread-title Markers
 
-- Treat completion markers as explicit intent: only a user-selected completed mode may produce ✅. Presets, unknown modes, Reset and re-enabling the title task use 🔄.
+- Follow the clarified post-merge marker preference: ✅ is the default for initial state, presets, unknown modes, Reset and re-enabling; 🔄 requires explicit selection. These are generated instructions, not a verified Discord status change.
 - Keep the Thorough preset focused on repository workflow/adapter execution and unfinished checklist work; do not append a thread-title update.
 - Preserve native radio grouping and fieldset disabling for keyboard and assistive-technology support while styling the labels as compact segments.
 

@@ -106,7 +106,7 @@ flowchart TD
     Start --> BranchBtn["Branch Button Click"]
     Start --> PostMergeInput["Post-merge: PR URL + Agent + Tasks"]
     PostMergeInput --> TitleTask{"Update Thread Title?"}
-    TitleTask --> |"Yes"| Marker["Default 🔄; ✅ only when selected"]
+    TitleTask --> |"Yes"| Marker["Default ✅; 🔄 only when selected"]
     TitleTask --> |"No (Thorough preset)"| FormatMerge["Format Selected Tasks Locally"]
     Marker --> FormatMerge
     FormatMerge --> CopyMerge["Copy Preview to Clipboard"]
@@ -204,7 +204,7 @@ flowchart LR
 | Tool | Input | Output |
 | --- | --- | --- |
 | Assign to Agent | GitHub identity from `identities.js` | Local dispatch sentence with the selected login |
-| Agent Post-merge Prompt | PR URL, agent and task options | Local handoff; title marker defaults to 🔄, ✅ requires selection |
+| Agent Post-merge Prompt | PR URL, agent and task options | Local handoff; title marker defaults to ✅, 🔄 requires selection |
 | Thorough post-merge review | Cleanup, workflow/adapter execution and unchecked-item review | No thread-title instruction |
 
 <!-- ... -->

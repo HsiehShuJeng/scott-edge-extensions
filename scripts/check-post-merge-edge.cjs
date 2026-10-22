@@ -78,7 +78,7 @@ async function main() {
     report.checks.push('Native Tab/Space keyboard flow');
 
     const cleanup = 'Perform the appropriate post-merge cleanup.';
-    const title = 'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).';
+    const title = 'Update the title of the current Discord thread to reflect the completed status (prefix with ✅).';
     const scenarios = {
       thread: [title],
       'skip-adapters': [cleanup, 'Do not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).', title],
@@ -122,27 +122,27 @@ async function main() {
       'Use proper skill and gh identity, i.e., HsiehShuJeng, to proceed the task.');
     report.checks.push('Assign registry picker, selected login, real clipboard equality and Reset');
 
-    await page.focus('#post-merge-title-progress');
+    await page.focus('#post-merge-title-completed');
     await page.keyboard.press('ArrowRight');
-    assert.equal(await page.evaluate(() => document.activeElement.id), 'post-merge-title-completed');
-    assert.match(await preview(), /reflect the completed status \(prefix with ✅\)\./);
-    assert.doesNotMatch(await preview(), /🔄/);
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'post-merge-title-progress');
+    assert.match(await preview(), /reflect in-progress status \(prefix with 🔄\)\./);
+    assert.doesNotMatch(await preview(), /✅/);
     assert.equal(await page.$eval('#post-merge-preset', el => el.value), 'custom');
     await page.click('#post-merge-copy');
     await page.waitForFunction(() => document.getElementById('post-merge-clipboard-status').textContent === 'Prompt copied.');
     assert.equal(await page.evaluate(() => navigator.clipboard.readText()), await preview());
     await waitForNotifications();
     await page.click('#post-merge-title');
-    assert.equal(await page.$eval('#post-merge-title-completed', el => el.matches(':disabled')), true);
-    assert.doesNotMatch(await preview(), /thread|✅|🔄/);
+    assert.equal(await page.$eval('#post-merge-title-progress', el => el.matches(':disabled')), true);
+    assert.doesNotMatch(await preview(), /thread|🔄|✅/);
     await page.click('#post-merge-title');
-    assert.equal(await page.$eval('#post-merge-title-progress', el => el.checked), true);
-    assert.match(await preview(), /🔄/);
+    assert.equal(await page.$eval('#post-merge-title-completed', el => el.checked), true);
+    assert.match(await preview(), /✅/);
     for (const preset of Object.keys(scenarios)) {
-      await page.click('#post-merge-title-completed');
+      await page.click('#post-merge-title-progress');
       await page.select('#post-merge-preset', preset);
-      assert.equal(await page.$eval('#post-merge-title-progress', el => el.checked), true);
-      assert.doesNotMatch(await preview(), /✅/);
+      assert.equal(await page.$eval('#post-merge-title-completed', el => el.checked), true);
+      assert.doesNotMatch(await preview(), /🔄/);
       if (preset === 'thorough') {
         assert.doesNotMatch(await preview(), /thread/);
         assert.equal(await page.$eval('#post-merge-title-modes', el => el.disabled), true);
@@ -152,7 +152,7 @@ async function main() {
       }
     }
     assert.equal(await preview(), expected);
-    report.checks.push('Native radio arrow navigation, explicit ✅ clipboard text, disabled state and 🔄 on presets/re-enable');
+    report.checks.push('Native radio arrow navigation, explicit 🔄 clipboard text, disabled state and ✅ on presets/re-enable');
 
     const themes = [];
     for (const dark of [false, true]) {
@@ -199,10 +199,10 @@ async function main() {
       for (const [selector, name] of [['#assign-form', 'assign'], ['#post-merge-title-modes', 'markers']]) {
         await (await page.$(selector)).screenshot({ path: path.join(output, `${name}-${dark ? 'dark' : 'light'}.png`) });
       }
-      await page.focus('#post-merge-title-progress');
+      await page.focus('#post-merge-title-completed');
       await page.keyboard.press('ArrowRight');
-      assert.equal(await page.$eval('#post-merge-title-completed', el => getComputedStyle(el).outlineStyle), 'solid');
-      assert.equal(await page.$eval('#post-merge-title-completed', el => getComputedStyle(el).outlineWidth), '2px');
+      assert.equal(await page.$eval('#post-merge-title-progress', el => getComputedStyle(el).outlineStyle), 'solid');
+      assert.equal(await page.$eval('#post-merge-title-progress', el => getComputedStyle(el).outlineWidth), '2px');
     }
     report.themes = themes;
     report.checks.push('350px light/dark themes, no horizontal overflow, single dropdown arrows');

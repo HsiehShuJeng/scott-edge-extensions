@@ -2,9 +2,20 @@
 
 Feature scope and identifier provenance are in [programming-features.md](programming-features.md#agent-post-merge-prompt); acceptance requirements are in [#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29). Original verification below is dated 2026-10-11; the maintainer follow-up is dated 2026-10-12.
 
+## Current marker default: green check (2026-10-22)
+
+The user clarified the intended default: **✅ green check** is used in almost all post-merge title updates; **🔄 in progress** is an explicit choice for the few cases still in progress. Issue #31, the PR description and active feature documentation are synchronized with this clarification. The initial #31 evidence below records the earlier interpretation and is superseded for marker defaults.
+
+- `npm test`: **144 tests across 10 files pass**. Updated golden/UI/bootstrap cases cover ✅ in the initial state, omitted or unrecognized formatter modes, presets, Reset and re-enabling. Only explicit `in-progress` selection produces 🔄; Thorough still has no thread-title instruction.
+- `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass, with the existing Browserslist notice unchanged.
+- The Edge source verifier passes **10 checks**, including real clipboard equality for default ✅ and selected 🔄, native arrow-key navigation, radio disabling, restoring ✅ on presets/re-enable, and 350px saved light/dark layouts. No HTTP(S) requests, uncaught errors or `console.error` messages were observed.
+- The new light/dark marker screenshots were visually inspected: ✅ is selected in the first segment and 🔄 remains available in the second. Browser/runtime versions remain Edge 155.0.4283.62, Puppeteer 24.37.5 and extension 3.3.0. New evidence is labeled `greencheck-*` so earlier captures remain identifiable.
+
+Native toolbar popup, live theme-toggle repaint and external paste are not claimed verified for this correction.
+
 ## Assign and title-mode follow-up (2026-10-22, #31)
 
-The earlier entries below describe historical verification for #29. Current #31 validation covers Assign to Agent, the revised Thorough scenario and explicit thread-title markers:
+The earlier entries below describe historical verification for #29. Initial #31 validation covered Assign to Agent, the revised Thorough scenario and explicit thread-title markers:
 
 - `npm test`: **136 tests across 8 files pass**. New cases cover exact assignment text for both shipped logins, unknown keys, an appended registry entry, clipboard absence/rejection/stale results, Thorough without a title line, marker defaults/fallbacks, explicit ✅, disabled radio controls, and 🔄 after presets, Reset and re-enabling.
 - `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass. Existing localhost CSS-resource messages and the stale Browserslist database notice remain; no new lint warnings were introduced.

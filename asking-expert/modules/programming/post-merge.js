@@ -21,7 +21,7 @@ const TASK_TEXT = Object.freeze({
   checkWorkflow: "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements, including executing applicable adapter scripts.",
   skipAdapters: 'Do not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).',
   reviewUnchecked: 'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.',
-  updateThreadTitle: 'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).',
+  updateThreadTitle: 'Update the title of the current Discord thread to reflect the completed status (prefix with ✅).',
 });
 
 // Match the raw path too: URL parsing alone silently normalizes dot segments,
@@ -34,7 +34,7 @@ function normalizePrUrl(value) {
 }
 
 /** Pure local formatter: returns { ok, text } or { ok, errors }, no side effects. */
-export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks = {}, threadTitleMode = 'in-progress' }, agents = AGENTS) {
+export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks = {}, threadTitleMode = 'completed' }, agents = AGENTS) {
   const errors = {};
   const normalizedUrl = normalizePrUrl(prUrl);
   if (!normalizedUrl) {
@@ -47,8 +47,8 @@ export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks =
   const actions = Object.entries(TASK_TEXT)
     .filter(([key]) => tasks[key] === true)
     .map(([key, sentence]) => {
-      if (key === 'updateThreadTitle' && threadTitleMode === 'completed') {
-        return 'Update the title of the current Discord thread to reflect the completed status (prefix with ✅).';
+      if (key === 'updateThreadTitle' && threadTitleMode === 'in-progress') {
+        return 'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).';
       }
       return key === 'skipAdapters' && tasks.checkWorkflow === true
         ? `${sentence} The adapter-script exclusion takes precedence; report any resulting incomplete steps.`

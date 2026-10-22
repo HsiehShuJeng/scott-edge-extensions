@@ -26,7 +26,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   const readInput = () => ({
     agentKey: el('agent').value, includeMention: el('mention').checked,
     prUrl: el('url').value, tasks: readTasks(),
-    threadTitleMode: el('title-completed').checked ? 'completed' : 'in-progress',
+    threadTitleMode: el('title-progress').checked ? 'in-progress' : 'completed',
   });
   const applyPreset = key => {
     const tasks = PRESETS[key].tasks;
@@ -35,11 +35,11 @@ export function setupPostMergeGenerator(agents = AGENTS) {
     el('adapters').value = tasks.skipAdapters ? 'skip' : 'default';
     el('review').checked = tasks.reviewUnchecked;
     el('title').checked = tasks.updateThreadTitle;
-    el('title-progress').checked = true;
+    el('title-completed').checked = true;
   };
   const refresh = () => {
     el('title-modes').disabled = !el('title').checked;
-    if (!el('title').checked) el('title-progress').checked = true;
+    if (!el('title').checked) el('title-completed').checked = true;
     const result = formatPostMergePrompt(readInput(), agents);
     el('preview').value = result.ok ? result.text : '';
     const displayErrors = submitted || Boolean(el('url').value.trim());

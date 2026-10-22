@@ -30,5 +30,5 @@ it('initializes PE with the real video detector when the active tab URL is unava
   expect(document.getElementById('assign-preview').value)
     .toBe('Use proper skill and gh identity, i.e., HsiehShuJeng, to proceed the task.');
   expect(document.getElementById('post-merge-preset').value).toBe('standard');
-  expect(document.getElementById('post-merge-title-progress').checked).toBe(true);
+  expect(document.getElementById('post-merge-title-completed').checked).toBe(true);
 });
