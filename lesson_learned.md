@@ -1,5 +1,27 @@
 # Lessons Learned: Robust Vocabulary.com Extension Implementation
 
+## Registry-driven Agent Assignment
+
+- Keep GitHub logins separate from Discord bot IDs: each registry owns one public identifier type, and dropdown options come directly from registry data.
+- Give the assign form the same promise-based clipboard feedback and stale-operation protection as the post-merge form; appending an identity should not require UI or formatter edits.
+
+## Optional Browser Tab Metadata
+
+- A returned tab does not guarantee a readable `url`. Guard optional metadata before calling string methods; absence is an expected skip for background detection rather than an exception.
+- Observe `console.error` as well as uncaught page errors in browser verification. A caught, logged error can appear in the extension error page without interrupting PE initialization.
+- Keep a popup bootstrap regression that uses the real video detector with a URL-less tab; mocking the detector alone hides this failure.
+
+## Browser Verification for Agent Forms
+
+- Verify native radio keyboard behavior in a real browser; jsdom can validate state transitions but does not implement browser arrow-key navigation.
+- Wait for shared transient notifications before the next automated click in the scrolling popup. Clipboard read-back proves copied text, while toolbar and external paste acceptance remain separate manual checks.
+
+## Honest Thread-title Markers
+
+- Follow the clarified post-merge marker preference: ✅ is the default for initial state, presets, unknown modes, Reset and re-enabling; 🔄 requires explicit selection. These are generated instructions, not a verified Discord status change.
+- Keep the Thorough preset focused on repository workflow/adapter execution and unfinished checklist work; do not append a thread-title update.
+- Preserve native radio grouping and fieldset disabling for keyboard and assistive-technology support while styling the labels as compact segments.
+
 ## Agent Post-merge Prompt Composition
 
 - Keep prompt formatting pure and separate from clipboard/notification handling so exact output and validation can be tested without browser side effects.

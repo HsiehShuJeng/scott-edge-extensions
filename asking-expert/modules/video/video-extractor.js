@@ -14,7 +14,9 @@ export async function autoDetectVideoId() {
         // Get the active tab
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         
-        if (!tab) {
+        // Tab.url is optional when the browser cannot expose the page URL.
+        // https://developer.chrome.com/docs/extensions/reference/api/tabs#property-Tab-url
+        if (typeof tab?.url !== 'string') {
             return null;
         }
 

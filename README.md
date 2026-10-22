@@ -9,6 +9,7 @@ This browser extension provides comprehensive assistance for language learners (
 - [Architecture](#architecture)
   - [Component Diagram](#component-diagram)
   - [Programming Tools Workflow](#programming-tools-workflow)
+  - [Programming Scenarios](#programming-scenarios)
   - [Language Learning Extraction Logic](#language-learning-extraction-logic)
   - [Component Architecture Diagram](#component-architecture-diagram)
 - [Development & Contribution](#development--contribution)
@@ -27,7 +28,7 @@ This browser extension provides comprehensive assistance for language learners (
 See the detailed documentation available in our `docs/` folder for specific workflows and use-cases:
 
 - [**Language Learning & Video Content**](docs/language-and-video.md): Vocabulary.com extraction, Etymonline fetching, and YouTube video AI quiz generation.
-- [**Programming & Engineering Workflows**](docs/programming-features.md): Conventional Commit prompts, Pull Request scaffolders, branch naming, and composable agent post-merge prompts for Discord.
+- [**Programming & Engineering Workflows**](docs/programming-features.md): Conventional Commit prompts, Pull Request scaffolders, branch naming, GitHub identity dispatch prompts, and composable agent post-merge prompts for Discord.
 - **Infographic Design Engine**: Generate professional prompts natively in 9 styles with automatic visual previews and language translations.
 - **Gemini & NotebookLM Image Polisher**: Smartly strip away AI watermarks and overlay your own custom signatures using client-side pixel manipulation operations.
 
@@ -40,7 +41,7 @@ See the detailed documentation available in our `docs/` folder for specific work
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Multi-language Support**: Dedicated sections for English and Korean learning in the Language tab
-- **Programming Tools**: PE tools for commit analysis, PR creation, branch naming, and [agent post-merge handoffs](docs/programming-features.md#agent-post-merge-prompt)
+- **Programming Tools**: PE tools for commit analysis, PR creation, [agent assignment](docs/programming-features.md#assign-to-agent), branch naming, and [agent post-merge handoffs](docs/programming-features.md#agent-post-merge-prompt) ([verification](docs/post-merge-verification.md#assign-and-title-mode-follow-up-2026-10-22-31))
 - **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages and generating YouTube quiz content
 - **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
@@ -64,6 +65,8 @@ flowchart TD
     CommitTools["Enhanced Commit Tools"]
     PRTools["PR Creation Tools"]
     BranchTools["Branch Naming Tools"]
+    AssignTools["Assign to Agent (local formatter + identity registry)"]
+    PostMerge["Agent Post-merge (tasks + explicit title marker)"]
     YouTubeQuiz["YouTube Quiz Generator (youtube-quiz-generator.js)"]
 
     UI -- interacts with --> PopupJS
@@ -74,6 +77,12 @@ flowchart TD
     UI -- uses --> CommitTools
     UI -- uses --> PRTools
     UI -- uses --> BranchTools
+    PopupJS -- initializes --> AssignTools
+    PopupJS -- initializes --> PostMerge
+    UI -- uses --> PostMerge
+    PostMerge -- notifications --> Utils
+    UI -- uses --> AssignTools
+    AssignTools -- notifications --> Utils
     UI -- uses --> YouTubeQuiz
     Translation -- uses --> Etymology
     Translation -- fetches from --> ContentScript
@@ -95,6 +104,20 @@ flowchart TD
     Start --> CommitBtn["Commit Button Click"]
     Start --> PRBtn["PR Button Click"]
     Start --> BranchBtn["Branch Button Click"]
+    Start --> PostMergeInput["Post-merge: PR URL + Agent + Tasks"]
+    PostMergeInput --> TitleTask{"Update Thread Title?"}
+    TitleTask --> |"Yes"| Marker["Default ✅; 🔄 only when selected"]
+    TitleTask --> |"No (Thorough preset)"| FormatMerge["Format Selected Tasks Locally"]
+    Marker --> FormatMerge
+    FormatMerge --> CopyMerge["Copy Preview to Clipboard"]
+    CopyMerge --> |"Fulfilled"| Notify
+    CopyMerge --> |"Rejected or unavailable"| ManualAssign
+    Start --> AssignBtn["Assign: Choose GitHub Identity"]
+    AssignBtn --> AssignPrompt["Format Dispatch Text Locally"]
+    AssignPrompt --> CopyAssign["Copy Preview to Clipboard"]
+    CopyAssign --> |"Fulfilled"| Notify
+    CopyAssign --> |"Rejected or unavailable"| ManualAssign["Keep Preview for Manual Copy"]
+    ManualAssign --> End
     
     CommitBtn --> CommitType{"Select Commit Type"}
     CommitType --> |"Current"| CurrentDiff["Generate Current Changes Diff"]
@@ -155,6 +178,10 @@ flowchart LR
     end
     subgraph "Extension_Popup[Extension Popup]"
         PopupUI["Popup UI<br/>(popup.html, ui.js)"]
+        Assign["PE Assign Formatter + Identity Registry"]
+        PostMerge["PE Post-merge Formatter + Tasks + Title Marker"]
+        PopupUI -- "Local post-merge text" --> PostMerge
+        PopupUI -- "Local dispatch text" --> Assign
     end
     PopupUI -- "chrome.scripting.executeScript + sendMessage" --> ContentScript
     ContentScript -- "Extract word & sentence" --> PageDOM
@@ -171,6 +198,14 @@ flowchart LR
 | typeS  | <strong> in .instructions | "[word] has the same or almost the same meaning as:" + choices + explanation |
 | typeP  | <strong> in .sentence     | Question text + choices                                |
 | else   | <strong> in .sentence     | .sentence                                              |
+
+### Programming Scenarios
+
+| Tool | Input | Output |
+| --- | --- | --- |
+| Assign to Agent | GitHub identity from `identities.js` | Local dispatch sentence with the selected login |
+| Agent Post-merge Prompt | PR URL, agent and task options | Local handoff; title marker defaults to ✅, 🔄 requires selection |
+| Thorough post-merge review | Cleanup, workflow/adapter execution and unchecked-item review | No thread-title instruction |
 
 <!-- ... -->
 
@@ -211,6 +246,7 @@ A client-side tool to manipulate watermarks on images.
 - **Modular components**: Organized into feature-based modules:
   - **Video Module** (`modules/video/`): `video-extractor.js`, `youtube-quiz-generator.js`
   - **Language Module** (`modules/language/`): `translation.js`, `session.js`, `etymology.js`
+  - **Programming Module** (`modules/programming/`): agent post-merge and GitHub identity dispatch formatters and forms
   - **Core Module** (`modules/core/`): `ui.js`, `utils.js`, `content.js`
   - **Watermark Module** (`modules/watermark/`): `watermarkEngine.js`, `blendModes.js`, `alphaMap.js`
 - **Styling**: Modular CSS files in `asking-expert/styles/` directory
@@ -227,6 +263,7 @@ asking-expert/
 │   ├── video/           # Video-related functionality
 │   ├── language/        # Language learning functionality
 │   ├── watermark/       # Watermark removal logic
+│   ├── programming/     # Local agent prompt formatters, registries and forms
 │   └── core/            # Core utilities and UI
 ├── popup.js (main entry point)
 ├── popup.html
@@ -278,6 +315,8 @@ graph TD
 - **CSS:** `npx stylelint "**/*.css"`
 
 ## Limitations & Notifications
+
+- DeepSRT video ID auto-detection skips tabs whose URL is unavailable; manual video ID entry and PE prompt tools remain available.
 
 - **Restricted Pages:** Cannot run on `chrome://` or `edge://` pages.
 - **Notification UX:** Notifications fade out after 2 seconds.

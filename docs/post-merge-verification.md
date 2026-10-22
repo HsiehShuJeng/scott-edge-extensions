@@ -1,8 +1,40 @@
-# Agent Post-merge Prompt Verification
+# Programming Agent Prompt Verification
 
 Feature scope and identifier provenance are in [programming-features.md](programming-features.md#agent-post-merge-prompt); acceptance requirements are in [#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29). Original verification below is dated 2026-10-11; the maintainer follow-up is dated 2026-10-12.
 
-## Automated checks
+## Current marker default: green check (2026-10-22)
+
+The user clarified the intended default: **✅ green check** is used in almost all post-merge title updates; **🔄 in progress** is an explicit choice for the few cases still in progress. Issue #31, the PR description and active feature documentation are synchronized with this clarification. The initial #31 evidence below records the earlier interpretation and is superseded for marker defaults.
+
+- `npm test`: **144 tests across 10 files pass**. Updated golden/UI/bootstrap cases cover ✅ in the initial state, omitted or unrecognized formatter modes, presets, Reset and re-enabling. Only explicit `in-progress` selection produces 🔄; Thorough still has no thread-title instruction.
+- `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass, with the existing Browserslist notice unchanged.
+- The Edge source verifier passes **10 checks**, including real clipboard equality for default ✅ and selected 🔄, native arrow-key navigation, radio disabling, restoring ✅ on presets/re-enable, and 350px saved light/dark layouts. No HTTP(S) requests, uncaught errors or `console.error` messages were observed.
+- The new light/dark marker screenshots were visually inspected: ✅ is selected in the first segment and 🔄 remains available in the second. Browser/runtime versions remain Edge 155.0.4283.62, Puppeteer 24.37.5 and extension 3.3.0. New evidence is labeled `greencheck-*` so earlier captures remain identifiable.
+
+Native toolbar popup, live theme-toggle repaint and external paste are not claimed verified for this correction.
+
+## Assign and title-mode follow-up (2026-10-22, #31)
+
+The earlier entries below describe historical verification for #29. Initial #31 validation covered Assign to Agent, the revised Thorough scenario and explicit thread-title markers:
+
+- `npm test`: **136 tests across 8 files pass**. New cases cover exact assignment text for both shipped logins, unknown keys, an appended registry entry, clipboard absence/rejection/stale results, Thorough without a title line, marker defaults/fallbacks, explicit ✅, disabled radio controls, and 🔄 after presets, Reset and re-enabling.
+- `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass. Existing localhost CSS-resource messages and the stale Browserslist database notice remain; no new lint warnings were introduced.
+- The source verifier passed **10 checks** on macOS with **Edge 155.0.4283.62**, **Puppeteer 24.37.5** and extension **3.3.0**, using an isolated headless profile and the actual extension page at 350 × 600.
+- Assignment selection and Reset work, and real Clipboard API read-back equals the selected login's sentence. ArrowRight selects the native ✅ radio and produces exactly the completed instruction; a real copy matches that preview. Re-enabling the title task and applying each preset restore 🔄; Thorough disables the radios and includes adapter execution without a title line.
+- Both themes have 350px client/scroll widths, a single dropdown arrow, two marker segments on the same row, and the inherited 2px keyboard focus outline. The light/dark assignment and marker screenshots and full dark PE layout were visually inspected: text, selected states and previews remain readable.
+- No observed HTTP(S) requests or uncaught page errors. Automated clicks wait for the existing transient success toasts to disappear so the overlay cannot intercept the next action.
+
+The report and six PNGs are generated outside the repository with the command below. They are verification artifacts, not runtime assets. **Not verified:** the native toolbar popup, live theme-toggle repaint and external editor/Discord paste. These are not implied by headless clipboard read-back. This change does not execute post-merge cleanup or adapter scripts; it generates instructions only.
+
+### URL-less active-tab follow-up (2026-10-22)
+
+A user reported `Cannot read properties of undefined (reading 'includes')` from `autoDetectVideoId`. The returned tab existed but its optional `url` was absent. The existing catch logged the error and returned `null`; because popup startup does not await this detection, that error did not prevent either PE generator from initializing and does not explain missing new HTML controls.
+
+The detector now quietly skips tabs without a string URL. Two new tests first reproduced the exact logged TypeError, then passed with the guard: a focused detector regression and a real popup/video-module integration regression. Other cases retain successful DeepSRT extraction and logging for actual API failures. `npm test` now passes **144 tests across 10 files**; lint and source-verifier syntax checks pass. The Edge verifier's **10 checks** pass with additional monitoring for `console.error` messages, as well as uncaught page errors and HTTP(S) requests. No console errors were observed. No permission, dependency or layout change was introduced.
+
+The browser's actual unpacked source path still needs to be checked separately if Assign to Agent or the title-mode radios are absent. Both controls exist in this branch's static `popup.html`; the supplied legacy form did not contain the new radio fieldset.
+
+## Automated checks (original #29)
 
 - `npm test`: 71 tests across 6 files pass, including all six mappings, exact outputs for four scenarios, all task combinations, URL rejection/normalization, preview/clipboard equality, preset/custom transitions, reset, missing IDs, clipboard rejection/absence and existing PE tools.
 - `npm run lint`: JavaScript syntax, CSS and HTML checks pass. Existing jsdom tests emit localhost CSS-resource warnings, and Browserslist reports old compatibility data; neither fails the checks.

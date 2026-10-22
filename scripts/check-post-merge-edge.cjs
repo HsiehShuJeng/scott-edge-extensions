@@ -44,9 +44,13 @@ async function main() {
     const id = await browser.installExtension(path.join(repoRoot, 'asking-expert'));
     const page = await browser.newPage();
     page.setDefaultTimeout(5000);
-    const outbound = [], pageErrors = [];
+    // Shared success toasts briefly cover controls when this tall popup scrolls.
+    const waitForNotifications = () => page.waitForFunction(() =>
+      ![...document.body.children].some(el => el.style.position === 'fixed' && el.style.zIndex === '10000'));
+    const outbound = [], pageErrors = [], consoleErrors = [];
     page.on('request', request => { if (/^https?:/.test(request.url())) outbound.push(request.url()); });
     page.on('pageerror', error => pageErrors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
     await page.goto(`chrome-extension://${id}/popup.html`);
     await page.waitForSelector('#post-merge-agent option');
     await page.click('[data-tab="programming"]');
@@ -74,12 +78,12 @@ async function main() {
     report.checks.push('Native Tab/Space keyboard flow');
 
     const cleanup = 'Perform the appropriate post-merge cleanup.';
-    const title = 'Update the title of the current Discord thread to reflect the actual completion status.';
+    const title = 'Update the title of the current Discord thread to reflect the completed status (prefix with ✅).';
     const scenarios = {
       thread: [title],
       'skip-adapters': [cleanup, 'Do not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).', title],
-      thorough: [cleanup, "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements.",
-        'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.', title],
+      thorough: [cleanup, "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements, including executing applicable adapter scripts.",
+        'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.'],
       standard: [cleanup, title],
     };
     for (const [preset, actions] of Object.entries(scenarios)) {
@@ -100,6 +104,55 @@ async function main() {
     await browser.defaultBrowserContext().overridePermissions(`chrome-extension://${id}`, ['clipboard-read', 'clipboard-write']);
     assert.equal(await page.evaluate(() => navigator.clipboard.readText()), expected);
     report.checks.push('Enter submits; actual Clipboard API read-back exactly equals preview');
+    await waitForNotifications();
+
+    assert.deepEqual(await page.$eval('#assign-identity', el => [...el.options].map(option => option.text)),
+      ['HsiehShuJeng', 'vixenclawsastraagent']);
+    assert.equal(await page.$eval('#assign-identity', el => el.value), 'HsiehShuJeng');
+    await page.select('#assign-identity', 'vixenclawsastraagent');
+    const assigned = 'Use proper skill and gh identity, i.e., vixenclawsastraagent, to proceed the task.';
+    assert.equal(await page.$eval('#assign-preview', el => el.value), assigned);
+    await page.click('#assign-copy');
+    await page.waitForFunction(() => document.getElementById('assign-clipboard-status').textContent === 'Prompt copied.');
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), assigned);
+    await waitForNotifications();
+    await page.click('#assign-reset');
+    assert.equal(await page.$eval('#assign-identity', el => el.value), 'HsiehShuJeng');
+    assert.equal(await page.$eval('#assign-preview', el => el.value),
+      'Use proper skill and gh identity, i.e., HsiehShuJeng, to proceed the task.');
+    report.checks.push('Assign registry picker, selected login, real clipboard equality and Reset');
+
+    await page.focus('#post-merge-title-completed');
+    await page.keyboard.press('ArrowRight');
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'post-merge-title-progress');
+    assert.match(await preview(), /reflect in-progress status \(prefix with 🔄\)\./);
+    assert.doesNotMatch(await preview(), /✅/);
+    assert.equal(await page.$eval('#post-merge-preset', el => el.value), 'custom');
+    await page.click('#post-merge-copy');
+    await page.waitForFunction(() => document.getElementById('post-merge-clipboard-status').textContent === 'Prompt copied.');
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), await preview());
+    await waitForNotifications();
+    await page.click('#post-merge-title');
+    assert.equal(await page.$eval('#post-merge-title-progress', el => el.matches(':disabled')), true);
+    assert.doesNotMatch(await preview(), /thread|🔄|✅/);
+    await page.click('#post-merge-title');
+    assert.equal(await page.$eval('#post-merge-title-completed', el => el.checked), true);
+    assert.match(await preview(), /✅/);
+    for (const preset of Object.keys(scenarios)) {
+      await page.click('#post-merge-title-progress');
+      await page.select('#post-merge-preset', preset);
+      assert.equal(await page.$eval('#post-merge-title-completed', el => el.checked), true);
+      assert.doesNotMatch(await preview(), /🔄/);
+      if (preset === 'thorough') {
+        assert.doesNotMatch(await preview(), /thread/);
+        assert.equal(await page.$eval('#post-merge-title-modes', el => el.disabled), true);
+        assert.match(await preview(), /executing applicable adapter scripts/);
+        // Restore a preset with title controls for the next iteration.
+        await page.select('#post-merge-preset', 'standard');
+      }
+    }
+    assert.equal(await preview(), expected);
+    report.checks.push('Native radio arrow navigation, explicit 🔄 clipboard text, disabled state and ✅ on presets/re-enable');
 
     const themes = [];
     for (const dark of [false, true]) {
@@ -119,7 +172,7 @@ async function main() {
           style.color === (value ? 'rgb(240, 240, 240)' : 'rgb(51, 51, 51)');
       }, {}, dark);
       // The popup's existing internal-page notice must not cover the evidence.
-      await page.waitForFunction(() => ![...document.body.children].some(el => el.style.position === 'fixed' && el.style.zIndex === '10000'));
+      await waitForNotifications();
       await page.evaluate(async () => {
         // A replaced CSS transition rejects its finished promise when canceled.
         await Promise.allSettled(document.getAnimations()
@@ -132,12 +185,24 @@ async function main() {
         clientWidth: document.documentElement.clientWidth, scrollWidth: document.documentElement.scrollWidth,
         dropdownRepeat: getComputedStyle(document.getElementById('post-merge-agent')).backgroundRepeat,
         dropdownSize: getComputedStyle(document.getElementById('post-merge-agent')).backgroundSize,
+        assignDropdownRepeat: getComputedStyle(document.getElementById('assign-identity')).backgroundRepeat,
+        markerRows: [...document.querySelectorAll('.post-merge-segments label')]
+          .map(el => el.getBoundingClientRect().top),
       }));
       assert.equal(metrics.scrollWidth, metrics.clientWidth);
       assert.equal(metrics.dropdownRepeat, 'no-repeat');
       assert.equal(metrics.dropdownSize, '10px 10px');
+      assert.equal(metrics.assignDropdownRepeat, 'no-repeat');
+      assert.equal(metrics.markerRows[0], metrics.markerRows[1]);
       themes.push({ dark, loadedFromSavedTheme: true, ...metrics });
       await page.screenshot({ path: path.join(output, dark ? 'edge-dark.png' : 'edge-light.png'), fullPage: true });
+      for (const [selector, name] of [['#assign-form', 'assign'], ['#post-merge-title-modes', 'markers']]) {
+        await (await page.$(selector)).screenshot({ path: path.join(output, `${name}-${dark ? 'dark' : 'light'}.png`) });
+      }
+      await page.focus('#post-merge-title-completed');
+      await page.keyboard.press('ArrowRight');
+      assert.equal(await page.$eval('#post-merge-title-progress', el => getComputedStyle(el).outlineStyle), 'solid');
+      assert.equal(await page.$eval('#post-merge-title-progress', el => getComputedStyle(el).outlineWidth), '2px');
     }
     report.themes = themes;
     report.checks.push('350px light/dark themes, no horizontal overflow, single dropdown arrows');
@@ -178,7 +243,8 @@ async function main() {
     report.checks.push('Adapter restriction alone is rejected without copying');
     assert.deepEqual(outbound, []);
     assert.deepEqual(pageErrors, []);
-    report.checks.push('No observed HTTP(S) requests or uncaught popup errors');
+    assert.deepEqual(consoleErrors, []);
+    report.checks.push('No observed HTTP(S) requests, uncaught popup errors or console.error messages');
     report.verifiedAt = new Date().toISOString();
     report.status = 'passed';
     fs.writeFileSync(path.join(output, 'edge-report.json'), `${JSON.stringify(report, null, 2)}\n`);

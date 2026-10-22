@@ -12,7 +12,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   const errors = {
     agentKey: el('agent-error'), prUrl: el('url-error'), tasks: el('tasks-error'),
   };
-  const taskControls = [el('cleanup'), el('workflow'), el('adapters'), el('review'), el('title')];
+  const taskControls = [el('cleanup'), el('workflow'), el('adapters'), el('review'), el('title'), el('title-progress'), el('title-completed')];
   let submitted = false;
   let copying = false;
   let revision = 0;
@@ -26,6 +26,7 @@ export function setupPostMergeGenerator(agents = AGENTS) {
   const readInput = () => ({
     agentKey: el('agent').value, includeMention: el('mention').checked,
     prUrl: el('url').value, tasks: readTasks(),
+    threadTitleMode: el('title-progress').checked ? 'in-progress' : 'completed',
   });
   const applyPreset = key => {
     const tasks = PRESETS[key].tasks;
@@ -34,8 +35,11 @@ export function setupPostMergeGenerator(agents = AGENTS) {
     el('adapters').value = tasks.skipAdapters ? 'skip' : 'default';
     el('review').checked = tasks.reviewUnchecked;
     el('title').checked = tasks.updateThreadTitle;
+    el('title-completed').checked = true;
   };
   const refresh = () => {
+    el('title-modes').disabled = !el('title').checked;
+    if (!el('title').checked) el('title-completed').checked = true;
     const result = formatPostMergePrompt(readInput(), agents);
     el('preview').value = result.ok ? result.text : '';
     const displayErrors = submitted || Boolean(el('url').value.trim());

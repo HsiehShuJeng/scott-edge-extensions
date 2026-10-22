@@ -12,16 +12,16 @@ const preset = (label, overrides) => Object.freeze({
 export const PRESETS = Object.freeze({
   thread: preset('Thread title only', {}),
   'skip-adapters': preset('Cleanup — skip adapter scripts', { cleanup: true, skipAdapters: true }),
-  thorough: preset('Thorough post-merge review', { cleanup: true, checkWorkflow: true, reviewUnchecked: true }),
+  thorough: preset('Thorough post-merge review', { cleanup: true, checkWorkflow: true, reviewUnchecked: true, updateThreadTitle: false }),
   standard: preset('Standard cleanup', { cleanup: true }),
 });
 
 const TASK_TEXT = Object.freeze({
   cleanup: 'Perform the appropriate post-merge cleanup.',
-  checkWorkflow: "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements.",
+  checkWorkflow: "Check whether the repository's post-merge workflow needs to be executed and follow its applicable requirements, including executing applicable adapter scripts.",
   skipAdapters: 'Do not execute scripts under the adapter directory (adapter/ or adapters/, as applicable).',
   reviewUnchecked: 'Review unchecked checklist items in the PR and linked issue descriptions and comments. Complete applicable outstanding work, and report anything still blocked; do not mark items complete without evidence.',
-  updateThreadTitle: 'Update the title of the current Discord thread to reflect the actual completion status.',
+  updateThreadTitle: 'Update the title of the current Discord thread to reflect the completed status (prefix with ✅).',
 });
 
 // Match the raw path too: URL parsing alone silently normalizes dot segments,
@@ -34,7 +34,7 @@ function normalizePrUrl(value) {
 }
 
 /** Pure local formatter: returns { ok, text } or { ok, errors }, no side effects. */
-export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks = {} }, agents = AGENTS) {
+export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks = {}, threadTitleMode = 'completed' }, agents = AGENTS) {
   const errors = {};
   const normalizedUrl = normalizePrUrl(prUrl);
   if (!normalizedUrl) {
@@ -46,9 +46,14 @@ export function formatPostMergePrompt({ agentKey, includeMention, prUrl, tasks =
   }
   const actions = Object.entries(TASK_TEXT)
     .filter(([key]) => tasks[key] === true)
-    .map(([key, sentence]) => key === 'skipAdapters' && tasks.checkWorkflow === true
-      ? `${sentence} The adapter-script exclusion takes precedence; report any resulting incomplete steps.`
-      : sentence);
+    .map(([key, sentence]) => {
+      if (key === 'updateThreadTitle' && threadTitleMode === 'in-progress') {
+        return 'Update the title of the current Discord thread to reflect in-progress status (prefix with 🔄).';
+      }
+      return key === 'skipAdapters' && tasks.checkWorkflow === true
+        ? `${sentence} The adapter-script exclusion takes precedence; report any resulting incomplete steps.`
+        : sentence;
+    });
   if (!Object.keys(TASK_TEXT).some(key => key !== 'skipAdapters' && tasks[key] === true)) {
     errors.tasks = 'Select at least one post-merge action: cleanup, workflow check, checklist review or thread title.';
   }
