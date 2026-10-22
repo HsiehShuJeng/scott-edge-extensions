@@ -316,6 +316,8 @@ graph TD
 
 ## Limitations & Notifications
 
+- DeepSRT video ID auto-detection skips tabs whose URL is unavailable; manual video ID entry and PE prompt tools remain available.
+
 - **Restricted Pages:** Cannot run on `chrome://` or `edge://` pages.
 - **Notification UX:** Notifications fade out after 2 seconds.
 

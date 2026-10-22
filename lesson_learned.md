@@ -5,6 +5,12 @@
 - Keep GitHub logins separate from Discord bot IDs: each registry owns one public identifier type, and dropdown options come directly from registry data.
 - Give the assign form the same promise-based clipboard feedback and stale-operation protection as the post-merge form; appending an identity should not require UI or formatter edits.
 
+## Optional Browser Tab Metadata
+
+- A returned tab does not guarantee a readable `url`. Guard optional metadata before calling string methods; absence is an expected skip for background detection rather than an exception.
+- Observe `console.error` as well as uncaught page errors in browser verification. A caught, logged error can appear in the extension error page without interrupting PE initialization.
+- Keep a popup bootstrap regression that uses the real video detector with a URL-less tab; mocking the detector alone hides this failure.
+
 ## Browser Verification for Agent Forms
 
 - Verify native radio keyboard behavior in a real browser; jsdom can validate state transitions but does not implement browser arrow-key navigation.

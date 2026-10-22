@@ -5,6 +5,9 @@ The Scott's Assistant extension provides a suite of features for extracting, stu
 ## Language Learning Features
 
 ### DeepSRT Integration (For Japanese Learning)
+
+On popup startup, video ID auto-detection runs only when the active tab exposes a DeepSRT challenge URL. If there is no tab or its URL is unavailable/uncommitted, detection quietly returns no ID and leaves manual input available. The [Tabs API defines `Tab.url` as optional](https://developer.chrome.com/docs/extensions/reference/api/tabs#property-Tab-url). Actual API failures remain logged; PE initialization proceeds independently of this asynchronous detection.
+
 Designed to work seamlessly with deeply-captioned challenge pages on DeepSRT to accelerate vocabulary acquisition.
 
 - **Vocabulary Extraction**: Scrapes Japanese vocabulary items and their respective options directly from challenging quiz formats on DeepSRT.

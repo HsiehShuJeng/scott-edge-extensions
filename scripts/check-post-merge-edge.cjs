@@ -47,9 +47,10 @@ async function main() {
     // Shared success toasts briefly cover controls when this tall popup scrolls.
     const waitForNotifications = () => page.waitForFunction(() =>
       ![...document.body.children].some(el => el.style.position === 'fixed' && el.style.zIndex === '10000'));
-    const outbound = [], pageErrors = [];
+    const outbound = [], pageErrors = [], consoleErrors = [];
     page.on('request', request => { if (/^https?:/.test(request.url())) outbound.push(request.url()); });
     page.on('pageerror', error => pageErrors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') consoleErrors.push(message.text()); });
     await page.goto(`chrome-extension://${id}/popup.html`);
     await page.waitForSelector('#post-merge-agent option');
     await page.click('[data-tab="programming"]');
@@ -242,7 +243,8 @@ async function main() {
     report.checks.push('Adapter restriction alone is rejected without copying');
     assert.deepEqual(outbound, []);
     assert.deepEqual(pageErrors, []);
-    report.checks.push('No observed HTTP(S) requests or uncaught popup errors');
+    assert.deepEqual(consoleErrors, []);
+    report.checks.push('No observed HTTP(S) requests, uncaught popup errors or console.error messages');
     report.verifiedAt = new Date().toISOString();
     report.status = 'passed';
     fs.writeFileSync(path.join(output, 'edge-report.json'), `${JSON.stringify(report, null, 2)}\n`);

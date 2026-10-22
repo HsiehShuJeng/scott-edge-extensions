@@ -15,6 +15,14 @@ The earlier entries below describe historical verification for #29. Current #31 
 
 The report and six PNGs are generated outside the repository with the command below. They are verification artifacts, not runtime assets. **Not verified:** the native toolbar popup, live theme-toggle repaint and external editor/Discord paste. These are not implied by headless clipboard read-back. This change does not execute post-merge cleanup or adapter scripts; it generates instructions only.
 
+### URL-less active-tab follow-up (2026-10-22)
+
+A user reported `Cannot read properties of undefined (reading 'includes')` from `autoDetectVideoId`. The returned tab existed but its optional `url` was absent. The existing catch logged the error and returned `null`; because popup startup does not await this detection, that error did not prevent either PE generator from initializing and does not explain missing new HTML controls.
+
+The detector now quietly skips tabs without a string URL. Two new tests first reproduced the exact logged TypeError, then passed with the guard: a focused detector regression and a real popup/video-module integration regression. Other cases retain successful DeepSRT extraction and logging for actual API failures. `npm test` now passes **144 tests across 10 files**; lint and source-verifier syntax checks pass. The Edge verifier's **10 checks** pass with additional monitoring for `console.error` messages, as well as uncaught page errors and HTTP(S) requests. No console errors were observed. No permission, dependency or layout change was introduced.
+
+The browser's actual unpacked source path still needs to be checked separately if Assign to Agent or the title-mode radios are absent. Both controls exist in this branch's static `popup.html`; the supplied legacy form did not contain the new radio fieldset.
+
 ## Automated checks (original #29)
 
 - `npm test`: 71 tests across 6 files pass, including all six mappings, exact outputs for four scenarios, all task combinations, URL rejection/normalization, preview/clipboard equality, preset/custom transitions, reset, missing IDs, clipboard rejection/absence and existing PE tools.
