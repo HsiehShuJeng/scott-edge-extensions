@@ -1,8 +1,21 @@
-# Agent Post-merge Prompt Verification
+# Programming Agent Prompt Verification
 
 Feature scope and identifier provenance are in [programming-features.md](programming-features.md#agent-post-merge-prompt); acceptance requirements are in [#29](https://github.com/HsiehShuJeng/scott-edge-extensions/issues/29). Original verification below is dated 2026-10-11; the maintainer follow-up is dated 2026-10-12.
 
-## Automated checks
+## Assign and title-mode follow-up (2026-10-22, #31)
+
+The earlier entries below describe historical verification for #29. Current #31 validation covers Assign to Agent, the revised Thorough scenario and explicit thread-title markers:
+
+- `npm test`: **136 tests across 8 files pass**. New cases cover exact assignment text for both shipped logins, unknown keys, an appended registry entry, clipboard absence/rejection/stale results, Thorough without a title line, marker defaults/fallbacks, explicit ✅, disabled radio controls, and 🔄 after presets, Reset and re-enabling.
+- `npm run lint` and `node --check scripts/check-post-merge-edge.cjs` pass. Existing localhost CSS-resource messages and the stale Browserslist database notice remain; no new lint warnings were introduced.
+- The source verifier passed **10 checks** on macOS with **Edge 155.0.4283.62**, **Puppeteer 24.37.5** and extension **3.3.0**, using an isolated headless profile and the actual extension page at 350 × 600.
+- Assignment selection and Reset work, and real Clipboard API read-back equals the selected login's sentence. ArrowRight selects the native ✅ radio and produces exactly the completed instruction; a real copy matches that preview. Re-enabling the title task and applying each preset restore 🔄; Thorough disables the radios and includes adapter execution without a title line.
+- Both themes have 350px client/scroll widths, a single dropdown arrow, two marker segments on the same row, and the inherited 2px keyboard focus outline. The light/dark assignment and marker screenshots and full dark PE layout were visually inspected: text, selected states and previews remain readable.
+- No observed HTTP(S) requests or uncaught page errors. Automated clicks wait for the existing transient success toasts to disappear so the overlay cannot intercept the next action.
+
+The report and six PNGs are generated outside the repository with the command below. They are verification artifacts, not runtime assets. **Not verified:** the native toolbar popup, live theme-toggle repaint and external editor/Discord paste. These are not implied by headless clipboard read-back. This change does not execute post-merge cleanup or adapter scripts; it generates instructions only.
+
+## Automated checks (original #29)
 
 - `npm test`: 71 tests across 6 files pass, including all six mappings, exact outputs for four scenarios, all task combinations, URL rejection/normalization, preview/clipboard equality, preset/custom transitions, reset, missing IDs, clipboard rejection/absence and existing PE tools.
 - `npm run lint`: JavaScript syntax, CSS and HTML checks pass. Existing jsdom tests emit localhost CSS-resource warnings, and Browserslist reports old compatibility data; neither fails the checks.

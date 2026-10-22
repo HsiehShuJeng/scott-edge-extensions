@@ -5,6 +5,11 @@
 - Keep GitHub logins separate from Discord bot IDs: each registry owns one public identifier type, and dropdown options come directly from registry data.
 - Give the assign form the same promise-based clipboard feedback and stale-operation protection as the post-merge form; appending an identity should not require UI or formatter edits.
 
+## Browser Verification for Agent Forms
+
+- Verify native radio keyboard behavior in a real browser; jsdom can validate state transitions but does not implement browser arrow-key navigation.
+- Wait for shared transient notifications before the next automated click in the scrolling popup. Clipboard read-back proves copied text, while toolbar and external paste acceptance remain separate manual checks.
+
 ## Honest Thread-title Markers
 
 - Treat completion markers as explicit intent: only a user-selected completed mode may produce ✅. Presets, unknown modes, Reset and re-enabling the title task use 🔄.

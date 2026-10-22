@@ -41,7 +41,7 @@ See the detailed documentation available in our `docs/` folder for specific work
 - **Theme Toggle**: Switch between light and dark modes using the sun/moon icon in the top-right corner
 - **Persistent Preferences**: Your theme preference is saved between sessions
 - **Multi-language Support**: Dedicated sections for English and Korean learning in the Language tab
-- **Programming Tools**: PE tools for commit analysis, PR creation, [agent assignment](docs/programming-features.md#assign-to-agent), branch naming, and [agent post-merge handoffs](docs/programming-features.md#agent-post-merge-prompt)
+- **Programming Tools**: PE tools for commit analysis, PR creation, [agent assignment](docs/programming-features.md#assign-to-agent), branch naming, and [agent post-merge handoffs](docs/programming-features.md#agent-post-merge-prompt) ([verification](docs/post-merge-verification.md#assign-and-title-mode-follow-up-2026-10-22-31))
 - **Video Extraction**: Dedicated Video tab for extracting questions from DeepSRT challenge pages and generating YouTube quiz content
 - **Auto-resize Textareas**: Dynamic sizing for better content input (up to 300px max height)
 - **Consistent Notifications**: Clear success/error feedback across all features
